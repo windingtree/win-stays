@@ -5,18 +5,20 @@
 This is a private package in the WIN.SO mono-repository under Lerna management.
 All dependencies have to be installed via `yarn bootstrap` from the root of repository.
 
-## Start
+## Development
+
+Create  `.env` file in the root of `lpms-web` package with content like in the file `.env.example`. To start project locally please rum this command.
 
 ```bash
 yarn start
 ```
 
-## Build
+## Production build
 
 ```bash
 yarn build
 ```
 
-## Docs
+## Development documentation
 
 - [Custom react hooks](docs/hooks.md)
