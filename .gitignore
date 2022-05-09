@@ -1,6 +1,7 @@
 node_modules
 .env
 .env.*
+!.env.example
 temp
 package-lock.json
 .DS_Store
