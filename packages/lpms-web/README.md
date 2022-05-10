@@ -21,4 +21,4 @@ yarn build
 
 ## Development documentation
 
-- [Custom react hooks](docs/hooks.md)
+- TBD

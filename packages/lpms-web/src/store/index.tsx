@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, useContext } from 'react';
 import { useAppReducer } from './reducer';
-import { useWaku } from '../hooks/useWaku';
 
 export type AppReducerType = ReturnType<typeof useAppReducer>;
 export type State = AppReducerType[0];
@@ -32,27 +31,8 @@ export const useAppDispatch = () => {
 
 export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useAppReducer();
-  const waku = useWaku();
 
-  useEffect(
-    () => {
-      dispatch({
-        type: 'SET_CONNECTING',
-        payload: !!!waku
-      });
-    },
-    [dispatch, waku]
-  );
-
-  useEffect(
-    () => {
-      dispatch({
-        type: 'SET_WAKU',
-        payload: waku
-      });
-    },
-    [dispatch, waku]
-  );
+  // @todo Handle app connection state here
 
   return (
     <StateContext.Provider value={state}>

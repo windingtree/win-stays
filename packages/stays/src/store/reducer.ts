@@ -1,6 +1,7 @@
 import type { Reducer } from 'react';
 import type { Action, State } from './actions';
 import { useReducer } from 'react';
+import { web3ModalReducer } from './web3ModalReducer';
 import { recordsReducer } from './recordsReducer';
 import { getState, storageReducer } from './localStorage';
 import Logger from '../utils/logger';
@@ -18,6 +19,31 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           isConnecting: action.payload
         };
+      case 'SET_WAKU':
+        return {
+          ...state,
+          waku: action.payload
+        };
+      case 'SET_STATIC_PROVIDER':
+        return {
+          ...state,
+          staticProvider: action.payload
+        };
+      case 'SET_IS_RIGHT_NETWORK':
+        return {
+          ...state,
+          isRightNetwork: action.payload
+        };
+      case 'SET_NETWORK_ID':
+        return {
+          ...state,
+          networkId: action.payload
+        };
+      case 'SET_ACCOUNT':
+        return {
+          ...state,
+          account: action.payload
+        };
       default:
         return state;
     }
@@ -27,7 +53,8 @@ export const mainReducer = (state: State, action: Action): State => {
 };
 
 const initialState: State = {
-  isConnecting: false,
+  isConnecting: true,
+  isRightNetwork: true,
 };
 
 export const combineReducers = (
@@ -50,6 +77,7 @@ export const useAppReducer = () => {
     combineReducers(
       [
         mainReducer,
+        web3ModalReducer,
         recordsReducer,
         storageReducer() // Always must be the last
       ]
