@@ -1,5 +1,5 @@
 {
-  "name": "lpms-web",
+  "name": "stays",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -17,7 +17,20 @@
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4",
     "react-router-dom": "^6.3.0",
-    "process": "^0.11.10"
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "stream-browserify": "^3.0.0",
+    "process": "^0.11.10",
+    "url": "^0.11.0",
+    "os-browserify": "^0.3.0",
+    "https-browserify": "^1.0.0",
+    "stream-http": "^3.2.0",
+    "js-waku": "^0.21.0",
+    "@protobuf-ts/runtime": "^2.5.0",
+    "ethers": "^5.6.5",
+    "web3modal": "^1.9.7",
+    "@walletconnect/web3-provider": "^1.7.8"
   },
   "scripts": {
     "start": "cra-webpack-rewired start",
