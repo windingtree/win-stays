@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Header } from '../components/Header';
 import { useAppState } from '../store';
 
 export interface PageWrapperProps {
@@ -10,6 +11,7 @@ export const PageWrapper = ({ children }: PageWrapperProps) => {
 
   return (
     <div>
+      <Header />
       {isConnecting &&
         <div>
           The Dapp is connecting

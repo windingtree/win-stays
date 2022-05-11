@@ -9,7 +9,10 @@ export interface LocalStorageConnectorConfig {
 }
 
 export const storageConnectorConfig: LocalStorageConnectorConfig = {
-  properties: []
+  properties: [
+    'wallet',
+    'walletAccountIndex'
+  ]
 };
 
 export type StoredStateProps = typeof storageConnectorConfig.properties[number];

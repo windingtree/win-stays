@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
-import { useRoutes, useLocation, Navigate } from 'react-router-dom';
+import { useRoutes, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { useAppState } from './store';
 
 // Pages
 import { Home } from './pages/Home';
+import { Wallet } from './pages/Wallet';
 
 export interface ProtectedProps {
   component: ReactNode;
@@ -17,6 +18,7 @@ export interface RouteConfig {
   title: string;
   label?: string;
   protected?: boolean;
+  onClick?: () => void;
 }
 
 export type Routes = RouteConfig[];
@@ -46,6 +48,12 @@ export const pagesRoutesConfig: Routes = [
     title: "Stays",
     label: "Home",
   },
+  {
+    path: "/wallet",
+    element: <Wallet />,
+    title: "Light Wallet",
+    label: "Wallet",
+  },
 ];
 
 export const processPagesConfig = (config: Routes): Routes =>
@@ -63,3 +71,42 @@ export const AppRoutes = () => useRoutes(
     () => processPagesConfig(pagesRoutesConfig), []
   )
 );
+
+export const GlobalMenu = () => {
+  const navigate = useNavigate();
+  const buildMenuConfig = useMemo(
+    () => pagesRoutesConfig
+      .reduce<Routes>(
+        (a, v) => ([
+          ...a,
+          ...(
+            v.label // Items without labels are ignored
+              ? [
+                {
+                  ...v,
+                  onClick: () => navigate(v.path)
+                }
+              ]
+              : []
+          )
+        ]),
+        []
+      ),
+    [navigate]
+  );
+
+
+
+  return (
+    <div>
+      {buildMenuConfig.map((item, index) => (
+        <button
+          key={index}
+          onClick={item.onClick}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  );
+};

@@ -1,3 +1,5 @@
+import type { Wallet } from 'ethers';
+import type { StaticProvider } from '../hooks/useRpcProvider';
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
@@ -5,12 +7,42 @@ export interface GenericStateRecord {
 
 export interface State {
   isConnecting: boolean;
+  staticProvider?: StaticProvider;
+  wallet: string;
+  walletAccountIndex: number;
+  provider?: Wallet;
+  account?: string;
   [key: string]: unknown | GenericStateRecord[];
 }
 
 export interface SetConnectingAction {
   type: 'SET_CONNECTING',
   payload: boolean;
+}
+
+export interface SetWalletAction {
+  type: 'SET_WALLET',
+  payload: string;
+}
+
+export interface SetWalletAccountIndexAction {
+  type: 'SET_WALLET_ACCOUNT_INDEX',
+  payload: number;
+}
+
+export interface SetWalletProviderAction {
+  type: 'SET_WALLET_PROVIDER',
+  payload?: Wallet;
+}
+
+export interface SetWalletAccountAction {
+  type: 'SET_WALLET_ACCOUNT',
+  payload?: string;
+}
+
+export interface SetStaticProviderAction {
+  type: 'SET_STATIC_PROVIDER',
+  payload?: StaticProvider;
 }
 
 export interface SetRecordAction {
@@ -38,6 +70,11 @@ export interface ResetRecordAction {
 
 export type Action =
   | SetConnectingAction
+  | SetWalletAction
+  | SetWalletAccountIndexAction
+  | SetWalletProviderAction
+  | SetWalletAccountAction
+  | SetStaticProviderAction
   | SetRecordAction
   | RemoveRecordAction
   | ResetRecordAction;

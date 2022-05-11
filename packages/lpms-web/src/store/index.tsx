@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { useAppReducer } from './reducer';
+import { rpc } from '../config';
+import { useRpcProvider } from '../hooks/useRpcProvider';
 
 export type AppReducerType = ReturnType<typeof useAppReducer>;
 export type State = AppReducerType[0];
@@ -31,8 +33,17 @@ export const useAppDispatch = () => {
 
 export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useAppReducer();
+  const [staticProvider] = useRpcProvider(rpc);
 
-  // @todo Handle app connection state here
+  useEffect(
+    () => {
+      dispatch({
+        type: 'SET_STATIC_PROVIDER',
+        payload: staticProvider
+      });
+    },
+    [dispatch, staticProvider]
+  );
 
   return (
     <StateContext.Provider value={state}>
