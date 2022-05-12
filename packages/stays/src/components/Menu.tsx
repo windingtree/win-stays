@@ -39,7 +39,7 @@ export const Menu = () => {
 
   return (
     <MenuWrap
-      style={{ padding: winWidth > 512 ? '' : '0 3px' }}
+      style={{ padding: winWidth > 768 ? '' : '0.125rem' }}
       dropBackground={{ color: 'black', opacity: 0.9 }}
       dropAlign={{
         top: "bottom",

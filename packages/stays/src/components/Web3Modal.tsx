@@ -1,16 +1,16 @@
 import { useAppState } from '../store';
 import { StyledButton } from '.'
-import { Box, ResponsiveContext, Spinner, Text } from 'grommet';
+import { Box, Spinner, Text } from 'grommet';
 import { Login, Logout } from 'grommet-icons';
-import { useContext } from 'react';
 import styled from 'styled-components';
+import { useWindowsDimension } from '../hooks/useWindowsDimension';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
 `;
 
 export const SignInButton = () => {
-  const size = useContext(ResponsiveContext);
+  const { winWidth } = useWindowsDimension();
   const { isConnecting, signIn, provider } = useAppState();
 
   if (!signIn || provider) {
@@ -24,12 +24,11 @@ export const SignInButton = () => {
     >
       {() => (
         <Box direction='row' align='center'>
-          {size !== 'small' &&
+          {winWidth > 512 ?
             <Text>
               {isConnecting ? 'Connecting' : 'Connect'}
             </Text>
-          }
-          {size === 'small' &&
+            :
             <Login />
           }
           {isConnecting && <InnerSpinner />}
@@ -40,7 +39,7 @@ export const SignInButton = () => {
 };
 
 export const SignOutButton = () => {
-  const size = useContext(ResponsiveContext);
+  const { winWidth } = useWindowsDimension();
   const { isConnecting, signOut, provider } = useAppState();
 
   if (!signOut || !provider) {
@@ -54,12 +53,11 @@ export const SignOutButton = () => {
     >
       {() => (
         <Box direction='row' align='center'>
-          {size !== 'small' &&
+          {winWidth > 512 ?
             <Text>
               {isConnecting ? 'Connecting' : 'Disconnect'}
             </Text>
-          }
-          {size === 'small' &&
+            :
             <Logout />
           }
           {isConnecting && <InnerSpinner />}
