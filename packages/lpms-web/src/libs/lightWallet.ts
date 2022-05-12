@@ -76,15 +76,17 @@ export const saveWallet = (
 export const setWalletAccount = (
   dispatch: Dispatch,
   wallet: undefined | Wallet,
+  staticProvider: StaticProvider,
   index = 0
 ): void => {
   if (wallet) {
-    getWalletByAccountIndex(wallet, index)
-      .getAddress()
+    const newWallet = getWalletByAccountIndex(wallet, index)
+      .connect(staticProvider);
+    newWallet.getAddress()
       .then(address => {
         dispatch({
           type: 'SET_WALLET_PROVIDER',
-          payload: wallet
+          payload: newWallet
         });
         dispatch({
           type: 'SET_WALLET_ACCOUNT',
@@ -123,7 +125,8 @@ export const restoreWalletFromStorage = async (
     .fromEncryptedJson(encryptedWallet, password);
   setWalletAccount(
     dispatch,
-    decryptedWallet.connect(staticProvider),
+    decryptedWallet,
+    staticProvider,
     walletAccountIndex
   );
 }
