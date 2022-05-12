@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { useRoutes, useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { Menu } from 'grommet';
+import { Menu as MenuIcon } from 'grommet-icons';
 import { useAppState } from './store';
 
 // Pages
@@ -8,13 +9,13 @@ import { Home } from './pages/Home';
 import { Wallet } from './pages/Wallet';
 
 export interface ProtectedProps {
-  component: ReactNode;
+  component: React.ReactNode;
   path?: string;
 }
 
 export interface RouteConfig {
   path: string;
-  element: ReactNode;
+  element: React.ReactNode;
   title: string;
   label?: string;
   protected?: boolean;
@@ -45,13 +46,13 @@ export const pagesRoutesConfig: Routes = [
   {
     path: "/",
     element: <Home />,
-    title: "Stays",
+    title: "Home",
     label: "Home",
   },
   {
     path: "/wallet",
     element: <Wallet />,
-    title: "Light Wallet",
+    title: "Wallet",
     label: "Wallet",
   },
 ];
@@ -73,6 +74,7 @@ export const AppRoutes = () => useRoutes(
 );
 
 export const GlobalMenu = () => {
+  const { isConnecting } = useAppState();
   const navigate = useNavigate();
   const buildMenuConfig = useMemo(
     () => pagesRoutesConfig
@@ -95,18 +97,17 @@ export const GlobalMenu = () => {
     [navigate]
   );
 
-
-
   return (
-    <div>
-      {buildMenuConfig.map((item, index) => (
-        <button
-          key={index}
-          onClick={item.onClick}
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
+    <Menu
+      dropBackground={{ color: 'black', opacity: 0.7 }}
+      dropAlign={{
+        top: "bottom",
+        left: "left",
+      }}
+      margin='small'
+      disabled={isConnecting}
+      icon={(<MenuIcon color='brand' />)}
+      items={buildMenuConfig}
+    />
   );
 };

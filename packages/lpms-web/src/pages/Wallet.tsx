@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
+import { Box, Button, Select, TextInput, TextArea, Heading } from 'grommet';
 import { useAppDispatch, useAppState } from '../store';
 import { PageWrapper } from './PageWrapper';
-import { utils } from 'ethers';
 import {
   generateMnemonic,
   saveWallet,
@@ -10,7 +10,7 @@ import {
   setWalletAccount,
   disconnectWallet
 } from '../libs/lightWallet';
-import { usePoller } from '../hooks/usePoller';
+import { MessageBox, MessageLoadingBox } from '../components/MessageBox';
 
 export const Wallet = () => {
   const dispatch = useAppDispatch();
@@ -19,34 +19,18 @@ export const Wallet = () => {
     staticProvider,
     wallet,
     walletAccountIndex,
-    provider,
-    account
+    provider
   } = useAppState();
   const [processing, setProcessing] = useState<boolean>(false);
   const [accounts, setAccounts] = useState<string[]>([]);
   const [mnemonic, setMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [balance, setBalance] = useState<string>('');
   const [error, setError] = useState<undefined | string>();
 
   useEffect(
     () => {
       if (provider) {
         setAccounts(accountsListFromWallet(provider));
-      }
-    },
-    [provider]
-  );
-
-  const getBalance = useCallback(
-    () => {
-      if (provider) {
-        provider
-          .getBalance()
-          .then(balance => setBalance(utils.formatEther(balance)))
-          .catch(console.error);
-      } else {
-        setBalance('');
       }
     },
     [provider]
@@ -62,27 +46,34 @@ export const Wallet = () => {
   const selectAccount = useCallback(
     (selectedIndex: number) => {
       try {
-        setWalletAccount(dispatch, provider, selectedIndex);
+        if (!staticProvider || !provider) {
+          throw new Error('Provider not initialized yet');
+        }
+
+        setWalletAccount(
+          dispatch,
+          provider,
+          staticProvider,
+          selectedIndex
+        );
       } catch (err) {
         setError(
           (err as Error).message || 'Unknown account selection error'
         );
       }
     },
-    [dispatch, provider]
+    [dispatch, provider, staticProvider]
   );
 
   const encryptAndSave = useCallback(
-    () => {
+    async () => {
       try {
         setError(undefined);
         setProcessing(true);
-        saveWallet(dispatch, mnemonic, password)
-          .finally(() => {
-            setMnemonic('');
-            setPassword('');
-            setProcessing(false);
-          });
+        await saveWallet(dispatch, mnemonic, password);
+        setMnemonic('');
+        setPassword('');
+        setProcessing(false);
       } catch (err) {
         setError((err as Error).message || 'Unknown save error');
         setProcessing(false);
@@ -92,7 +83,7 @@ export const Wallet = () => {
   );
 
   const unlockWallet = useCallback(
-    () => {
+    async () => {
       try {
         setError(undefined);
         setProcessing(true);
@@ -102,17 +93,15 @@ export const Wallet = () => {
           return;
         }
 
-        restoreWalletFromStorage(
+        await restoreWalletFromStorage(
           dispatch,
           password,
           staticProvider,
           wallet,
           walletAccountIndex
-        )
-          .finally(() => {
-            setPassword('');
-            setProcessing(false);
-          });
+        );
+        setPassword('');
+        setProcessing(false);
       } catch (err) {
         setError((err as Error).message || 'Unknown unlock wallet error');
         setProcessing(false);
@@ -131,13 +120,6 @@ export const Wallet = () => {
     [wallet, provider]
   );
 
-  usePoller(
-    getBalance,
-    !!provider,
-    2000,
-    'Account balance'
-  );
-
   if (isConnecting) {
     return (
       <div>
@@ -147,126 +129,129 @@ export const Wallet = () => {
   }
 
   return (
-    <PageWrapper>
+    <PageWrapper
+      breadcrumbs={[
+        {
+          path: '/',
+          label: '🏠'
+        }
+      ]}
+    >
       {isWalletUnlocked &&
-        <div>
-          <div>
-            Selected account: {account} ({balance} ETH)
-          </div>
-          <div>
-            <button
+        <Box
+          direction='column'
+          gap='small'
+        >
+          <Box>
+            <Heading level={3}>
+              Accounts
+            </Heading>
+            <Select
+              options={accounts}
+              value={accounts[walletAccountIndex]}
+              onChange={({ option }) => selectAccount(accounts.indexOf(option))}
+            />
+          </Box>
+          <Box>
+            <Button
+              label='Lock up the wallet'
               onClick={disconnect}
-            >
-              Disconnect
-            </button>
-          </div>
-          <div>
-            Accounts:
-          </div>
-          <div>
-            <select
-              value={walletAccountIndex}
-              onChange={({ target }) => {selectAccount(Number(target.value))}}
-            >
-              {accounts.map(
-                (a, index) => (
-                  <option
-                    key={index}
-                    value={index}
-                  >
-                    {a}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-        </div>
+            />
+          </Box>
+        </Box>
       }
       {isWalletCreated && !isWalletUnlocked &&
-        <div>
-          <div>
+        <Box
+          direction='column'
+          gap='small'
+        >
+          <Heading level={3}>
             Unlock the wallet
-          </div>
-          {processing &&
-            <div>
-              Processing...
-            </div>
-          }
-          {!processing &&
-            <>
-              <div>
-                <input
-                  type='password'
-                  placeholder='encryption pin'
-                  value={password}
-                  onChange={({ target }) => setPassword(target.value)}
-                />
-              </div>
-              <div>
-                <button
-                  onClick={unlockWallet}
-                >
-                  Unlock
-                </button>
-              </div>
-            </>
-          }
-        </div>
+          </Heading>
+          <MessageLoadingBox type='info' show={processing}>
+            Unlocking...
+          </MessageLoadingBox>
+          <Box>
+            <TextInput
+              type='password'
+              placeholder='encryption pin'
+              disabled={processing}
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
+              onKeyDown={e => {
+                if (e.code === 'Enter') {
+                  unlockWallet();
+                }
+              }}
+            />
+          </Box>
+          <Box>
+            <Button
+              label='Unlock'
+              disabled={processing}
+              onClick={unlockWallet}
+            />
+          </Box>
+        </Box>
       }
       {!isWalletCreated &&
-        <div>
-          <div>
+        <Box
+          direction='column'
+          gap='small'
+        >
+          <Heading level={3}>
             Create a new wallet
-          </div>
-          <div>
-            <textarea
+          </Heading>
+          <Box>
+            <TextArea
+              size='large'
+              disabled={processing}
               value={mnemonic}
-              rows={4}
+              rows={3}
               cols={50}
               onChange={({ target }) => setMnemonic(target.value)}
             />
-          </div>
-          <div>
-            <button
+          </Box>
+          <Box>
+            <Button
+              primary={mnemonic === ''}
+              label='Generate a wallet mnemonic'
+              disabled={processing}
               onClick={() => setMnemonic(generateMnemonic())}
-            >
-              Generate mnemonic
-            </button>
-          </div>
-          {processing &&
-            <div>
-              Processing...
-            </div>
-          }
+            />
+          </Box>
           {mnemonic !== '' && !processing &&
-            <div>
-              <div>
-                <input
+            <Box
+              direction='column'
+              gap='small'
+            >
+              <Box>
+                <TextInput
                   type='password'
-                  placeholder='encryption pin'
+                  placeholder='wallet encryption pin'
+                  disabled={processing}
                   value={password}
                   onChange={({ target }) => setPassword(target.value)}
                 />
-              </div>
-              <div>
-                <button
+              </Box>
+              <Box>
+                <Button
+                  primary
+                  label='Encrypt and save'
+                  disabled={processing}
                   onClick={encryptAndSave}
-                >
-                  Encrypt and save
-                </button>
-              </div>
-            </div>
+                />
+              </Box>
+            </Box>
           }
-        </div>
+          <MessageLoadingBox type='info' show={processing}>
+            Storing the wallet...
+          </MessageLoadingBox>
+        </Box>
       }
-      {error &&
-        <div>
-          <div>Error:</div>
-          <div>
-            {error}
-          </div>
-        </div>
-      }
+      <MessageBox type='error' show={!!error}>
+        {error}
+      </MessageBox>
     </PageWrapper>
   );
 };
