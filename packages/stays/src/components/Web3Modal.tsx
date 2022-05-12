@@ -1,6 +1,16 @@
 import { useAppState } from '../store';
+import { StyledButton } from '.'
+import { Box, ResponsiveContext, Spinner, Text } from 'grommet';
+import { Login, Logout } from 'grommet-icons';
+import { useContext } from 'react';
+import styled from 'styled-components';
+
+const InnerSpinner = styled(Spinner)`
+  margin-left: 8px;
+`;
 
 export const SignInButton = () => {
+  const size = useContext(ResponsiveContext);
   const { isConnecting, signIn, provider } = useAppState();
 
   if (!signIn || provider) {
@@ -8,16 +18,29 @@ export const SignInButton = () => {
   }
 
   return (
-    <button
+    <StyledButton
       onClick={() => signIn()}
       disabled={isConnecting}
     >
-      {isConnecting ? 'Connecting' : 'Connect'}
-    </button>
+      {() => (
+        <Box direction='row' align='center'>
+          {size !== 'small' &&
+            <Text>
+              {isConnecting ? 'Connecting' : 'Connect'}
+            </Text>
+          }
+          {size === 'small' &&
+            <Login />
+          }
+          {isConnecting && <InnerSpinner />}
+        </Box>
+      )}
+    </StyledButton>
   )
 };
 
 export const SignOutButton = () => {
+  const size = useContext(ResponsiveContext);
   const { isConnecting, signOut, provider } = useAppState();
 
   if (!signOut || !provider) {
@@ -25,11 +48,23 @@ export const SignOutButton = () => {
   }
 
   return (
-    <button
+    <StyledButton
       onClick={() => signOut()}
       disabled={isConnecting}
     >
-      {isConnecting ? 'Connecting' : 'Disconnect'}
-    </button>
+      {() => (
+        <Box direction='row' align='center'>
+          {size !== 'small' &&
+            <Text>
+              {isConnecting ? 'Connecting' : 'Disconnect'}
+            </Text>
+          }
+          {size === 'small' &&
+            <Logout />
+          }
+          {isConnecting && <InnerSpinner />}
+        </Box>
+      )}
+    </StyledButton>
   )
 };
