@@ -7,6 +7,7 @@ import { useAppState } from './store';
 // Pages
 import { Home } from './pages/Home';
 import { Wallet } from './pages/Wallet';
+import { Login } from './pages/Login';
 
 export interface ProtectedProps {
   component: React.ReactNode;
@@ -26,20 +27,20 @@ export type Routes = RouteConfig[];
 
 export const Protected = ({
   component,
-  path = '/'
+  path = '/login'
 }: ProtectedProps) => {
-const location = useLocation();
-const { account } = useAppState();
+  const location = useLocation();
+  const { account } = useAppState();
 
-return (
-  <>
-    {
-      account !== undefined
-        ? component
-        : <Navigate to={path} state={{ location }} />
-    }
-  </>
-);
+  return (
+    <>
+      {
+        account !== undefined
+          ? component
+          : <Navigate to={path} state={{ location }} />
+      }
+    </>
+  );
 };
 
 export const pagesRoutesConfig: Routes = [
@@ -54,6 +55,12 @@ export const pagesRoutesConfig: Routes = [
     element: <Wallet />,
     title: "Wallet",
     label: "Wallet",
+  },
+  {
+    path: "/login",
+    element: <Login />,
+    title: "Login",
+    label: "Login",
   },
 ];
 
