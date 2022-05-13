@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
 import { useContext } from 'react';
-import { Box, Button, ResponsiveContext } from 'grommet';
+import { Box, Button, Spinner, ResponsiveContext } from 'grommet';
 import { StatusInfo, Alert } from 'grommet-icons';
 
 export const allowedMessageBoxTypes = [
@@ -14,7 +13,7 @@ export type MessageBoxTypes = typeof allowedMessageBoxTypes[number];
 export interface MessageBoxProps {
   type: MessageBoxTypes;
   show: boolean;
-  children?: ReactNode;
+  children?: React.ReactNode;
   onClose?: () => void
 }
 
@@ -64,3 +63,16 @@ export const MessageBox = ({
     </Box>
   );
 };
+
+export const MessageLoadingBox = ({ children, ...props }: MessageBoxProps) => (
+  <MessageBox {...props}>
+    <Box direction='row' align='center'>
+      <Box>
+        {children}
+      </Box>
+      <Box pad={{ left: 'small' }}>
+        <Spinner />
+      </Box>
+    </Box>
+  </MessageBox>
+);

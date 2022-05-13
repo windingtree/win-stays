@@ -1,9 +1,14 @@
 import { AppStateProvider } from './store';
 import { AppRoutes } from './Routes';
+import { Theme } from './Theme';
+import { AppHeader } from './components/AppHeader';
 
 const App = () => (
   <AppStateProvider>
-    <AppRoutes />
+    <Theme>
+      <AppHeader />
+      <AppRoutes />
+    </Theme>
   </AppStateProvider>
 );
 

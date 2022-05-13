@@ -1,33 +1,40 @@
-import type { ReactNode } from 'react';
-import { Header } from '../components/Header';
-import { Box } from 'grommet';
+import type { Breadcrumb } from '../components/Breadcrumbs';
+import { useContext } from 'react';
+import { Page, PageContent, Box, ResponsiveContext } from 'grommet';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { MessageLoadingBox, MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
-import { MessageBox } from '../components/MessageBox';
 import { name } from '../config';
 
 export interface PageWrapperProps {
-  children: ReactNode;
+  children?: React.ReactNode,
+  breadcrumbs?: Breadcrumb[];
 }
 
-export const PageWrapper = ({ children }: PageWrapperProps) => {
+export const PageWrapper = ({ children, breadcrumbs }: PageWrapperProps) => {
+  const size = useContext(ResponsiveContext);
   const { isConnecting, isRightNetwork } = useAppState();
 
   return (
-    <Box>
-      <Header />
-      <Box
-        margin={{ left: 'auto', right: 'auto', bottom: 'xlarge' }}
-        pad={{ horizontal: 'small' }}
-        width={{ width: '100%', max: '900px' }}
-      >
-        <MessageBox type='info' show={isConnecting}>
-          Connecting...
-        </MessageBox>
-        <MessageBox type='warn' show={!isRightNetwork}>
-          You are connected to a wrong network. Please switch to: {name}
-        </MessageBox>
+    <Page kind='narrow'>
+      <PageContent>
+        <Breadcrumbs
+          breadcrumbs={breadcrumbs}
+          size={size}
+        />
+        <Box
+          pad={{ top: 'small' }}
+          fill='horizontal'
+        >
+          <MessageLoadingBox type='info' show={isConnecting}>
+            The Dapp is connecting
+          </MessageLoadingBox>
+          <MessageBox type='warn' show={!isRightNetwork}>
+            You are connected to a wrong network. Please switch to: {name}
+          </MessageBox>
+        </Box>
         {children}
-      </Box>
-    </Box>
+      </PageContent>
+    </Page>
   );
 };

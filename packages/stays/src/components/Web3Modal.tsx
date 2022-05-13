@@ -1,16 +1,15 @@
 import { useAppState } from '../store';
-import { StyledButton } from '.'
-import { Box, Spinner, Text } from 'grommet';
+import { Box, Button, ResponsiveContext, Spinner, Text } from 'grommet';
 import { Login, Logout } from 'grommet-icons';
 import styled from 'styled-components';
-import { useWindowsDimension } from '../hooks/useWindowsDimension';
+import { useContext } from 'react';
 
 const InnerSpinner = styled(Spinner)`
   margin-left: 8px;
 `;
 
 export const SignInButton = () => {
-  const { winWidth } = useWindowsDimension();
+  const size = useContext(ResponsiveContext);
   const { isConnecting, signIn, provider } = useAppState();
 
   if (!signIn || provider) {
@@ -18,28 +17,29 @@ export const SignInButton = () => {
   }
 
   return (
-    <StyledButton
+    <Button
       onClick={() => signIn()}
       disabled={isConnecting}
     >
       {() => (
         <Box direction='row' align='center'>
-          {winWidth > 512 ?
+          {size !== 'small' &&
             <Text>
               {isConnecting ? 'Connecting' : 'Connect'}
             </Text>
-            :
+          }
+          {size === 'small' &&
             <Login />
           }
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </StyledButton>
+    </Button>
   )
 };
 
 export const SignOutButton = () => {
-  const { winWidth } = useWindowsDimension();
+  const size = useContext(ResponsiveContext);
   const { isConnecting, signOut, provider } = useAppState();
 
   if (!signOut || !provider) {
@@ -47,22 +47,23 @@ export const SignOutButton = () => {
   }
 
   return (
-    <StyledButton
+    <Button
       onClick={() => signOut()}
       disabled={isConnecting}
     >
       {() => (
         <Box direction='row' align='center'>
-          {winWidth > 512 ?
+          {size !== 'small' &&
             <Text>
               {isConnecting ? 'Connecting' : 'Disconnect'}
             </Text>
-            :
+          }
+          {size === 'small' &&
             <Logout />
           }
           {isConnecting && <InnerSpinner />}
         </Box>
       )}
-    </StyledButton>
+    </Button>
   )
 };

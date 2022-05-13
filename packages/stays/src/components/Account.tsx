@@ -1,17 +1,11 @@
-import { useContext } from 'react';
-import { useState, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { utils } from 'ethers';
 import Blockies from 'react-blockies';
 import styled from 'styled-components';
-import { Box, Text, Notification, ResponsiveContext } from 'grommet';
+import { Box, Text, Notification } from 'grommet';
 import { centerEllipsis, copyToClipboard } from '../utils/strings';
-import Logger from '../utils/logger';
-
-// Initialize logger
-const logger = Logger('Account');
-
-export interface AccountProps {
-  account?: string;
-}
+import { usePoller } from '../hooks/usePoller';
+import { useAppState } from "../store";
 
 const AccountIcon = styled(Blockies)`
   border-radius: 50%;
@@ -22,36 +16,53 @@ const AccountHash = styled(Text)`
   cursor: pointer;
 `;
 
-const AccountWrap = styled(Box)`
-  backdrop-filter: blur(36px);
-  height: 2.5rem;
-  min-width:2.5rem;
-  color: black;
-  border-radius: 2rem;
-  border: 1px solid black;
-`;
-
-
-export const Account = ({ account }: AccountProps) => {
-  const size = useContext(ResponsiveContext);
+export const Account = () => {
+  const {
+    provider,
+    account
+  } = useAppState();
+  const [balance, setBalance] = useState<string>('');
   const [notification, setNotification] = useState<boolean>(false);
-  const shortAccount = useMemo(() => centerEllipsis(account || ''), [account]);
 
-  if (!account) {
+  const shortAccount = useMemo(
+    () => centerEllipsis(account || ''),
+    [account]
+  );
+
+  const getBalance = useCallback(
+    () => {
+      if (provider && account) {
+        provider
+          .getBalance(account)
+          .then(balance => setBalance(utils.formatEther(balance)))
+          .catch(console.error);
+      } else {
+        setBalance('');
+      }
+    },
+    [provider, account]
+  );
+
+  usePoller(
+    getBalance,
+    !!provider,
+    2000,
+    'Account balance'
+  );
+
+  if (!provider || !account || balance === '') {
     return null;
   }
 
   return (
-    <AccountWrap
+    <Box
       direction='row'
       align='center'
-      justify='center'
-      pad='xsmall'
+      style={{ boxShadow: 'none' }}
       onClick={() => {
         copyToClipboard(account);
-        logger.debug('Copied to clipboard', account);
         setNotification(true);
-        setTimeout(() => setNotification(false), 1000);
+        setTimeout(() => setNotification(false), 1500);
       }}
     >
       <AccountIcon
@@ -59,11 +70,10 @@ export const Account = ({ account }: AccountProps) => {
         size={7}
         scale={4}
       />
-      {size !== 'small' &&
-        <AccountHash>
-          {shortAccount}
-        </AccountHash>
-      }
+      <AccountHash size='small'>
+        {shortAccount}&nbsp;
+        ({Number(balance).toFixed(2)} xDAI)
+      </AccountHash>
       {notification &&
         <Notification
           toast
@@ -71,6 +81,6 @@ export const Account = ({ account }: AccountProps) => {
           status='normal'
         />
       }
-    </AccountWrap>
+    </Box>
   );
 };
