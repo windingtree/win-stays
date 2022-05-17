@@ -2,6 +2,9 @@
   "name": "@windingtree/lpms-cli",
   "version": "0.0.1",
   "description": "LPMS API CLI",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
