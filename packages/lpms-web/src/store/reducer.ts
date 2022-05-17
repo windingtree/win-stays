@@ -24,6 +24,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           staticProvider: action.payload
         };
+      case 'SET_AUTHENTICATION_TOKEN':
+        return {
+          ...state,
+          authentication: action.payload
+        };
       default:
         return state;
     }
@@ -35,7 +40,11 @@ export const mainReducer = (state: State, action: Action): State => {
 const initialState: State = {
   isConnecting: false,
   wallet: '',
-  walletAccountIndex: 0
+  walletAccountIndex: 0,
+  authentication: {
+    timestamp: 0
+
+  },
 };
 
 export const combineReducers = (

@@ -2,28 +2,32 @@ import React from 'react';
 
 import { Box, MaskedInput, Button, TextInput } from 'grommet';
 import { Hide, View, Lock, MailOption } from 'grommet-icons';
+import { useGetAuth } from '../hooks/useGetAuth';
+import { MessageBox, MessageLoadingBox } from './MessageBox';
+
+const emailMask = [
+  {
+    regexp: /^[\w\-_.]+$/,
+    placeholder: 'example',
+  },
+  { fixed: '@' },
+  {
+    regexp: /^[\w]+$/,
+    placeholder: 'my',
+  },
+  { fixed: '.' },
+  {
+    regexp: /^[\w]+$/,
+    placeholder: 'com',
+  },
+];
 
 export const LoginForm = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [reveal, setReveal] = React.useState(false);
 
-  const emailMask = [
-    {
-      regexp: /^[\w\-_.]+$/,
-      placeholder: 'example',
-    },
-    { fixed: '@' },
-    {
-      regexp: /^[\w]+$/,
-      placeholder: 'my',
-    },
-    { fixed: '.' },
-    {
-      regexp: /^[\w]+$/,
-      placeholder: 'com',
-    },
-  ];
+  const [load, loading, error] = useGetAuth();
 
   return (
     <Box fill align="center" justify="start" pad="large">
@@ -57,8 +61,14 @@ export const LoginForm = () => {
         <Button
           label='Login'
           // plain
-          onClick={() => console.log('SUBMIT')}
+          onClick={() => load(email, password)}
         />
+        <MessageLoadingBox type='info' show={loading}>
+          loading...
+        </MessageLoadingBox>
+        <MessageBox type='error' show={!!error}>
+          {error}
+        </MessageBox>
       </Box>
     </Box>
   );

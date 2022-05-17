@@ -5,6 +5,7 @@ import { Account } from './Account';
 import { GlobalMenu } from '../Routes';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useAppState } from '../store';
+import { LogOutButton } from './LogOutButton';
 
 export const AppHeader = () => {
   const { state } = useLocation();
@@ -33,6 +34,7 @@ export const AppHeader = () => {
         gap='small'
       >
         <Account />
+        <LogOutButton />
         <GlobalMenu />
       </Box>
     </Header>
