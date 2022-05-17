@@ -1,4 +1,4 @@
-# win
+# win-stays
 🏆 win.so mono-repository
 
 ## Setup

@@ -44,7 +44,9 @@ const web3ModalConfig: Web3ModalConfig = {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
-        [chainId]: rpc
+        rpc: {
+          [chainId]: rpc
+        },
       }
     }
   }
@@ -157,6 +159,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         {children}
+
       </DispatchContext.Provider>
     </StateContext.Provider>
   );
