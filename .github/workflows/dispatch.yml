@@ -21,7 +21,7 @@ jobs:
           node-version: 16
           registry-url: "https://registry.npmjs.org"
           scope: "@windingtree"
-      - name: Publish to npmjs.org
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+      # - name: Publish to npmjs.org
+      #   run: npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
