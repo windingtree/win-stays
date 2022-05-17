@@ -11,7 +11,8 @@ export interface LocalStorageConnectorConfig {
 export const storageConnectorConfig: LocalStorageConnectorConfig = {
   properties: [
     'wallet',
-    'walletAccountIndex'
+    'walletAccountIndex',
+    'authentication'
   ]
 };
 
