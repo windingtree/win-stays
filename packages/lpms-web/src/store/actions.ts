@@ -12,6 +12,10 @@ export interface State {
   walletAccountIndex: number;
   provider?: Wallet;
   account?: string;
+  authentication: {
+    token?: string;
+    timestamp: number;
+  };
   [key: string]: unknown | GenericStateRecord[];
 }
 
@@ -68,7 +72,16 @@ export interface ResetRecordAction {
   }
 }
 
+export interface SetAuthenticationTokenAction {
+  type: 'SET_AUTHENTICATION_TOKEN';
+  payload: {
+    token?: string;
+    timestamp: number;
+  }
+}
+
 export type Action =
+  | SetAuthenticationTokenAction
   | SetConnectingAction
   | SetWalletAction
   | SetWalletAccountIndexAction

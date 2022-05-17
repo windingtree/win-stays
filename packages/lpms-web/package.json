@@ -24,7 +24,8 @@
     "styled-components": "^5.3.5",
     "grommet": "^2.23.0",
     "grommet-icons": "^4.7.0",
-    "react-blockies": "^1.4.1"
+    "react-blockies": "^1.4.1",
+    "axios": "0.27.2"
   },
   "scripts": {
     "start": "cra-webpack-rewired start",
