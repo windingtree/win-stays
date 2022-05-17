@@ -1,0 +1,27 @@
+on:
+  repository_dispatch:
+    types: [release_to_npm]
+
+jobs:
+  release_package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Repository bootstrap
+        run: yarn && yarn bootstrap
+      - name: Run tests
+        run: yarn exec --scope @windingtree/${{ github.event.client_payload.packageName }} yarn test
+      - name: Build the package
+        run: yarn exec --scope @windingtree/${{ github.event.client_payload.packageName }} yarn build
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: "https://registry.npmjs.org"
+          scope: "@windingtree"
+      - name: Publish to npmjs.org
+        run: yarn exec --scope @windingtree/${{ github.event.client_payload.packageName }} npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
