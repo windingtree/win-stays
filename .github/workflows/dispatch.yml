@@ -11,10 +11,12 @@ jobs:
         with:
           node-version: 16
       - name: Repository bootstrap
-        run: yarn && yarn bootstrap && cd ./packages/${{ github.event.client_payload.packageName }}
+        run: yarn && yarn bootstrap
       - name: Run tests
+        working-directory: ./packages/${{ github.event.client_payload.packageName }}
         run: yarn test
       - name: Build the package
+        working-directory: ./packages/${{ github.event.client_payload.packageName }}
         run: yarn build
       - uses: actions/setup-node@v3
         with:
@@ -22,6 +24,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           scope: "@windingtree"
       # - name: Publish to npmjs.org
+      #   working-directory: ./packages/${{ github.event.client_payload.packageName }}
       #   run: npm publish
       #   env:
       #     NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
