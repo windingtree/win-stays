@@ -6,7 +6,9 @@
   "files": [
     "dist"
   ],
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig-build.json",
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
