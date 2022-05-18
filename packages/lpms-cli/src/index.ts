@@ -1,11 +1,12 @@
 #!/usr/bin/env -S node --no-deprecation
 
 import { Command } from 'commander';
-import chalk from 'chalk';
+import { red } from 'kleur';
 import pack from '../package.json';
 import { configController } from './api/config';
 import { mnemonicController } from './api/mnemonic';
 import { loginController } from './api/login';
+import { walletController } from './api/wallet';
 
 const program = new Command();
 
@@ -14,7 +15,7 @@ program
   .description('LPMS API CLI')
   .version(pack.version)
   .configureOutput({
-    outputError: (str, write) => write(chalk.red(str))
+    outputError: (str, write) => write(red(str))
   });
 
 program
@@ -30,6 +31,11 @@ program
   .description('Generates random 24 word mnemonic')
   .option('--save', 'save generated mnemonic to config')
   .action(mnemonicController);
+
+program
+  .command('wallet')
+  .description('Wallet account information')
+  .action(walletController);
 
 program
   .command('login')

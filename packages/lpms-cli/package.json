@@ -22,7 +22,7 @@
   "dependencies": {
     "commander": "^9.2.0",
     "ethers": "^5.6.6",
-    "chalk": "^4.1.2",
+    "kleur": "^4.1.4",
     "conf": "^10.1.2",
     "axios": "^0.27.2"
   },

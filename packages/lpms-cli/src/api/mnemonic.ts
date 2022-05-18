@@ -15,7 +15,7 @@ export const mnemonicController: ActionController = ({ save }, program) => {
 
     if (save) {
       saveConfig('mnemonic', mnemonic);
-      yellow('Mnemonic has been successfully saved to the CLI config');
+      yellow('\nMnemonic has been successfully saved to the CLI config');
     }
   } catch (error) {
     program.error(error, { exitCode: 1 });
