@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 
 export interface ConfigOptions {
   apiUrl?: string;
+  providerUri?: string;
   mnemonic?: string;
   login?: {
     accessToken: string;

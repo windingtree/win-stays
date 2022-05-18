@@ -1,9 +1,9 @@
-import chalk from 'chalk';
+import kleur from 'kleur';
 
 const log = console.log;
 
-export const green = (string: string): void => log(chalk.green(string));
+export const red = (text: string | number): void => log(kleur.red(text));
 
-export const yellow = (string: string): void => log(chalk.yellow(string));
+export const green = (text: string | number): void => log(kleur.green(text));
 
-export const red = (string: string): void => log(chalk.red(string));
+export const yellow = (text: string | number): void => log(kleur.yellow(text));

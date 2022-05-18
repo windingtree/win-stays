@@ -7,6 +7,9 @@ const schema: Schema<ConfigOptions> = {
   apiUrl: {
     type: 'string'
   },
+  providerUri: {
+    type: 'string'
+  },
   mnemonic: {
     type: 'string'
   },
@@ -29,7 +32,7 @@ const schema: Schema<ConfigOptions> = {
 
 const config = new Config({ schema });
 
-export const getConfig = (path?: string) =>
+export const getConfig = (path?: ConfigKeys): ConfigOptions[ConfigKeys] | ConfigOptions =>
   path
     ? config.get(path)
     : config.store;
@@ -49,7 +52,7 @@ export const requiredConfig = (paths: string[]): void => {
   }
   if (ok !== paths.length) {
     throw new Error(
-      `Expected to be enabled all of the following config properties: ${paths.join(',')}`
+      `Expected to be enabled all of the following config properties: ${paths.join(', ')}`
     );
   }
 };
