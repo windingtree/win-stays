@@ -3,6 +3,7 @@ import UserService from '../services/UserService';
 import { AppRole } from '../types';
 import { validationResult } from 'express-validator';
 import ApiError from '../exceptions/ApiError';
+import { refreshTokenMaxAge } from '../config';
 
 export class UserController {
 
@@ -17,7 +18,7 @@ export class UserController {
       const data = await userService.login(login, password);
 
       res.cookie('refreshToken', data.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+        maxAge: refreshTokenMaxAge,
         httpOnly: true
       });
 
@@ -91,7 +92,7 @@ export class UserController {
       const data = await userService.refresh(refreshToken);
 
       res.cookie('refreshToken', data.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
+        maxAge: refreshTokenMaxAge,
         httpOnly: true
       });
 

@@ -37,7 +37,7 @@ const router = Router();
  */
 router.post('/user/login',
   body('login').isString(),
-  body('password').isString().isLength({ min: 3 }),
+  body('password').isString(),
   UserController.login);
 
 /**
@@ -97,7 +97,7 @@ router.post('/user/create',
   authMiddleware,
   roleMiddleware([AppRole.MANAGER]),
   check('login').isString(),
-  check('password').isString().isLength({ min: 3 }),
+  check('password').isString(),
   body('roles').isArray({ min: 1 }),
   body('roles.*').isIn([AppRole.STAFF, AppRole.MANAGER]),
   UserController.createUser
