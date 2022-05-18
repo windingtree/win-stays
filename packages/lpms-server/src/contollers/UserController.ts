@@ -45,6 +45,10 @@ export class UserController {
 
   public async createUser(req: Request, res: Response, next: NextFunction) {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return next(ApiError.BadRequest('Validation error', errors.array()));
+      }
       const login = req.body.login;
       const password = req.body.password;
       const roles: AppRole[] = req.body.roles;
