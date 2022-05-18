@@ -35,9 +35,10 @@ export default class ServerService {
 
   async start() {
     try {
-      this.server = await this.app.listen(this.PORT, () => console.log(`Server started on PORT = ${this.PORT}`));
+      this.server = this.app.listen(this.PORT, () => console.log(`Server started on PORT = ${this.PORT}`));
     } catch (e) {
       console.error(e);
     }
+    return this.server;
   }
 }
