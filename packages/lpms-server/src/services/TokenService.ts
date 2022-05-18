@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { accessTokenKey, refreshTokenKey } from '../config';
+import { accessTokenKey, accessTokenMaxAge, refreshTokenKey, refreshTokenMaxAge } from '../config';
 import DBService from './DBService';
 import { Tokens } from '../types';
 
@@ -13,8 +13,8 @@ export default class TokenService {
   }
 
   public generateTokens(payload): Tokens {
-    const accessToken = jwt.sign(payload, accessTokenKey, { expiresIn: '30m' });
-    const refreshToken = jwt.sign(payload, refreshTokenKey, { expiresIn: '30d' });
+    const accessToken = jwt.sign(payload, accessTokenKey, { expiresIn: accessTokenMaxAge });
+    const refreshToken = jwt.sign(payload, refreshTokenKey, { expiresIn: refreshTokenMaxAge });
 
     return {
       accessToken,
