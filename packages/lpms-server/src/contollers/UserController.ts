@@ -26,7 +26,8 @@ export class UserController {
         id: data.id,
         login: data.login,
         roles: data.roles,
-        accessToken: data.accessToken
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken
       });
     } catch (e) {
       next(e);
