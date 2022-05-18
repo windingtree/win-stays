@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import UserController from '../contollers/UserController';
-import { body } from 'express-validator';
+import { body, check } from 'express-validator';
 import authMiddleware from '../middlewares/AuthMiddleware';
 import roleMiddleware from '../middlewares/RoleMiddleware';
 import { AppRole } from '../types';
@@ -96,9 +96,10 @@ router.get('/user/get-all', authMiddleware, UserController.getAll);
 router.post('/user/create',
   authMiddleware,
   roleMiddleware([AppRole.MANAGER]),
-  body('login').isString(),
-  body('password').isString().isLength({ min: 3 }),
-  body('roles').isArray(),
+  check('login').isString(),
+  check('password').isString().isLength({ min: 3 }),
+  body('roles').isArray({ min: 1 }),
+  body('roles.*').isIn([AppRole.STAFF, AppRole.MANAGER]),
   UserController.createUser
 );
 
