@@ -13,7 +13,7 @@ export default class DBService {
       throw new Error("Error: Instantiation failed: Use DBService.getInstance() instead of new.");
     }
     DBService._instance = this;
-    this.db = new Level<string, any>('./database', {
+    this.db = new Level<string, string>('./database', {
       valueEncoding: 'json',
       createIfMissing: true,
       errorIfExists: false
