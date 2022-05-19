@@ -19,6 +19,7 @@ checkEnvVariables([
   'APP_ACCESS_TOKEN_KEY',
   'APP_REFRESH_TOKEN_KEY',
   'APP_WALLET_PASSPHRASE',
+  'WEB3STORAGE_KEY'
 ]);
 
 export const port = Number(process.env.APP_PORT);
@@ -29,3 +30,4 @@ export const refreshTokenMaxAge = 30 * 24 * 60 * 60 * 1000; //30d
 export const accessTokenMaxAge = 30 * 60 * 1000; //30m
 export const defaultManagerLogin = 'manager';
 export const defaultManagerPassword = 'winwin';
+export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
