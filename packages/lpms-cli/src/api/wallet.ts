@@ -1,5 +1,6 @@
 import type { ActionController } from '../types';
 import { utils, Wallet, providers } from 'ethers';
+import ora from 'ora';
 import { requiredConfig, getConfig } from './config';
 import { green } from '../utils/print';
 
@@ -16,6 +17,8 @@ export const getWalletByAccountIndex = (
     .connect(provider);
 
 export const walletController: ActionController = async (_, program) => {
+  const spinner = ora('Getting wallet status').start();
+
   try {
     requiredConfig([
       'mnemonic',
@@ -34,8 +37,11 @@ export const walletController: ActionController = async (_, program) => {
     const accountBalance = await wallet.getBalance();
     const formattedBalance = utils.formatEther(accountBalance);
 
+    spinner.stop();
+
     green(`Wallet account: ${accountAddress} (${formattedBalance} xDAI)`);
   } catch (error) {
+    spinner.stop();
     program.error(error, { exitCode: 1 });
   }
 }

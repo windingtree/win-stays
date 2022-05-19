@@ -1,5 +1,6 @@
 import type { ActionController, LoginTokens } from '../types';
 import axios from 'axios';
+import ora from 'ora';
 import { requiredConfig, getConfig, saveConfig } from './config';
 import { green } from '../utils/print';
 
@@ -30,6 +31,8 @@ export const getAuthHeader = async () => {
 };
 
 export const loginController: ActionController = async ({ login, password }, program) => {
+  const spinner = ora('Logging in').start();
+
   try {
     requiredConfig(['apiUrl']);
 
@@ -42,8 +45,12 @@ export const loginController: ActionController = async ({ login, password }, pro
     );
 
     saveConfig('login', { accessToken, refreshToken });
+
+    spinner.stop();
+
     green(`"${login}" user has been successfully logged in`);
   } catch (error) {
+    spinner.stop();
     program.error(error, { exitCode: 1 });
   }
 }
