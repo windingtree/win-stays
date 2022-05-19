@@ -7,6 +7,7 @@ import { configController } from './api/config';
 import { mnemonicController } from './api/mnemonic';
 import { loginController } from './api/login';
 import { walletController } from './api/wallet';
+import { storageController } from './api/storage';
 
 const program = new Command();
 
@@ -43,5 +44,12 @@ program
   .option('--login <login>', 'specify the login')
   .option('--password <password>', 'specify the password')
   .action(loginController);
+
+program
+  .command('storage')
+  .description('Uploads files to storage')
+  .option('--metadata <path>', 'specify a path to the metadata file')
+  .option('--file <path>', 'specify a path to the file')
+  .action(storageController);
 
 program.parse();
