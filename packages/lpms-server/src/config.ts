@@ -22,7 +22,8 @@ checkEnvVariables([
   'APP_WALLET_PASSPHRASE',
   'WEB3STORAGE_KEY',
   'APP_CHAIN_ID',
-  'APP_VERIFYING_CONTRACT'
+  'APP_VERIFYING_CONTRACT',
+  'APP_DB_DIR'
 ]);
 
 export const port = Number(process.env.APP_PORT);
@@ -36,6 +37,7 @@ export const defaultManagerLogin = 'manager';
 export const defaultManagerPassword = 'winwin';
 export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
 export const wakuConfig = { bootstrap: { default: true } };
+export const dbDir = String(process.env.APP_DB_DIR);
 export const typedDataDomain: TypedDataDomain = {
   name: 'stays',
   version: '1',

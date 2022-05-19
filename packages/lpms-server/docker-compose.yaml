@@ -1,0 +1,20 @@
+version: '2'
+services:
+    server:
+        # platform: linux/amd64
+        image: windingtree/lpms-server:latest
+        ports:
+            - "5001:5000"
+        environment:
+            - CLIENT_URL=http://localhost:3000
+            - APP_ACCESS_TOKEN_KEY=asd
+            - APP_REFRESH_TOKEN_KEY=asd1
+            - APP_WALLET_PASSPHRASE=123
+            - WEB3STORAGE_KEY=asd2
+            - DEBUG_LPMS_SERVER=true
+            - APP_CHAIN_ID=31337
+            - APP_VERIFYING_CONTRACT=asd3
+            - APP_DB_DIR=/database
+        volumes:
+            - ./temp:/temp
+            - ./database:/database
