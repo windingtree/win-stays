@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import router from '../router/index';
 import { Express } from 'express-serve-static-core';
@@ -18,11 +19,39 @@ export default class ServerService {
 
   private bootstrap() {
     this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
     this.app.use(cookieParser());
-    this.app.use(cors({
+
+    // CORS
+    const corsOptions = {
+      origin: process.env.CLIENT_URL, // @todo Add handling of origins array
+      optionsSuccessStatus: 200,
+      methods: 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+      allowedHeaders: 'Origin,X-Requested-With,Content-Type,Accept,Authorization',
+      exposedHeaders: 'Content-Range,X-Content-Range',
       credentials: true,
-      origin: process.env.CLIENT_URL
-    }));
+    };
+    this.app.use(cors(corsOptions));
+
+    // Security middleware
+    this.app.set('trust proxy', 1);
+    this.app.disable('x-powered-by');
+    this.app.use(helmet());
+    this.app.use(helmet.contentSecurityPolicy());
+    this.app.use(helmet.crossOriginEmbedderPolicy());
+    this.app.use(helmet.crossOriginOpenerPolicy());
+    this.app.use(helmet.crossOriginResourcePolicy());
+    this.app.use(helmet.dnsPrefetchControl());
+    this.app.use(helmet.expectCt());
+    this.app.use(helmet.frameguard());
+    this.app.use(helmet.hidePoweredBy());
+    this.app.use(helmet.hsts());
+    this.app.use(helmet.ieNoOpen());
+    this.app.use(helmet.noSniff());
+    this.app.use(helmet.originAgentCluster());
+    this.app.use(helmet.permittedCrossDomainPolicies());
+    this.app.use(helmet.referrerPolicy());
+    this.app.use(helmet.xssFilter());
 
     this.app.use('/api', router);
 

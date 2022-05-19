@@ -98,7 +98,8 @@ export class UserController {
       });
 
       return res.json({
-        accessToken: data.accessToken
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken
       });
     } catch (e) {
       next(e);
