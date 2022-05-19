@@ -13,6 +13,7 @@ export interface UserDTO {
 
 export enum ServiceRole {
   ADMIN = 'admin',
+  BIDDER = 'bidder',
   API = 'api'
 }
 
@@ -28,4 +29,17 @@ export interface Token {
 export interface Tokens {
   accessToken: string,
   refreshToken: string
+}
+
+export const walletAccounts = [
+  ServiceRole.API,
+  ServiceRole.BIDDER,
+  AppRole.MANAGER,
+  AppRole.STAFF,
+];
+
+export interface walletAccount {
+  id: number,
+  address: string,
+  role: string
 }

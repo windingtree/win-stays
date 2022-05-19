@@ -4,6 +4,7 @@ import { body, check } from 'express-validator';
 import authMiddleware from '../middlewares/AuthMiddleware';
 import roleMiddleware from '../middlewares/RoleMiddleware';
 import { AppRole } from '../types';
+import WalletController from '../contollers/WalletController';
 
 const router = Router();
 
@@ -124,5 +125,19 @@ router.post('/user/refresh', UserController.refresh);
  *        description: Some server error
  */
 router.post('/user/logout', authMiddleware, UserController.logout);
+
+/**
+ * @swagger
+ * /addresses:
+ *   get:
+ *     summary: get all users
+ *     tags: [Auth service]
+ *     responses:
+ *       200:
+ *         description: get all users
+ *       401:
+ *         description: User is not Auth
+ */
+router.get('/addresses', WalletController.getWallets);
 
 export default router;

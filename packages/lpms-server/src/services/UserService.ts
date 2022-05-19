@@ -1,20 +1,23 @@
-import { AppRole, User, UserDTO } from 'src/types';
+import { AppRole, User, UserDTO } from '../types';
 import DBService from './DBService';
 import bcrypt from 'bcrypt';
 import TokenService from './TokenService';
 import ApiError from '../exceptions/ApiError';
+import { defaultManagerLogin } from '../config';
 
 export default class UserService {
   private db;
   private loginDB;
   private dbService: DBService;
   private mainDB;
+  private tokenService: TokenService;
 
   constructor() {
     this.dbService = DBService.getInstance();
     this.db = this.dbService.getUserDB();
     this.mainDB = this.dbService.getDB();
     this.loginDB = this.dbService.getLoginDB();
+    this.tokenService = new TokenService();
   }
 
   public async getAllUsers() {
@@ -49,6 +52,10 @@ export default class UserService {
 
     await this.loginDB.put(login, String(id));
     await this.mainDB.put('user_db_increment', id);
+
+    if (login !== defaultManagerLogin && roles.includes(AppRole.MANAGER)) {
+      await this.deleteDefaultManagerAccount();
+    }
   }
 
   private async getId(): Promise<number> {
@@ -95,11 +102,18 @@ export default class UserService {
   }
 
   public async deleteUser(id: number): Promise<void> {
-    const user = await this.getUserById(id);
-    const login = user.login;
+    try {
+      const user = await this.getUserById(id);
+      const login = user.login;
 
-    await this.db.del(String(id));
-    await this.loginDB.del(login);
+      await this.db.del(String(id));
+      await this.loginDB.del(login);
+      await this.tokenService.revokeAllUserTokens(id);
+    } catch (e) {
+      if (e.status !== 404) {
+        throw e;
+      }
+    }
   }
 
   public async checkCredentials(user: User, password: string): Promise<boolean> {
@@ -119,9 +133,8 @@ export default class UserService {
 
     const userDTO = this.getUserDTO(user);
 
-    const tokenService = new TokenService();
-    const tokens = tokenService.generateTokens(userDTO);
-    await tokenService.saveToken(tokens.refreshToken, userDTO.id);
+    const tokens = this.tokenService.generateTokens(userDTO);
+    await this.tokenService.saveToken(tokens.refreshToken, userDTO.id);
 
     return {
       ...userDTO,
@@ -130,17 +143,15 @@ export default class UserService {
   }
 
   public async logout(token: string) {
-    const tokenService = new TokenService();
-    await tokenService.revokeToken(token);
+    await this.tokenService.revokeToken(token);
   }
 
   public async refresh(refreshToken) {
     if (!refreshToken) {
       throw ApiError.UnauthorizedError();
     }
-    const tokenService = new TokenService();
-    const data = tokenService.validateRefreshToken(refreshToken);
-    const tokenInDB = await tokenService.checkRefreshInDB(refreshToken);
+    const data = this.tokenService.validateRefreshToken(refreshToken);
+    const tokenInDB = await this.tokenService.checkRefreshInDB(refreshToken);
 
     if (!data || !tokenInDB) {
       throw ApiError.UnauthorizedError();
@@ -148,13 +159,21 @@ export default class UserService {
 
     const user = await this.getUserById(data.id);
     const userDTO = this.getUserDTO(user);
-    const tokens = tokenService.generateTokens(userDTO);
-    await tokenService.revokeToken(refreshToken);
-    await tokenService.saveToken(tokens.refreshToken, userDTO.id);
+    const tokens = this.tokenService.generateTokens(userDTO);
+    await this.tokenService.revokeToken(refreshToken);
+    await this.tokenService.saveToken(tokens.refreshToken, userDTO.id);
 
     return {
       ...userDTO,
       ...tokens
     };
+  }
+
+  private async deleteDefaultManagerAccount(): Promise<void> {
+    const managerId = await this.getUserIdByLogin(defaultManagerLogin);
+
+    if (managerId) {
+      await this.deleteUser(managerId);
+    }
   }
 }
