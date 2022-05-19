@@ -8,6 +8,7 @@ import { mnemonicController } from './api/mnemonic';
 import { loginController } from './api/login';
 import { walletController } from './api/wallet';
 import { storageController } from './api/storage';
+import { addressesController } from './api/addresses';
 
 const program = new Command();
 
@@ -51,5 +52,10 @@ program
   .option('--metadata <path>', 'specify a path to the metadata file')
   .option('--file <path>', 'specify a path to the file')
   .action(storageController);
+
+program
+  .command('addresses')
+  .description('Returns addresses of service provider roles')
+  .action(addressesController);
 
 program.parse();
