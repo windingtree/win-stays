@@ -1,8 +1,11 @@
+import os from 'os';
 import { Router } from 'express';
-import UserController from '../contollers/UserController';
 import { body, check } from 'express-validator';
+import multer from 'multer';
 import authMiddleware from '../middlewares/AuthMiddleware';
 import roleMiddleware from '../middlewares/RoleMiddleware';
+import UserController from '../controllers/UserController';
+import StorageController from '../controllers/StorageController';
 import { AppRole } from '../types';
 
 const router = Router();
@@ -124,5 +127,75 @@ router.post('/user/refresh', UserController.refresh);
  *        description: Some server error
  */
 router.post('/user/logout', authMiddleware, UserController.logout);
+
+const upload = multer({ dest: os.tmpdir() });
+
+/**
+ * @swagger
+ * /storage/file:
+ *  post:
+ *    security"
+ *      - bearerAuth: []
+ *    summary: file
+ *    tags: [Storage service]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              filename:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: binary
+ *    responses:
+ *      200:
+ *        description: It's ok
+ *      400:
+ *        description: Handled Error
+ *      401:
+ *        description: User is not Auth
+ *      403:
+ *        description: Access denied
+ *      500:
+ *        description: Some server error
+ */
+router.post('/storage/file', authMiddleware, upload.single('file'), StorageController.uploadFile);
+
+/**
+ * @swagger
+ * /storage/metadata:
+ *  post:
+ *    security"
+ *      - bearerAuth: []
+ *    summary: file
+ *    tags: [Storage service]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              filename:
+ *                type: array
+ *                items:
+ *                  type: string
+ *                  format: binary
+ *    responses:
+ *      200:
+ *        description: It's ok
+ *      400:
+ *        description: Handled Error
+ *      401:
+ *        description: User is not Auth
+ *      403:
+ *        description: Access denied
+ *      500:
+ *        description: Some server error
+ */
+router.post('/storage/metadata', authMiddleware, upload.single('file'), StorageController.uploadMetadata);
 
 export default router;

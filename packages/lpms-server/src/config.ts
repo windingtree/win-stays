@@ -18,6 +18,7 @@ checkEnvVariables([
   'APP_PORT',
   'APP_ACCESS_TOKEN_KEY',
   'APP_REFRESH_TOKEN_KEY',
+  'WEB3STORAGE_KEY'
 ]);
 
 export const port = Number(process.env.APP_PORT);
@@ -25,3 +26,4 @@ export const accessTokenKey = String(process.env.APP_ACCESS_TOKEN_KEY);
 export const refreshTokenKey = String(process.env.APP_REFRESH_TOKEN_KEY);
 export const refreshTokenMaxAge = 30 * 24 * 60 * 60 * 1000; //30d
 export const accessTokenMaxAge = 30 * 60 * 1000; //30m
+export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
