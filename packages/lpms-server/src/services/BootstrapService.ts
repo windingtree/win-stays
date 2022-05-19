@@ -3,7 +3,7 @@ import DBService from './DBService';
 import UserService from './UserService';
 import { AppRole } from '../types';
 import WalletService from './WalletService';
-import { defaultManagerLogin } from '../config';
+import { defaultManagerLogin, defaultManagerPassword } from '../config';
 
 export default class BootstrapService {
   protected db: Level;
@@ -39,7 +39,7 @@ export default class BootstrapService {
 
     await userService.createUser(
       defaultManagerLogin,
-      'winwin',
+      defaultManagerPassword,
       [AppRole.MANAGER]
     );
 
