@@ -24,7 +24,8 @@
     "ethers": "^5.6.6",
     "kleur": "^4.1.4",
     "conf": "^10.1.2",
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "ora": "^5.4.1"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
