@@ -1,7 +1,6 @@
 import type { ActionController } from '../types';
 import axios from 'axios';
 import { requiredConfig, getConfig } from './config';
-import { green } from '../utils/print';
 
 export interface RoleAddress {
   id: number;
