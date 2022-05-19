@@ -66,6 +66,10 @@ export default class TokenService {
     return await this.db.put(String(userId), neededTokens);
   }
 
+  public async revokeAllUserTokens(userId: number) {
+    return await this.db.del(String(userId));
+  }
+
   public validateRefreshToken(refreshToken) {
     try {
       return jwt.verify(refreshToken, refreshTokenKey);

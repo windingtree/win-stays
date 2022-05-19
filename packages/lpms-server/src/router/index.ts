@@ -2,12 +2,14 @@ import os from 'os';
 import { Router } from 'express';
 import { body, check } from 'express-validator';
 import multer from 'multer';
+import { AppRole } from '../types';
 import authMiddleware from '../middlewares/AuthMiddleware';
 import roleMiddleware from '../middlewares/RoleMiddleware';
 import UserController from '../controllers/UserController';
 import StorageController from '../controllers/StorageController';
-import { AppRole } from '../types';
+import WalletController from '../controllers/WalletController';
 
+const upload = multer({ dest: os.tmpdir() });
 const router = Router();
 
 /**
@@ -128,8 +130,6 @@ router.post('/user/refresh', UserController.refresh);
  */
 router.post('/user/logout', authMiddleware, UserController.logout);
 
-const upload = multer({ dest: os.tmpdir() });
-
 /**
  * @swagger
  * /storage/file:
@@ -197,5 +197,19 @@ router.post('/storage/file', authMiddleware, upload.single('file'), StorageContr
  *        description: Some server error
  */
 router.post('/storage/metadata', authMiddleware, upload.single('file'), StorageController.uploadMetadata);
+
+/**
+ * @swagger
+ * /addresses:
+ *   get:
+ *     summary: get all users
+ *     tags: [Auth service]
+ *     responses:
+ *       200:
+ *         description: get all users
+ *       401:
+ *         description: User is not Auth
+ */
+router.get('/addresses', WalletController.getWallets);
 
 export default router;
