@@ -1,32 +1,26 @@
-import { AppRole } from '../src/types';
 import ServerService from './services/ServerService';
-import UserService from './services/UserService';
 import { port } from './config';
+import BootstrapService from './services/BootstrapService';
+import DBService from './services/DBService';
 
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection', async error => {
   console.log(error);
+  await DBService.getInstance().close();
   process.exit(1);
 });
 
 const main = async (): Promise<ServerService> => {
   const server = new ServerService(port);
 
-  const userService = new UserService();
-  const users = await userService.getAllUsers();
-
-  if (users.length === 0) {
-    await userService.createUser(
-      'manager',
-      'winwin',
-      [AppRole.MANAGER]
-    );
-  }
+  const bootstrapService = new BootstrapService();
+  await bootstrapService.bootstrap();
 
   return server.start();
 };
 
 export default main()
-  .catch(error => {
+  .catch(async error => {
     console.log(error);
+    await DBService.getInstance().close();
     process.exit(1);
   });
