@@ -1,5 +1,6 @@
 import { Waku, WakuMessage } from 'js-waku';
 import type { MessageType } from '@protobuf-ts/runtime';
+import { wakuConfig } from '../config';
 
 export type WakuMessageHandler = (message: WakuMessage) => void;
 
@@ -15,7 +16,7 @@ export class WakuService {
     }
 
     console.log("Connecting to Waku...");
-    const waku = await Waku.create({ bootstrap: { default: true } });
+    const waku = await Waku.create(wakuConfig);
     await waku.waitForRemotePeer();
     console.log("...Connected");
 
