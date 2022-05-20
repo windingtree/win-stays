@@ -1,19 +1,12 @@
 import { Waku, WakuMessage } from 'js-waku';
 import type { MessageType } from '@protobuf-ts/runtime';
 
-export default class WakuService {
-  private static _instance: WakuService = new WakuService();
+export type WakuMessageHandler = (message: WakuMessage) => void;
+
+export class WakuService {
   public waku: Waku;
 
   constructor() {
-    if (WakuService._instance) {
-      throw new Error("Error: Instantiation failed: Use DBService.getInstance() instead of new.");
-    }
-    WakuService._instance = this;
-  }
-
-  public static getInstance(): WakuService {
-    return WakuService._instance;
   }
 
   public async connect(): Promise<WakuService> {
@@ -52,7 +45,7 @@ export default class WakuService {
     return protoMessageInstance.fromBinary(wakuMessage.payload);
   }
 
-  public async makeWakuObserver(messageHandler, topics: string[]) {
+  public async makeWakuObserver(messageHandler: WakuMessageHandler, topics: string[]) {
     if (!this.waku) {
       await this.connect();
     }
@@ -65,3 +58,5 @@ export default class WakuService {
     };
   }
 }
+
+export default new WakuService();
