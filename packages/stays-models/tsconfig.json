@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist/esm",
+    "declaration": true
+  },
+  "include": [
+    "./src"
+, "test/example.ts"  ]
+}
