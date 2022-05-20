@@ -7,9 +7,6 @@ export type WakuMessageHandler = (message: WakuMessage) => void;
 export class WakuService {
   public waku: Waku;
 
-  constructor() {
-  }
-
   public async connect(): Promise<WakuService> {
     if (this.waku) {
       return this;
