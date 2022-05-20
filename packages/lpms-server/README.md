@@ -9,14 +9,15 @@ How to add observer on waku:
 ```typescript
 import WakuService from './services/WakuService';
 import { Test } from "./proto/test";
+import WakuService, { WakuMessageHandler } from './services/WakuService';
 
 const wakuService = await WakuService
   .getInstance()
   .connect()
 ;
 
-const handler = (message) => {
-    return wakuService.processMessage(Test, message);
+const handler: WakuMessageHandler = (message) => {
+  return wakuService.processMessage(Test, message);
 };
 
 await wakuService.makeWakuObserver(handler, ['some-topic']);
