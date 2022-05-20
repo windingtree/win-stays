@@ -37,7 +37,9 @@
     "morgan": "^1.10.0",
     "axios": "^0.27.2",
     "form-data": "^4.0.0",
-    "web3.storage": "^4.2.0"
+    "web3.storage": "^4.2.0",
+    "@protobuf-ts/plugin": "^2.6.0",
+    "js-waku": "^0.23.0"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",

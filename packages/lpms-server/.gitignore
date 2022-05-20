@@ -1,3 +1,6 @@
 database
 dist
 .env
+
+# ts generated protobufs
+src/proto/*.ts

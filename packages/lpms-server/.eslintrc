@@ -10,7 +10,8 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "ignorePatterns": [
-    "dist"
+    "dist",
+    "src/proto"
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": [
