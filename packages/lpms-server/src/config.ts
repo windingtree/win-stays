@@ -31,3 +31,4 @@ export const accessTokenMaxAge = 30 * 60 * 1000; //30m
 export const defaultManagerLogin = 'manager';
 export const defaultManagerPassword = 'winwin';
 export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
+export const wakuConfig = { bootstrap: { default: true } };
