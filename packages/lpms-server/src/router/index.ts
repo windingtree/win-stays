@@ -56,7 +56,7 @@ router.post('/user/login',
  *       401:
  *         description: User is not Auth
  */
-router.get('/user/get-all', authMiddleware, UserController.getAll);
+router.get('/user/get-all', UserController.getAll);
 
 /**
  * @swagger
