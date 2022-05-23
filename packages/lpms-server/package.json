@@ -60,6 +60,7 @@
     "eslint": "^8.15.0",
     "@types/cors": "^2.8.12",
     "@types/multer": "^1.4.7",
-    "@types/cookie-parser": "^1.4.3"
+    "@types/cookie-parser": "^1.4.3",
+    "kleur": "^4.1.4"
   }
 }
