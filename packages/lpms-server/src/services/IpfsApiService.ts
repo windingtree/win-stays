@@ -1,7 +1,7 @@
 import { promises } from 'fs';
 import { Web3Storage } from 'web3.storage';
 import { File } from '@web-std/file';
-const { readFile } = promises;
+const { readFile, unlink } = promises;
 
 export default class IpfsApiService {
   private ipfsApi: Web3Storage;
@@ -20,12 +20,14 @@ export default class IpfsApiService {
       files.map(
         async multerFile => {
           const file = await IpfsApiService.getMulterFile(multerFile);
-          return this.ipfsApi.put(
+          const cid = this.ipfsApi.put(
             [file],
             {
               wrapWithDirectory: false
             }
-          )
+          );
+          await unlink(multerFile.path);
+          return cid;
         }
       )
     );
