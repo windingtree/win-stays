@@ -588,17 +588,17 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@windingtree/videre-contracts@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-contracts/-/videre-contracts-0.1.5.tgz#9ecee1e63b3d0ae3096651b5bdbb55802d5c624b"
-  integrity sha512-XQQBE5tSohfk5ffyYEetwvazoGzYTVkFA2EoPzeH7r2q7zxgs1ESTVj63Nsg1RrYJZiiy4z43CTpr6KFxRsRAg==
+"@windingtree/videre-contracts@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-contracts/-/videre-contracts-0.1.6.tgz#b73886944c1aa20aa5ec3ae81803dfdcb59c22fb"
+  integrity sha512-X/8me/jH6srJ0WR0A1nrXaiarQa9mg2PuMvQmmGJKVTaTgUUr1bGxz1Crnb9ham4vpk96LQj71AHkHU+OiVoSg==
   dependencies:
     "@openzeppelin/contracts" "^4.5.0"
 
-"@windingtree/videre-sdk@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.3.6.tgz#8622d7f75a39381e744ce12fa09a263e9ff576ee"
-  integrity sha512-e0sYSK+m2zoj5zOVJYyacc32WhOllk6aDRuLnNXq88dQ1RVD0TLSXGG0NcCbCQqvG/hgN7oCvazf0DIGxikfSg==
+"@windingtree/videre-sdk@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.4.0.tgz#e03155b0db46a080324f48c7bfde88a39ff65588"
+  integrity sha512-dZi7abmTijvYjaL3MkTfKI6BtW7BmDr7BdERBr3HV6/NmRBX4QoYvGsRZW0OtoliFEaLhs6tdu7866t5m/5OVA==
   dependencies:
     "@protobuf-ts/runtime" "^2.5.0"
     ethers "^5.6.5"

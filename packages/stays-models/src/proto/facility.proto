@@ -45,9 +45,12 @@ message Policies {
 // Facility level messages //
 /////////////////////////////
 
+// ServiceProviderData.payload
 message Facility {
-  // primitive serviceProvider.id
-  bytes serviceProvider = 1;
+  // name of facility
+  string name = 1;
+  // description
+  string description = 2;
   // check-in / check-out times
   Policies policies = 14;
   // service provider's URL
@@ -56,21 +59,23 @@ message Facility {
   google.type.LatLng location = 6;
   // photos of the entire facility (not space-specific)
   repeated videre.type.Photo photos = 7;
-  Connectivity connectivity = 21;
-  // Individual spaces that are available from this provider
-  repeated ItemWrapper items = 101;
+  // connectivity
+  optional Connectivity connectivity = 21;
 }
 
-message ItemWrapper {
-  // primitive item.id
-  bytes item = 1;
+// an item may be something like a space (ie. queen room)
+// or it may be something like 'breakfast'.
+message Item {
   // name of the item. Target <50 chars for English
-  string name = 2;
+  string name = 1;
+  // description
+  string description = 2;
   // what type of item this is
   ItemType type = 3;
   // photos applicable to the item
   repeated videre.type.Photo photos = 4;
   // the payload describing the item (line specific)
+  // eg. may be Space message
   optional bytes payload = 5;
 }
 
