@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
+import { proto } from '@windingtree/videre-sdk';
 import IpfsApiService from '../services/IpfsApiService';
 import { web3StorageKey } from '../config';
 
@@ -24,7 +25,9 @@ export class StorageController {
         return next(new Error('File not uploaded'));
       }
 
-      // Sign
+      // Validation of incoming data
+
+      // Creation of signed container
 
       const storage = new IpfsApiService(web3StorageKey);
       const result = await storage.deployFilesToIpfs([file]);

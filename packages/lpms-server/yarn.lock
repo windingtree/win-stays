@@ -588,7 +588,7 @@
   dependencies:
     "@protobuf-ts/runtime" "^2.6.0"
 
-"@protobuf-ts/runtime@^2.6.0":
+"@protobuf-ts/runtime@^2.5.0", "@protobuf-ts/runtime@^2.6.0":
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/@protobuf-ts/runtime/-/runtime-2.6.0.tgz#d823470768383c0657cdc87a745c19af5ef63550"
   integrity sha512-ZXQxypattRL87U9Ki+unh2en+REp8m+VZDTCHHHt1gqTZpjbUn2zzELkSEmli+4WKWPEZRExIhzfAUz0xRskJQ==
@@ -1092,6 +1092,14 @@
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/@web3-storage/parse-link-header/-/parse-link-header-3.1.0.tgz#4562724987649dd6d3e07c87be1826804d212ef7"
   integrity sha512-K1undnK70vLLauqdE8bq/l98isTF2FDhcP0UPpXVSjkSWe3xhAn5eRXk5jfA1E5ycNm84Ws/rQFUD7ue11nciw==
+
+"@windingtree/videre-sdk@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.3.7.tgz#652718adc8a396161c26dc6c35a312efc9a9e66d"
+  integrity sha512-nzhPOhNOtZaC85l93FZDAT49uKc12hskkgYcVE6K9/aUfe0uNDuM4WUFR7EcpA3434lnWvaI240ZoO3kuEEUkQ==
+  dependencies:
+    "@protobuf-ts/runtime" "^2.5.0"
+    ethers "^5.6.5"
 
 "@zxing/text-encoding@0.9.0":
   version "0.9.0"
