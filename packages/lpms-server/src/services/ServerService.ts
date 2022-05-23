@@ -2,9 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import morgan from "morgan";
 import router from '../router/index';
 import { Express } from 'express-serve-static-core';
 import errorMiddleware from '../middlewares/ErrorMiddleware';
+import { debugEnabled } from '../config';
 
 export default class ServerService {
   protected PORT: number;
@@ -52,6 +54,10 @@ export default class ServerService {
     this.app.use(helmet.permittedCrossDomainPolicies());
     this.app.use(helmet.referrerPolicy());
     this.app.use(helmet.xssFilter());
+
+    if (debugEnabled) {
+      this.app.use(morgan('dev'));
+    }
 
     this.app.use('/api', router);
 
