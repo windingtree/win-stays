@@ -176,4 +176,33 @@ export default class UserService {
       await this.deleteUser(managerId);
     }
   }
+
+  public async updateUserPassword(userId: number, password: string): Promise<void> {
+    try {
+      const user = await this.getUserById(userId);
+      const rounds = 2;
+      user.password = await bcrypt.hash(String(password), rounds);
+
+      await this.db.put(String(userId), user);
+    } catch (e) {
+      if (e.status === 404) {
+        throw ApiError.BadRequest('User not found');
+      }
+      throw e;
+    }
+  }
+
+  public async updateUserRoles(userId: number, roles: AppRole[]): Promise<void> {
+    try {
+      const user = await this.getUserById(userId);
+      user.roles = roles;
+
+      await this.db.put(String(userId), user);
+    } catch (e) {
+      if (e.status === 404) {
+        throw ApiError.BadRequest('User not found');
+      }
+      throw e;
+    }
+  }
 }

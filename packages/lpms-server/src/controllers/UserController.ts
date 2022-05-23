@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import UserService from '../services/UserService';
-import { AppRole } from '../types';
+import { AppRole, AuthRequest } from '../types';
 import { validationResult } from 'express-validator';
 import ApiError from '../exceptions/ApiError';
 import { refreshTokenMaxAge } from '../config';
@@ -104,6 +104,50 @@ export class UserController {
     } catch (e) {
       next(e);
     }
+  }
+
+  public async updateUserPassword(req: AuthRequest, res: Response, next: NextFunction) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiError.BadRequest('Validation error', errors.array()));
+    }
+
+    const userId = req.body.userId;
+    const password = req.body.password;
+
+    if (!req.user.roles.includes(AppRole.MANAGER) && req.user.id !== userId) {
+      return next(ApiError.AccessDenied());
+    }
+
+    try {
+      const userService = new UserService();
+      await userService.updateUserPassword(userId, password);
+
+      return res.json({ success: true });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async updateUserRoles(req: AuthRequest, res: Response, next: NextFunction) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(ApiError.BadRequest('Validation error', errors.array()));
+    }
+
+    try {
+      const userId: number = req.body.userId;
+      const roles: AppRole[] = req.body.roles;
+
+
+      const userService = new UserService();
+      await userService.updateUserRoles(userId, roles);
+
+      return res.json({ success: true });
+    } catch (e) {
+      next(e);
+    }
+
   }
 }
 
