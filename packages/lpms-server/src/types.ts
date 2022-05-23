@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface User {
   id: number;
   login: string;
@@ -42,4 +44,8 @@ export interface walletAccount {
   id: number,
   address: string,
   role: string
+}
+
+export interface AuthRequest extends Request {
+  user: UserDTO;
 }
