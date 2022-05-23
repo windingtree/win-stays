@@ -56,7 +56,7 @@ router.post('/user/login',
  *       401:
  *         description: User is not Auth
  */
-router.get('/user/get-all', authMiddleware, UserController.getAll);
+router.get('/user/get-all', UserController.getAll);
 
 /**
  * @swagger
@@ -107,6 +107,92 @@ router.post('/user/create',
   UserController.createUser
 );
 
+
+/**
+ * @swagger
+ * /user/update-password:
+ *  put:
+ *    security:
+ *       - bearerAuth: []
+ *    summary: update password
+ *    tags: [Auth service]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *                userId:
+ *                  type: number
+ *                  description: user's id
+ *                password:
+ *                  type: string
+ *                  description: new user password
+ *    responses:
+ *      200:
+ *        description: It's ok
+ *      400:
+ *        description: Handled Error
+ *      401:
+ *        description: User is not Auth
+ *      403:
+ *        description: Access denied
+ *      500:
+ *        description: Some server error
+ */
+router.put('/user/update-password',
+  authMiddleware,
+  check('userId').isNumeric(),
+  check('password').isString(),
+  UserController.updateUserPassword
+);
+
+/**
+ * @swagger
+ * /user/update-roles:
+ *  put:
+ *    security:
+ *       - bearerAuth: []
+ *    summary: update role (only for manager role)
+ *    tags: [Auth service]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *                userId:
+ *                  type: number
+ *                  description: user's id
+ *                roles:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ *                    enum: [manager, staff]
+ *                  description: roles (staff, manager)
+ *    responses:
+ *      200:
+ *        description: It's ok
+ *      400:
+ *        description: Handled Error
+ *      401:
+ *        description: User is not Auth
+ *      403:
+ *        description: Access denied
+ *      500:
+ *        description: Some server error
+ */
+router.put('/user/update-roles',
+  authMiddleware,
+  roleMiddleware([AppRole.MANAGER]),
+  check('userId').isNumeric(),
+  body('roles').isArray({ min: 1 }),
+  body('roles.*').isIn([AppRole.STAFF, AppRole.MANAGER]),
+  UserController.updateUserRoles
+);
+
 router.post('/user/refresh', UserController.refresh);
 
 /**
@@ -133,7 +219,7 @@ router.post('/user/logout', authMiddleware, UserController.logout);
  * @swagger
  * /addresses:
  *   get:
- *     summary: get all users
+ *     summary: get all addresses
  *     tags: [Auth service]
  *     responses:
  *       200:
@@ -149,7 +235,7 @@ const upload = multer({ dest: os.tmpdir() });
  * @swagger
  * /storage/file:
  *  post:
- *    security"
+ *    security:
  *      - bearerAuth: []
  *    summary: file
  *    tags: [Storage service]
@@ -183,7 +269,7 @@ router.post('/storage/file', authMiddleware, upload.single('file'), StorageContr
  * @swagger
  * /storage/metadata:
  *  post:
- *    security"
+ *    security:
  *      - bearerAuth: []
  *    summary: file
  *    tags: [Storage service]
