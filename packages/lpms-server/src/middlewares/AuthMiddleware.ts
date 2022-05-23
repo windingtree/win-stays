@@ -22,13 +22,15 @@ export default async (req, res, next) => {
       return next(ApiError.UnauthorizedError());
     }
 
-    const userExists = await new UserService().getUserIdByLogin(userData.login);
+    const userService = new UserService();
+    const userExists = await userService.getUserIdByLogin(userData.login);
 
     if (!userExists) {
       return next(ApiError.UnauthorizedError());
     }
 
-    req.user = userData;
+    const user = await userService.getUserById(userData.id);
+    req.user = userService.getUserDTO(user);
     next();
   } catch (e) {
     return next(ApiError.UnauthorizedError());

@@ -17,7 +17,12 @@ describe('test', async () => {
 
   const staffLogin = 'test_staff_super_long_login';
   const staffPass = '123456qwerty';
+  const staffUpdatePass = 'qwerty123456';
+
   let staffAccessToken;
+  let staffUserId;
+
+  const anotherUserForTest = 'test_staff_for_tests';
 
   it('make manager', async () => {
     await userService.createUser(
@@ -95,7 +100,7 @@ describe('test', async () => {
       .set('Accept', 'application/json');
 
     staffAccessToken = res.body.accessToken;
-
+    staffUserId = res.body.id;
     expect(staffAccessToken).to.be.an('string');
   });
 
@@ -123,12 +128,54 @@ describe('test', async () => {
     expect(res.body.users).to.be.an('array');
   });
 
+  it(`manager can update staff password`, async () => {
+    const res = await requestWithSupertest
+      .put('/api/user/update-password')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ userId: staffUserId, password: staffUpdatePass });
+
+    expect(res.status).to.equal(200);
+  });
+
+  it(`manager can update staff role to manager`, async () => {
+    const res = await requestWithSupertest
+      .put('/api/user/update-roles')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ userId: staffUserId, roles: [AppRole.MANAGER] });
+
+    expect(res.status).to.equal(200);
+  });
+
+  it('staff can login with new pass', async () => {
+    const res = await requestWithSupertest
+      .post('/api/user/login')
+      .send({ login: staffLogin, password: staffUpdatePass })
+      .set('Accept', 'application/json');
+
+    staffAccessToken = res.body.accessToken;
+    expect(staffAccessToken).to.be.an('string');
+  });
+
+  it(`staff can create user after change role to manager`, async () => {
+    const res = await requestWithSupertest
+      .post('/api/user/create')
+      .send({
+        login: anotherUserForTest,
+        password: staffPass,
+        roles: [AppRole.STAFF]
+      })
+      .set('Authorization', `Bearer ${staffAccessToken}`)
+      .set('Accept', 'application/json');
+
+    expect(res.status).to.equal(200);
+  });
 
   it('delete users', async () => { //todo think about APIs for delete users
     const id = await userService.getUserIdByLogin(managerLogin);
-    const staffId = await userService.getUserIdByLogin(staffLogin);
+    const anotherUser = await userService.getUserIdByLogin(anotherUserForTest);
     await userService.deleteUser(Number(id));
-    await userService.deleteUser(Number(staffId));
+    await userService.deleteUser(Number(staffUserId));
+    await userService.deleteUser(Number(anotherUser));
 
     const checkId = await userService.getUserIdByLogin(managerLogin);
     expect(checkId).to.be.null;
