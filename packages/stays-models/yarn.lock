@@ -595,10 +595,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.5.0"
 
-"@windingtree/videre-sdk@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.4.0.tgz#e03155b0db46a080324f48c7bfde88a39ff65588"
-  integrity sha512-dZi7abmTijvYjaL3MkTfKI6BtW7BmDr7BdERBr3HV6/NmRBX4QoYvGsRZW0OtoliFEaLhs6tdu7866t5m/5OVA==
+"@windingtree/videre-sdk@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.4.1.tgz#5c6419e0f79bcf39a218893dd2166987be9612bb"
+  integrity sha512-dagKZ5sbmmK9OQwFLIOCy624J59gaOPQv7hFUsYcJj7yydIRZWDZYQ8pictq8QpIyD8soj0hl/QxnBVAoyEt5Q==
   dependencies:
     "@protobuf-ts/runtime" "^2.5.0"
     ethers "^5.6.5"
@@ -2610,3 +2610,8 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zlib@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/zlib/-/zlib-1.0.5.tgz#6e7c972fc371c645a6afb03ab14769def114fcc0"
+  integrity sha1-bnyXL8NxxkWmr7A6sUdp3vEU/MA=

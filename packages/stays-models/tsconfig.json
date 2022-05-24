@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "es2020",
+    "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -10,6 +10,5 @@
     "declaration": true
   },
   "include": [
-    "./src"
-, "test/example.ts"  ]
+    "./src"  ]
 }
