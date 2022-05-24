@@ -1093,10 +1093,10 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/parse-link-header/-/parse-link-header-3.1.0.tgz#4562724987649dd6d3e07c87be1826804d212ef7"
   integrity sha512-K1undnK70vLLauqdE8bq/l98isTF2FDhcP0UPpXVSjkSWe3xhAn5eRXk5jfA1E5ycNm84Ws/rQFUD7ue11nciw==
 
-"@windingtree/videre-sdk@^0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.3.7.tgz#652718adc8a396161c26dc6c35a312efc9a9e66d"
-  integrity sha512-nzhPOhNOtZaC85l93FZDAT49uKc12hskkgYcVE6K9/aUfe0uNDuM4WUFR7EcpA3434lnWvaI240ZoO3kuEEUkQ==
+"@windingtree/videre-sdk@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.4.1.tgz#5c6419e0f79bcf39a218893dd2166987be9612bb"
+  integrity sha512-dagKZ5sbmmK9OQwFLIOCy624J59gaOPQv7hFUsYcJj7yydIRZWDZYQ8pictq8QpIyD8soj0hl/QxnBVAoyEt5Q==
   dependencies:
     "@protobuf-ts/runtime" "^2.5.0"
     ethers "^5.6.5"
