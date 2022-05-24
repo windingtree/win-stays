@@ -25,7 +25,9 @@
     "kleur": "^4.1.4",
     "conf": "^10.1.2",
     "axios": "^0.27.2",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "@windingtree/videre-sdk": "^0.4.1",
+    "@windingtree/stays-models": "0.0.1"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",

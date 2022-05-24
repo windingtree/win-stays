@@ -1,32 +1,34 @@
 import { promises } from 'fs';
 import { Web3Storage } from 'web3.storage';
 import { File } from '@web-std/file';
-const { readFile, unlink } = promises;
+const { readFile } = promises;
 
 export default class IpfsApiService {
   private ipfsApi: Web3Storage;
 
-  static async getMulterFile(file: Express.Multer.File): Promise<File> {
+  static getFileFromBuffer(fileBuffer: Uint8Array, fileName: string): File {
+    return new File([fileBuffer], fileName);
+  }
+
+  static async getFileFromMulter(file: Express.Multer.File): Promise<File> {
     const fileBuffer = await readFile(file.path);
-    return new File([fileBuffer], file.originalname);
+    return IpfsApiService.getFileFromBuffer(fileBuffer, file.originalname);
   }
 
   constructor(token: string) {
     this.ipfsApi = new Web3Storage({ token });
   }
 
-  public async deployFilesToIpfs(files: Express.Multer.File[]): Promise<string[]> {
+  public async deployFilesToIpfs(files: File[]): Promise<string[]> {
     return Promise.all(
       files.map(
-        async multerFile => {
-          const file = await IpfsApiService.getMulterFile(multerFile);
+        async file => {
           const cid = this.ipfsApi.put(
             [file],
             {
               wrapWithDirectory: false
             }
           );
-          await unlink(multerFile.path);
           return cid;
         }
       )

@@ -118,7 +118,6 @@ async function main() {
   )
 
   // test compression
-
   console.log(messageToUpload)
   console.log(`Signature: ${utils.hexlify(messageToUpload.signature)}`)
   console.log(`Protobuf length: ${brotliCompressSync(ServiceProviderData.toBinary(messageToUpload)).length}`)
