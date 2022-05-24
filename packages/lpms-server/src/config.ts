@@ -1,3 +1,4 @@
+import type { TypedDataDomain } from '@ethersproject/abstract-signer';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -33,3 +34,8 @@ export const defaultManagerLogin = 'manager';
 export const defaultManagerPassword = 'winwin';
 export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
 export const wakuConfig = { bootstrap: { default: true } };
+export const typedDataDomain: TypedDataDomain = {
+  name: "stays",
+  version: "1",
+  chainId: 100
+};

@@ -1,5 +1,4 @@
 import type { NextFunction, Request, Response } from 'express';
-import type { TypedDataDomain } from '@ethersproject/abstract-signer';
 import type { SignedMessage } from '@windingtree/videre-sdk/dist/cjs/utils';
 import type { Wallet } from 'ethers';
 import { brotliCompressSync, brotliDecompressSync } from 'node:zlib';
@@ -8,17 +7,11 @@ import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/st
 import { utils as vUtils, eip712 } from '@windingtree/videre-sdk';
 import IpfsApiService from '../services/IpfsApiService';
 import walletService from '../services/WalletService';
-import { web3StorageKey } from '../config';
+import { web3StorageKey, typedDataDomain } from '../config';
 const { readFile } = promises;
 
 export class StorageController {
   signMetadata = async (file: Express.Multer.File, signer: Wallet): Promise<Uint8Array> => {
-    const domain: TypedDataDomain = {
-      name: "stays",
-      version: "1",
-      chainId: 100
-    };
-
     let fileBuffer = await readFile(file.path);
 
     try {
@@ -30,7 +23,7 @@ export class StorageController {
     const serviceProviderData = ServiceProviderData.fromBinary(fileBuffer);
 
     const signedMessage = await vUtils.createSignedMessage(
-      domain,
+      typedDataDomain,
       eip712.storage.ServiceProviderData,
       serviceProviderData as ServiceProviderData & SignedMessage,
       signer
