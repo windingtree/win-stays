@@ -9,6 +9,7 @@ import {
 import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/storage';
 
 const profileFileName = path.resolve(process.cwd(), 'facility.bin');
+const compressProfile = true; // true - is recommended
 
 const main = async () => {
   const serviceProviderData: ServiceProviderData = {
@@ -108,9 +109,11 @@ const main = async () => {
     terms: []
   };
 
-  const fileSource = brotliCompressSync(
-    ServiceProviderData.toBinary(serviceProviderData)
-  );
+  const binaryProfile = ServiceProviderData.toBinary(serviceProviderData);
+
+  const fileSource = compressProfile
+    ? brotliCompressSync(binaryProfile)
+    : binaryProfile;
 
   writeFileSync(profileFileName, fileSource);
 }
