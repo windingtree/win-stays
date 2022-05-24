@@ -115,9 +115,7 @@ async function main() {
     eip712.storage.ServiceProviderData,
     serviceProviderData as ServiceProviderData & SignedMessage,
     new Wallet(utils.randomBytes(32))
-  )
-
-  // test compression
+  );
 
   console.log(messageToUpload)
   console.log(`Signature: ${utils.hexlify(messageToUpload.signature)}`)
