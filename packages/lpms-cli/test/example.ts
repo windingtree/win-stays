@@ -1,3 +1,4 @@
+import { brotliCompressSync } from 'node:zlib';
 import { utils } from 'ethers';
 import {
   Exception, Facility, Item,
@@ -6,7 +7,7 @@ import {
 import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/src/proto/storage';
 
 async function main() {
-  const serviceProviderData: Omit<ServiceProviderData, 'signature'> = {
+  const serviceProviderData: ServiceProviderData = {
     serviceProvider: utils.arrayify(utils.formatBytes32String('provider')),
     payload: Facility.toBinary(
       {
@@ -101,7 +102,9 @@ async function main() {
     terms: []
   };
 
-  const fileSource = ServiceProviderData.toBinary(serviceProviderData as ServiceProviderData);
+  const fileSource = brotliCompressSync(
+    ServiceProviderData.toBinary(serviceProviderData)
+  );
 
   console.log(fileSource);
 }
