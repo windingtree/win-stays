@@ -1,14 +1,20 @@
 import { brotliCompressSync } from 'node:zlib';
+import { writeFileSync } from 'fs';
+import path from 'path';
 import { utils } from 'ethers';
 import {
   Exception, Facility, Item,
   ItemType, Space, SpaceTier
-} from '@windingtree/stays-models/dist/cjs/src/proto/facility';
-import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/src/proto/storage';
+} from '@windingtree/stays-models/dist/cjs/proto/facility';
+import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/storage';
 
-async function main() {
+const profileFileName = path.resolve(process.cwd(), 'facility.bin');
+
+const main = async () => {
   const serviceProviderData: ServiceProviderData = {
-    serviceProvider: utils.arrayify(utils.formatBytes32String('provider')),
+    serviceProvider: utils.arrayify(
+      utils.formatBytes32String('UNIQUE-PROVIDER-NAME-OR-ID')
+    ),
     payload: Facility.toBinary(
       {
         name: 'Awesome ski chalet',
@@ -106,7 +112,11 @@ async function main() {
     ServiceProviderData.toBinary(serviceProviderData)
   );
 
-  console.log(fileSource);
+  writeFileSync(profileFileName, fileSource);
 }
 
 main()
+  .catch(console.log)
+  .finally(() => {
+    console.log(`The Facility profile is saved by path: ${profileFileName}`);
+  })

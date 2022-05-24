@@ -17,9 +17,9 @@
   },
   "include": [
     "src",
-    "bin",
     "package.json",
-    "test"
+    "test",
+    "scripts"
   ],
   "exclude": [
     "node_modules"

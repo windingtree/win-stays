@@ -96,3 +96,14 @@ lops storage --metadata ./path/to/metadata.json
 ```bash
 yarn test
 ```
+
+## Creation of binary unsigned service provider metadata
+
+> This is a temporary method of metadata creation until the reach UI will be created in the context of `lpms-web` application
+
+- Edit the content of the `./scripts/facility.ts` file
+- Run the command `npx ts-node ./test/facility.ts`
+
+The binary file with provider metadata will be created by path `./facility.bin`
+
+When the metadata file is created it should be uploaded to the `lpms-server` storage using `storage --metadata` CLI command.
