@@ -1,8 +1,11 @@
 import { utils, Wallet } from "ethers";
 import { Exception, Facility, Item, ItemType, Space, SpaceTier } from "../src/proto/facility";
 import { ServiceProviderData } from "../src/proto/storage";
-import { utils as vUtils, eip712 } from "@windingtree/videre-sdk"
+import { brotliCompressSync } from "node:zlib"
 import { TypedDataDomain } from "@ethersproject/abstract-signer";
+
+import { utils as vUtils, eip712 } from "@windingtree/videre-sdk"
+import { SignedMessage } from "@windingtree/videre-sdk/dist/cjs/utils";
 
 
 async function main() {
@@ -110,13 +113,14 @@ async function main() {
   const messageToUpload = await vUtils.createSignedMessage(
     domain,
     eip712.storage.ServiceProviderData,
-    serviceProviderData,
+    serviceProviderData as ServiceProviderData & SignedMessage,
     new Wallet(utils.randomBytes(32))
   )
 
+  // test compression
   console.log(messageToUpload)
   console.log(`Signature: ${utils.hexlify(messageToUpload.signature)}`)
-  console.log(`Protobuf length: ${ServiceProviderData.toBinary(messageToUpload).length}`)
+  console.log(`Protobuf length: ${brotliCompressSync(ServiceProviderData.toBinary(messageToUpload)).length}`)
 }
 
 main()

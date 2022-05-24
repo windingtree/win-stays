@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "@protobuf-ts/runtime": "^2.6.0",
-    "ethers": "^5.6.6"
+    "ethers": "^5.6.6",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@protobuf-ts/plugin": "^2.5.0",
