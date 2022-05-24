@@ -6,7 +6,7 @@ import { TypedDataDomain } from "@ethersproject/abstract-signer";
 
 
 async function main() {
-  const serviceProviderData: Omit<ServiceProviderData, "signature"> = {
+  const serviceProviderData: ServiceProviderData = {
     serviceProvider: utils.arrayify(utils.formatBytes32String('provider')),
     payload: Facility.toBinary(
       {
@@ -100,20 +100,20 @@ async function main() {
     ],
     terms: []
   }
-  
+
   const domain: TypedDataDomain = {
     name: "stays",
     version: "1",
     chainId: 100
   }
-  
+
   const messageToUpload = await vUtils.createSignedMessage(
     domain,
     eip712.storage.ServiceProviderData,
-    serviceProviderData as ServiceProviderData,
+    serviceProviderData,
     new Wallet(utils.randomBytes(32))
   )
-  
+
   console.log(messageToUpload)
   console.log(`Signature: ${utils.hexlify(messageToUpload.signature)}`)
   console.log(`Protobuf length: ${ServiceProviderData.toBinary(messageToUpload).length}`)
