@@ -1,38 +1,47 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { TypedDataDomain } from '@ethersproject/abstract-signer';
+import type { SignedMessage } from '@windingtree/videre-sdk/dist/cjs/utils';
 import type { Wallet } from 'ethers';
+import { brotliCompressSync, brotliDecompressSync } from 'node:zlib';
 import { promises } from 'fs';
-import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/src/proto/storage';
+import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/storage';
 import { utils as vUtils, eip712 } from '@windingtree/videre-sdk';
 import IpfsApiService from '../services/IpfsApiService';
 import walletService from '../services/WalletService';
 import { web3StorageKey } from '../config';
 const { readFile } = promises;
 
-export type ServiceProviderDataUnsigned = Omit<ServiceProviderData, 'signature'>;
-
 export class StorageController {
-  public async signMetadata(file: Express.Multer.File, signer: Wallet): Promise<Uint8Array> {
+  signMetadata = async (file: Express.Multer.File, signer: Wallet): Promise<Uint8Array> => {
     const domain: TypedDataDomain = {
       name: "stays",
       version: "1",
       chainId: 100
     };
 
-    const fileBuffer = await readFile(file.path);
-    const serviceProviderData = ServiceProviderData.fromBinary(fileBuffer) as ServiceProviderData;
+    let fileBuffer = await readFile(file.path);
+
+    try {
+      fileBuffer = brotliDecompressSync(fileBuffer);
+    } catch(_) {
+      // data is not compressed
+    }
+
+    const serviceProviderData = ServiceProviderData.fromBinary(fileBuffer);
 
     const signedMessage = await vUtils.createSignedMessage(
       domain,
       eip712.storage.ServiceProviderData,
-      serviceProviderData,
+      serviceProviderData as ServiceProviderData & SignedMessage,
       signer
     );
 
-    return ServiceProviderData.toBinary(signedMessage);
+    return brotliCompressSync(
+      ServiceProviderData.toBinary(signedMessage)
+    );
   }
 
-  public async uploadFile(req: Request, res: Response, next: NextFunction) {
+  uploadFile = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const multerFile = req.file as Express.Multer.File;
       if (!multerFile) {
@@ -47,7 +56,7 @@ export class StorageController {
     }
   }
 
-  public async uploadMetadata(req: Request, res: Response, next: NextFunction) {
+  uploadMetadata = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const multerFile = req.file as Express.Multer.File;
       if (!multerFile) {
