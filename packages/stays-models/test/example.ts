@@ -103,20 +103,20 @@ async function main() {
     ],
     terms: []
   }
-  
+
   const domain: TypedDataDomain = {
     name: "stays",
     version: "1",
     chainId: 100
   }
-  
+
   const messageToUpload = await vUtils.createSignedMessage(
     domain,
     eip712.storage.ServiceProviderData,
     serviceProviderData as ServiceProviderData & SignedMessage,
     new Wallet(utils.randomBytes(32))
   )
-  
+
   // test compression
 
   console.log(messageToUpload)
