@@ -20,7 +20,8 @@ checkEnvVariables([
   'APP_ACCESS_TOKEN_KEY',
   'APP_REFRESH_TOKEN_KEY',
   'APP_WALLET_PASSPHRASE',
-  'WEB3STORAGE_KEY'
+  'WEB3STORAGE_KEY',
+  'APP_CHAIN_ID'
 ]);
 
 export const port = Number(process.env.APP_PORT);
@@ -35,7 +36,7 @@ export const defaultManagerPassword = 'winwin';
 export const web3StorageKey = process.env.WEB3STORAGE_KEY as string;
 export const wakuConfig = { bootstrap: { default: true } };
 export const typedDataDomain: TypedDataDomain = {
-  name: "stays",
-  version: "1",
-  chainId: 100
+  name: 'stays',
+  version: '1',
+  chainId: Number(process.env.APP_CHAIN_ID)
 };
