@@ -40,6 +40,13 @@ export const walletAccounts = [
   AppRole.STAFF,
 ];
 
+export enum walletAccountsIndexes {
+  API = 0,
+  BIDDER = 1,
+  MANAGER = 2,
+  STAFF = 3
+}
+
 export interface walletAccount {
   id: number,
   address: string,

@@ -8,6 +8,7 @@ import { utils as vUtils, eip712 } from '@windingtree/videre-sdk';
 import IpfsApiService from '../services/IpfsApiService';
 import walletService from '../services/WalletService';
 import { web3StorageKey, typedDataDomain } from '../config';
+import { walletAccountsIndexes } from '../types';
 const { readFile } = promises;
 
 export class StorageController {
@@ -56,7 +57,9 @@ export class StorageController {
         return next(new Error('File not uploaded'));
       }
 
-      const signer = await walletService.getWalletByIndex(0); // 0 - API role
+      const signer = await walletService.getWalletByIndex(
+        walletAccountsIndexes.API
+      );
       const signedMetadata = await this.signMetadata(multerFile, signer);
 
       const storage = new IpfsApiService(web3StorageKey);
