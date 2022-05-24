@@ -1,14 +1,9 @@
 {
   "name": "lpms-server",
   "version": "0.0.1",
+  "private": true,
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "tsc -p tsconfig-build.json",
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
@@ -40,7 +35,8 @@
     "web3.storage": "^4.2.0",
     "@protobuf-ts/plugin": "^2.6.0",
     "js-waku": "^0.23.0",
-    "@windingtree/videre-sdk": "^0.3.7"
+    "@windingtree/videre-sdk": "^0.4.1",
+    "@windingtree/stays-models": "0.0.1"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",

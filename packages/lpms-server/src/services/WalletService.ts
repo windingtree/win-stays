@@ -4,7 +4,7 @@ import { walletPassphrase } from '../config';
 import DBService from './DBService';
 import { Level } from 'level';
 
-export default class WalletService {
+export class WalletService {
   protected db: Level;
 
   constructor() {
@@ -21,6 +21,18 @@ export default class WalletService {
   public async getWallet(): Promise<Wallet> {
     const encodedWallet = await this.db.get('wallet');
     return await ethers.Wallet.fromEncryptedJson(encodedWallet, walletPassphrase);
+  }
+
+  public async getWalletByIndex(index: number): Promise<Wallet> {
+    const wallet = await this.getWallet();
+    return new Wallet(
+      utils
+        .HDNode
+        .fromMnemonic(wallet.mnemonic.phrase)
+        .derivePath(
+          `m/44'/60'/0'/0/${index}`
+        )
+    );
   }
 
   public accountsListFromMnemonic(mnemonic: string): Array<walletAccount> {
@@ -52,3 +64,5 @@ export default class WalletService {
     return address?.address || '';
   }
 }
+
+export default new WalletService();

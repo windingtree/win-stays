@@ -2,7 +2,7 @@ import { Level } from 'level';
 import DBService from './DBService';
 import UserService from './UserService';
 import { AppRole } from '../types';
-import WalletService from './WalletService';
+import walletService from './WalletService';
 import { defaultManagerLogin, defaultManagerPassword } from '../config';
 
 export default class BootstrapService {
@@ -43,7 +43,7 @@ export default class BootstrapService {
       [AppRole.MANAGER]
     );
 
-    await new WalletService().createNewWallet();
+    await walletService.createNewWallet();
 
     await this.db.put('isConfigured', 'true');
   }
