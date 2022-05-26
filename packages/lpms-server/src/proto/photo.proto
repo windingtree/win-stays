@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package videre.type;
+
+message Photo {
+  // where to find the photo
+  string uri = 1;
+  // caption for the photo (assumed English)
+  string description = 10;
+}

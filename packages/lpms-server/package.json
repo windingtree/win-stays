@@ -9,7 +9,8 @@
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "dev": "cross-env NODE_ENV=development nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts"
+    "dev": "cross-env NODE_ENV=development nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts",
+    "protoc:local": "rm -f ./src/proto/*.ts && protoc --ts_out ./src/proto --proto_path ./src/proto ./src/proto/*.proto"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -36,7 +37,8 @@
     "@protobuf-ts/plugin": "^2.6.0",
     "js-waku": "^0.23.0",
     "@windingtree/videre-sdk": "^0.4.1",
-    "@windingtree/stays-models": "0.0.1"
+    "@windingtree/stays-models": "0.0.1",
+    "moment": "^2.29.3"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
