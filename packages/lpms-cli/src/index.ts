@@ -35,6 +35,7 @@ program
   .command('mnemonic')
   .description('Generates random 24 word mnemonic')
   .option('--save', 'save generated mnemonic to config')
+  .option('--index', 'specifies the default account index')
   .action(mnemonicController);
 
 program
