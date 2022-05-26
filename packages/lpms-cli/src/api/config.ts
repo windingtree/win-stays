@@ -57,9 +57,11 @@ export const requiredConfig = (paths: string[]): void => {
   }
 };
 
-export const configController: ActionController = async ({ add, value, remove }, program) => {
+export const configController: ActionController = async ({ get, add, value, remove }, program) => {
   try {
-    if (add) {
+    if (get) {
+      green(`"${get}": ${getConfig(get)}`);
+    } else if (add) {
       if (!value) {
         throw new Error('"--value" option must be provided');
       }
@@ -69,7 +71,7 @@ export const configController: ActionController = async ({ add, value, remove },
       removeConfig(remove);
       green(`"${remove}" has been successfully removed from config`);
     } else {
-      throw new Error('either "--add" or "--remove" option must be provided');
+      throw new Error('either "--get", "--add" or "--remove" option must be provided');
     }
   } catch (error) {
     program.error(error, { exitCode: 1 });

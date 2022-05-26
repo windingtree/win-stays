@@ -13,9 +13,7 @@ const compressProfile = true; // true - is recommended
 
 const main = async () => {
   const serviceProviderData: ServiceProviderData = {
-    serviceProvider: utils.arrayify(
-      utils.formatBytes32String('UNIQUE-PROVIDER-NAME-OR-ID')
-    ),
+    serviceProvider: utils.arrayify('0x8991ad64938cc0ceecc328dd28107facab94f509d1bd54ff3cf4511164edf1c7'),
     payload: Facility.toBinary(
       {
         name: 'Awesome ski chalet',
