@@ -4,35 +4,32 @@ import ora from 'ora';
 import { requiredConfig, getConfig } from './config';
 import { green } from '../utils/print';
 
-export const getWalletByAccountIndex = (
-  mnemonic: string,
-  index: number,
-  provider: providers.JsonRpcProvider
-): Wallet =>
-  new Wallet(
+export const getProvider = () => {
+  requiredConfig(['providerUri']);
+
+  return new providers.JsonRpcProvider(
+    getConfig('providerUri') as string
+  );
+};
+
+export const getWalletByAccountIndex = (index: number): Wallet => {
+  requiredConfig(['mnemonic']);
+
+  const provider = getProvider();
+
+  return new Wallet(
     utils.HDNode
-      .fromMnemonic(mnemonic)
+      .fromMnemonic(getConfig('mnemonic') as string)
       .derivePath(`m/44'/60'/0'/0/${index}`)
   )
     .connect(provider);
+}
 
 export const walletController: ActionController = async (_, program) => {
   const spinner = ora('Getting wallet status').start();
 
   try {
-    requiredConfig([
-      'mnemonic',
-      'providerUri'
-    ]);
-
-    const provider = new providers.JsonRpcProvider(
-      getConfig('providerUri') as string
-    );
-    const wallet = getWalletByAccountIndex(
-      getConfig('mnemonic') as string,
-      0,
-      provider
-    );
+    const wallet = getWalletByAccountIndex(0);
     const accountAddress = await wallet.getAddress();
     const accountBalance = await wallet.getBalance();
     const formattedBalance = utils.formatEther(accountBalance);

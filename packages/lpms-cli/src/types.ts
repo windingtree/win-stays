@@ -10,12 +10,16 @@ export interface ConfigOptions {
   providerUri?: string;
   mnemonic?: string;
   login?: LoginTokens;
+  salt?: string;
+  metadataUri?: string;
+  registry?: string;
 }
 
 export type ConfigKeys = keyof ConfigOptions;
 
 export interface CliOptions {
   save?: boolean;
+  get?: ConfigKeys;
   add?: ConfigKeys;
   remove?: ConfigKeys;
   value?: ConfigOptions[ConfigKeys];
@@ -23,6 +27,9 @@ export interface CliOptions {
   password?: string;
   metadata?: string;
   file?: string;
+  salt?: string;
+  meta?: string;
+  register?: boolean;
 }
 
 export type ActionController = (options: CliOptions, program: Command) =>

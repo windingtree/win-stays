@@ -19,7 +19,8 @@
     "src",
     "package.json",
     "test",
-    "scripts"
+    "scripts",
+    "typechain/**/*.ts"
   ],
   "exclude": [
     "node_modules"

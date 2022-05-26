@@ -3,12 +3,12 @@ import { createReadStream } from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
 import ora from 'ora';
-import { requiredConfig, getConfig } from './config';
+import { requiredConfig, getConfig, saveConfig } from './config';
 import { green, yellow, red } from '../utils/print';
 import { getAuthHeader } from './login';
 
 
-export const storageController: ActionController = async ({ metadata, file }, program) => {
+export const storageController: ActionController = async ({ metadata, file, save }, program) => {
   const spinner = ora('Authenticating').start();
 
   try {
@@ -47,9 +47,17 @@ export const storageController: ActionController = async ({ metadata, file }, pr
     spinner.stop();
 
     if (response.status === 200) {
-      return green(
-        `${filePath} has been uploaded successfully. Storage Id: ${response.data}`
+      green(
+        `${filePath} has been uploaded successfully. Storage Id (URI): ${response.data[0]}`
       );
+
+      if (save) {
+        saveConfig('metadataUri', response.data[0]);
+        yellow(
+          '\nThe service provider\'s metadata file URI has been successfully saved to the CLI config'
+        );
+      }
+      return;
     }
 
     red(

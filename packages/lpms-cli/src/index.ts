@@ -9,6 +9,8 @@ import { loginController } from './api/login';
 import { walletController } from './api/wallet';
 import { storageController } from './api/storage';
 import { addressesController } from './api/addresses';
+import { serviceProviderController } from './api/serviceProvider';
+import { saltController } from './api/salt';
 
 const program = new Command();
 
@@ -23,6 +25,7 @@ program
 program
   .command('config')
   .description('Adds or removes configuration properties')
+  .option('--get <property>', 'view a specific property value')
   .option('--add <property>', 'specify a property to add')
   .option('--value <value>', 'specify a property value to add')
   .option('--remove <property>', 'specify a property to remove from config')
@@ -33,6 +36,12 @@ program
   .description('Generates random 24 word mnemonic')
   .option('--save', 'save generated mnemonic to config')
   .action(mnemonicController);
+
+program
+  .command('salt')
+  .description('Returns a random salt string (bytes32)')
+  .option('--save', 'save generated salt to config')
+  .action(saltController);
 
 program
   .command('wallet')
@@ -51,11 +60,20 @@ program
   .description('Uploads files to storage')
   .option('--metadata <path>', 'specify a path to the metadata file')
   .option('--file <path>', 'specify a path to the file')
+  .option('--save', 'save uploaded metadata file URI')
   .action(storageController);
 
 program
   .command('addresses')
   .description('Returns addresses of service provider roles')
   .action(addressesController);
+
+program
+  .command('sp')
+  .description('Service provider operations')
+  .option('--salt <salt>', 'specify a salt string')
+  .option('--meta <metadata_uri>', 'specify an URI of service provider\'s metadata')
+  .option('--register', 'initiate registration of service provider')
+  .action(serviceProviderController);
 
 program.parse();
