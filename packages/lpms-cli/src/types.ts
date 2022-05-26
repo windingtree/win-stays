@@ -13,6 +13,7 @@ export interface ConfigOptions {
   salt?: string;
   metadataUri?: string;
   registry?: string;
+  serviceProviderId?: string;
 }
 
 export type ConfigKeys = keyof ConfigOptions;

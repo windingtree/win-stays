@@ -6,7 +6,7 @@ import { ServiceProviderRegistry__factory } from '../../typechain/factories/regi
 import { getWalletByAccountIndex } from './wallet';
 import { green } from '../utils/print';
 import { getAddresses, Role } from './addresses';
-import { getConfig, requiredConfig } from './config';
+import { getConfig, requiredConfig, saveConfig } from './config';
 
 export const getServiceProviderId = (
   contract: ServiceProviderRegistry,
@@ -192,18 +192,28 @@ export const serviceProviderController: ActionController = async ({ salt, meta, 
         }
       );
 
+      saveConfig('salt', salt);
+      saveConfig('metadataUri', meta);
+      saveConfig('serviceProviderId', serviceProviderId);
+
       spinner.stop();
 
       green(
         `Service provider with Id: ${serviceProviderId} has been successfully registered`
       );
     } else {
-      serviceProviderId = await getServiceProviderId(
-        contract,
-        salt,
-        meta
-      );
+      requiredConfig(['serviceProviderId']);
+      serviceProviderId = getConfig('serviceProviderId') as string;
+      salt = getConfig('salt') as string;
+      meta = await contract.datastores(serviceProviderId);
+      const owner = await wallet.getAddress();
+
+      spinner.stop();
+
       green(`Service provider Id: ${serviceProviderId}`);
+      green(`Unique salt string: ${salt}`);
+      green(`Metadata storage Id: ${meta}`);
+      green(`Owner address: ${owner}`);
     }
   } catch (error) {
     spinner.stop();
