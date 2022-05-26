@@ -18,8 +18,6 @@ RUN echo $(ls /repo/packages/stays-models)
 WORKDIR /repo/packages/lpms-server
 RUN yarn build
 
-EXPOSE 5000
-
 VOLUME /database
 VOLUME /temp
 
@@ -32,7 +30,6 @@ ENV DEBUG_LPMS_SERVER=$DEBUG_LPMS_SERVER
 ENV APP_CHAIN_ID=$APP_CHAIN_ID
 ENV APP_VERIFYING_CONTRACT=$APP_VERIFYING_CONTRACT
 ENV APP_DB_DIR=$APP_DB_DIR
-ENV APP_PORT=5000
-
+ENV PORT=$PORT
 
 ENTRYPOINT [ "/repo/packages/lpms-server/node_modules/.bin/nodemon","--exec","node","dist/src/index.js" ]

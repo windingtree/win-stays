@@ -1,5 +1,5 @@
 import { Level } from 'level';
-import { dbDir } from 'src/config';
+import { dbDir } from '../../src/config';
 import { Token, User } from '../types';
 
 export default class DBService {

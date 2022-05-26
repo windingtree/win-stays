@@ -9,7 +9,7 @@
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "dev": ""
+    "dev": "cross-env NODE_ENV=development nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/index.ts"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

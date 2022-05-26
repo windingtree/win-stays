@@ -11,5 +11,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .idea
-scripts/release-docker-image-local.sh
-
+scripts/*-local.sh

@@ -1,0 +1,56 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Publish to Heroku
+
+on:
+  repository_dispatch:
+    types: [release_heroku]
+
+jobs:
+  release_heroku:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        working-directory: ./packages/lpms-server
+        env:
+          LPMS_SERVER_TAG: ${{secrets.LPMS_SERVER_TAG}}
+        run: ./build.sh
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Docker image to Docker hub
+        working-directory: ./packages/lpms-server
+        run: docker push windingtree/lpms-server:${{secrets.LPMS_SERVER_TAG}}
+      - name: Log in to Heroku Container registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+      - name: Tag Docker image
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: docker tag windingtree/lpms-server:${{secrets.LPMS_SERVER_TAG}} registry.heroku.com/lpms-test-server/web
+      - name: Push Docker image to Heroku 
+        working-directory: ./packages/lpms-server
+        run: docker push registry.heroku.com/lpms-test-server/web
+      - name: Release image to Heroku
+        working-directory: ./packages/lpms-server
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a lpms-test-server web
+
+      # - name: Build and push
+      #   working-directory: ./packages/lpms-server
+      #   env:
+      #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      #   run: heroku container:push -a lpms-test-server web
+      # - name: Release
+      #   working-directory: ./packages/lpms-server
+      #   env:
+      #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      #   run: heroku container:release -a lpms-test-server web

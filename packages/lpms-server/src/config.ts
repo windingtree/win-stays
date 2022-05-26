@@ -16,7 +16,7 @@ const checkEnvVariables = (vars: string[]): void =>
   );
 
 checkEnvVariables([
-  'APP_PORT',
+  'PORT',
   'APP_ACCESS_TOKEN_KEY',
   'APP_REFRESH_TOKEN_KEY',
   'APP_WALLET_PASSPHRASE',
@@ -26,7 +26,7 @@ checkEnvVariables([
   'APP_DB_DIR'
 ]);
 
-export const port = Number(process.env.APP_PORT);
+export const port = Number(process.env.PORT || 5000);
 export const accessTokenKey = String(process.env.APP_ACCESS_TOKEN_KEY);
 export const refreshTokenKey = String(process.env.APP_REFRESH_TOKEN_KEY);
 export const walletPassphrase = String(process.env.APP_WALLET_PASSPHRASE);
