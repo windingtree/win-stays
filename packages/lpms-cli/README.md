@@ -20,7 +20,12 @@ Options:
 Commands:
   config [options]    Adds or removes configuration properties
   mnemonic [options]  Generates random 24 word mnemonic
+  salt [options]      Returns a random salt string (bytes32)
+  wallet              Wallet account information
   login [options]     Makes login with password
+  storage [options]   Uploads files to storage
+  addresses           Returns addresses of service provider roles
+  sp [options]        Service provider operations
   help [command]      display help for command
 ```
 
@@ -29,7 +34,17 @@ Commands:
 ```bash
 lpms config --add apiUrl --value http://localhost:5000
 lpms config --add providerUri --value https://sokol.poa.network
+lpms config --get providerUri
 ```
+
+### Full list of config properties
+
+- `apiUrl`: `lpms-server` API URI
+- `providerUri`: Blockchain provider URI
+- `mnemonic`: Wallet mnemonic. Can be generated and saved with the `mnemonic` command
+- `salt`: Unique salt string, Required for creation and registration of the service provider. Can be generated and saved with the `sale` command
+- `metadataUri`: Storage Id (IPFS CID) of the signed metadata file of the service provider. Obtained with `storage --save --metadata` command
+- `registry`: Address of the smart contract of the Service PRoviders Registry (`Videre` protocol)
 
 ## Login
 
@@ -84,26 +99,42 @@ lpms addresses
 
 ```bash
 lpms storage --file ./path/to/README.md
-lops storage --metadata ./path/to/metadata.json
+lops storage --metadata ./path/to/metadata.json --save
 ```
+
+> `--save` option is optional, if enabled then returned storage Id will be saved to the CLI config
 
 ```
 ./README.md has been uploaded successfully. Storage Id: bafkreiddp6nksmdoe6rw7rakpwrr3yosh6hnzzkwrc2nuuiemk74aa3mqy
 ```
 
-## Testing
+## Salt string generation
 
 ```bash
-yarn test
+lpms salt
+lpms salt --save
 ```
 
-## Creation of binary unsigned service provider metadata
+```
+Random salt string: 0x18b6369b08e7e3b3776ba41653c39d7ec3f4806eeab047518d1c06479d178ec7
+```
+
+## Registration of a service provider
+
+### Creation and signing of metadata
 
 > This is a temporary method of metadata creation until the reach UI will be created in the context of `lpms-web` application
 
-- Edit the content of the `./scripts/facility.ts` file
+- To view your service provider Id you can use `sp` command (will require `salt` option if not created before)
+- Edit the content of the `./scripts/facility.ts` file (do not forget to add there your service provider Id)
 - Run the command `npx ts-node ./test/facility.ts`
 
 The binary file with provider metadata will be created by path `./facility.bin`
 
-When the metadata file is created it should be uploaded to the `lpms-server` storage using `storage --metadata` CLI command.
+This metadata is unsigned and cannot be used in `Videre` protocol as valid service provider metadata. To be valid this metadata should be signed with a proper private key. To apply signature this file should be uploaded to the `lpms-server`.
+
+When the metadata file is created it should be uploaded to the `lpms-server` storage using `storage --metadata` CLI command. When you add `--save` option, returned storage Id will be saved in the CLI config
+
+### Registration
+
+- Registration of the service provider can be started by `sp --register` command. Will require `--salt` and `--meta` options if these are not been created and **saved** to config before.
