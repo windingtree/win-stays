@@ -29,7 +29,11 @@ export const walletController: ActionController = async (_, program) => {
   const spinner = ora('Getting wallet status').start();
 
   try {
-    const wallet = getWalletByAccountIndex(0);
+    requiredConfig(['defaultAccountIndex']);
+
+    const wallet = getWalletByAccountIndex(
+      getConfig('defaultAccountIndex') as number
+    );
     const accountAddress = await wallet.getAddress();
     const accountBalance = await wallet.getBalance();
     const formattedBalance = utils.formatEther(accountBalance);

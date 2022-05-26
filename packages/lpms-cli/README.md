@@ -42,6 +42,7 @@ lpms config --get providerUri
 - `apiUrl`: `lpms-server` API URI
 - `providerUri`: Blockchain provider URI
 - `mnemonic`: Wallet mnemonic. Can be generated and saved with the `mnemonic` command
+- `defaultAccountIndex`: Default wallet account index. `0` by default
 - `salt`: Unique salt string, Required for creation and registration of the service provider. Can be generated and saved with the `sale` command
 - `metadataUri`: Storage Id (IPFS CID) of the signed metadata file of the service provider. Obtained with `storage --save --metadata` command
 - `registry`: Address of the smart contract of the Service PRoviders Registry (`Videre` protocol)

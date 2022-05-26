@@ -165,7 +165,11 @@ export const serviceProviderController: ActionController = async ({ salt, meta, 
   const spinner = ora('Registering of the service provider...');
 
   try {
-    const wallet = getWalletByAccountIndex(0);
+    requiredConfig(['defaultAccountIndex']);
+
+    const wallet = getWalletByAccountIndex(
+      getConfig('defaultAccountIndex') as number
+    );
     const contract = getRegistryContract(wallet);
 
     if (!salt) {
