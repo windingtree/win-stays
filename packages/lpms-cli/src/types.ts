@@ -9,6 +9,7 @@ export interface ConfigOptions {
   apiUrl?: string;
   providerUri?: string;
   mnemonic?: string;
+  defaultAccountIndex?: number;
   login?: LoginTokens;
   salt?: string;
   metadataUri?: string;
@@ -31,6 +32,7 @@ export interface CliOptions {
   salt?: string;
   meta?: string;
   register?: boolean;
+  index?: number;
 }
 
 export type ActionController = (options: CliOptions, program: Command) =>

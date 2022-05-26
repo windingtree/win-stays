@@ -13,6 +13,21 @@ const schema: Schema<ConfigOptions> = {
   mnemonic: {
     type: 'string'
   },
+  defaultAccountIndex: {
+    type: 'number'
+  },
+  salt: {
+    type: 'string'
+  },
+  metadataUri: {
+    type: 'string'
+  },
+  registry: {
+    type: 'string'
+  },
+  serviceProviderId: {
+    type: 'string'
+  },
   login: {
     type: 'object',
     properties: {
@@ -34,8 +49,8 @@ const config = new Config({ schema });
 
 export const getConfig = (path?: ConfigKeys): ConfigOptions[ConfigKeys] | ConfigOptions =>
   path
-    ? config.get(path)
-    : config.store;
+    ? config.get(path) as ConfigOptions[ConfigKeys]
+    : config.store as ConfigOptions;
 
 export const saveConfig = (path: string, value: ConfigOptions[ConfigKeys]): void =>
   config.set(path, value);
@@ -43,7 +58,7 @@ export const saveConfig = (path: string, value: ConfigOptions[ConfigKeys]): void
 export const removeConfig = (path: ConfigKeys): void =>
   config.delete(path);
 
-export const requiredConfig = (paths: string[]): void => {
+export const requiredConfig = (paths: ConfigKeys[]): void => {
   let ok = 0;
   for (const path of paths) {
     if (config.has(path)) {
@@ -52,7 +67,7 @@ export const requiredConfig = (paths: string[]): void => {
   }
   if (ok !== paths.length) {
     throw new Error(
-      `Expected to be enabled all of the following config properties: ${paths.join(', ')}`
+      `Expected all of the following config properties to be set: ${paths.join(', ')}`
     );
   }
 };

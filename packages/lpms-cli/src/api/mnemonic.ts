@@ -7,7 +7,7 @@ import { saveConfig } from './config';
 export const generateMnemonic = () =>
   utils.entropyToMnemonic(utils.randomBytes(32));
 
-export const mnemonicController: ActionController = ({ save }, program) => {
+export const mnemonicController: ActionController = ({ save, index }, program) => {
   try {
     const mnemonic = generateMnemonic();
 
@@ -15,6 +15,7 @@ export const mnemonicController: ActionController = ({ save }, program) => {
 
     if (save) {
       saveConfig('mnemonic', mnemonic);
+      saveConfig('defaultAccountIndex', index || 0)
       yellow('\nMnemonic has been successfully saved to the CLI config');
     }
   } catch (error) {
