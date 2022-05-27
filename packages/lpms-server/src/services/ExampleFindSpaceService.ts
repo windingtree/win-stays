@@ -1,10 +1,10 @@
-import { Ask } from '../proto/ask';
+import { Ask } from '@windingtree/stays-models/src/proto/ask';
 import { ServiceProviderData } from '@windingtree/stays-models/dist/esm/proto/storage';
 import { utils } from 'ethers';
 import { Exception, Facility, Item, ItemType, SpaceTier } from '@windingtree/stays-models/dist/esm/proto/facility';
-import { Space } from '../proto/facility';
+import { Space } from '@windingtree/stays-models/src/proto/facility';
 import { keccak256 } from 'ethers/lib/utils';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 
 //for test ↓
 //import findSpaceService from './services/ExampleFindSpaceService';
@@ -336,16 +336,18 @@ export class ExampleFindSpaceService {
 
     const spaceBookings = bookings[id] || {};
 
-    const from = moment([checkIn.year, checkIn.month - 1, checkIn.day]);
-    const to = moment([checkOut.year, checkOut.month - 1, checkOut.day]);
+    //const from = new DateTime([checkIn.year, checkIn.month - 1, checkIn.day]);
+    let from = DateTime.fromObject(checkIn);
+    const to = DateTime.fromObject(checkOut);
 
-    while (from.isSameOrBefore(to, 'day')) {
+    while (from <= to) {
       //if object exist room is occupied, the room is not suitable
-      if (spaceBookings[from.format('D.M.YYYY')]) {
+
+      if (spaceBookings[from.toFormat('d.M.yyyy')]) {
         return false;
       }
 
-      from.add(1, 'days');
+      from = from.plus({ days: 1 });
     }
 
     return true;
