@@ -152,3 +152,11 @@ When the metadata file is created it should be uploaded to the `lpms-server` sto
 ### Registration
 
 - Registration of the service provider can be started by `sp --register` command. Will require `--salt` and `--meta` options if these are not been created and **saved** to config before.
+
+### Reset
+
+- If you want to wipe information about the registered service provided from the CLI config you can use `sp --reset` command.
+
+```bash
+lpms sp --reset
+```

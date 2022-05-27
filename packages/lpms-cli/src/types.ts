@@ -25,6 +25,7 @@ export interface CliOptions {
   add?: ConfigKeys;
   remove?: ConfigKeys;
   value?: ConfigOptions[ConfigKeys];
+  reset?: boolean;
   login?: string;
   password?: string;
   metadata?: string;

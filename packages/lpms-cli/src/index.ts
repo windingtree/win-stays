@@ -77,6 +77,7 @@ program
   .option('--salt <salt>', 'specify a salt string')
   .option('--meta <metadata_uri>', 'specify an URI of service provider\'s metadata')
   .option('--register', 'initiate registration of service provider')
+  .option('--reset', 'wipe saved information about the registered service provider')
   .action(serviceProviderController);
 
 program.parse();
