@@ -33,6 +33,7 @@ export interface CliOptions {
   meta?: string;
   register?: boolean;
   index?: number;
+  keys?: number;
 }
 
 export type ActionController = (options: CliOptions, program: Command) =>

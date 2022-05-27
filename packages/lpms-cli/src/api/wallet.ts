@@ -25,22 +25,28 @@ export const getWalletByAccountIndex = (index: number): Wallet => {
     .connect(provider);
 }
 
-export const walletController: ActionController = async (_, program) => {
+export const walletController: ActionController = async ({ index, keys }, program) => {
   const spinner = ora('Getting wallet status').start();
 
   try {
     requiredConfig(['defaultAccountIndex']);
 
-    const wallet = getWalletByAccountIndex(
-      getConfig('defaultAccountIndex') as number
-    );
+    const walletDefaultIndex = index || getConfig('defaultAccountIndex') as number;
+    spinner.text = `Fetching status of the account by index: ${walletDefaultIndex}`;
+    const wallet = getWalletByAccountIndex(walletDefaultIndex);
     const accountAddress = await wallet.getAddress();
     const accountBalance = await wallet.getBalance();
     const formattedBalance = utils.formatEther(accountBalance);
 
     spinner.stop();
 
+    green(`Account idex: ${walletDefaultIndex}`);
     green(`Wallet account: ${accountAddress} (${formattedBalance} xDAI)`);
+
+    if (keys) {
+      green(`Public key: ${wallet.publicKey}`);
+      green(`Private key: ${wallet.privateKey}`);
+    }
   } catch (error) {
     spinner.stop();
     program.error(error, { exitCode: 1 });

@@ -35,7 +35,7 @@ program
   .command('mnemonic')
   .description('Generates random 24 word mnemonic')
   .option('--save', 'save generated mnemonic to config')
-  .option('--index', 'specifies the default account index')
+  .option('--index <index>', 'specifies the default account index. "0" by default')
   .action(mnemonicController);
 
 program
@@ -47,6 +47,8 @@ program
 program
   .command('wallet')
   .description('Wallet account information')
+  .option('--index <index>', 'specifies an account index to show. "0" by default')
+  .option('--keys', 'export public and private keys of account by index')
   .action(walletController);
 
 program

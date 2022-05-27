@@ -60,8 +60,13 @@ lpms login --login manager --password winwin
 ## Wallet mnemonic generation
 
 ```bash
+lpms mnemonic
 lpms mnemonic --save
+lpms mnemonic --save --index 0
 ```
+
+- `--save` saves the mnemonic to the CLI config
+- `--index` sets the default account index
 
 ```
 history pudding dynamic dynamic staff village pupil prison nut father goose column lonely meadow effort aunt sure biology surround echo bachelor mechanic artwork void
@@ -73,10 +78,18 @@ Mnemonic has been successfully saved to the CLI config
 
 ```bash
 lpms wallet
+lpms wallet --index 1
+lpms wallet --index 1 --keys
 ```
 
+- `--index` specifies the idex of the account to display
+- `--keys` export of the public and private keys
+
 ```
-Wallet account: 0xfe8E6f7c7972f217d8728A52CfaBb7a2025A0886 (0.0 xDAI)
+Account idex: 0
+Wallet account: 0xcF76325B47a0edF0723DC4071A73C41B4FBc44eA (0.0 xDAI)
+Public key: 0x048498a9f26844c54f88...e6b7a836bd25487ef1994bf291979e9dbc8
+Private key: 0xa0d132baf98616634f19a368bc99e8e4bc6f4f140eefb31dc8b80096c0c24f8b
 ```
 
 ## Getting addresses of servers roles
