@@ -2,12 +2,11 @@ import { expect } from 'chai';
 import supertest from 'supertest';
 import ServerService from '../src/services/ServerService';
 import { AppRole } from '../src/types';
-import UserService from '../src/services/UserService';
+import userService from '../src/services/UserService';
 
 describe('test', async () => {
   const appService = await new ServerService(3005);
   const requestWithSupertest = await supertest(appService.getApp);
-  const userService = new UserService();
 
   const managerLogin = 'test_manager_super_long_login';
   const managerPass = '123456qwerty';

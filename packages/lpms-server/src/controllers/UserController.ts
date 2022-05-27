@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import UserService from '../services/UserService';
+import userService from '../services/UserService';
 import { AppRole, AuthRequest } from '../types';
 import { validationResult } from 'express-validator';
 import ApiError from '../exceptions/ApiError';
@@ -13,7 +13,6 @@ export class UserController {
       if (!errors.isEmpty()) {
         return next(ApiError.BadRequest('Validation error', errors.array()));
       }
-      const userService = new UserService();
       const { login, password } = req.body;
       const data = await userService.login(login, password);
 
@@ -36,7 +35,6 @@ export class UserController {
 
   public async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const userService = new UserService();
       const users = await userService.getAllUsers();
 
       return res.json({ users });
@@ -55,7 +53,6 @@ export class UserController {
       const password = req.body.password;
       const roles: AppRole[] = req.body.roles;
 
-      const userService = new UserService();
       await userService.createUser(login, password, roles);
 
       return res.json({ success: true });
@@ -72,7 +69,6 @@ export class UserController {
         return next(ApiError.UnauthorizedError());
       }
 
-      const userService = new UserService();
       await userService.logout(refreshToken);
 
       res.clearCookie('refreshToken');
@@ -89,7 +85,6 @@ export class UserController {
     try {
       const { refreshToken } = req.cookies;
 
-      const userService = new UserService();
       const data = await userService.refresh(refreshToken);
 
       res.cookie('refreshToken', data.refreshToken, {
@@ -120,7 +115,6 @@ export class UserController {
     }
 
     try {
-      const userService = new UserService();
       await userService.updateUserPassword(userId, password);
 
       return res.json({ success: true });
@@ -139,8 +133,6 @@ export class UserController {
       const userId: number = req.body.userId;
       const roles: AppRole[] = req.body.roles;
 
-
-      const userService = new UserService();
       await userService.updateUserRoles(userId, roles);
 
       return res.json({ success: true });
