@@ -1,6 +1,6 @@
 import ApiError from '../exceptions/ApiError';
-import TokenService from '../services/TokenService';
-import UserService from '../services/UserService';
+import tokenService from '../services/TokenService';
+import userService from '../services/UserService';
 import { UserDTO } from '../types';
 
 export default async (req, res, next) => {
@@ -15,14 +15,12 @@ export default async (req, res, next) => {
       return next(ApiError.UnauthorizedError());
     }
 
-    const tokenService = new TokenService();
     const userData: UserDTO = tokenService.validateAccessToken(accessToken);
 
     if (!userData) {
       return next(ApiError.UnauthorizedError());
     }
 
-    const userService = new UserService();
     const userExists = await userService.getUserIdByLogin(userData.login);
 
     if (!userExists) {
