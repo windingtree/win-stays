@@ -4,9 +4,9 @@ import { utils, Wallet } from 'ethers';
 import ora from 'ora';
 import { ServiceProviderRegistry__factory } from '../../typechain/factories/registries';
 import { getWalletByAccountIndex } from './wallet';
-import { green } from '../utils/print';
+import { green, yellow } from '../utils/print';
 import { getAddresses, Role } from './addresses';
-import { getConfig, requiredConfig, saveConfig } from './config';
+import { getConfig, removeConfig, requiredConfig, saveConfig } from './config';
 
 export const getServiceProviderId = (
   contract: ServiceProviderRegistry,
@@ -161,10 +161,18 @@ export const registerServiceProvider = async (
   return serviceProviderId;
 };
 
-export const serviceProviderController: ActionController = async ({ salt, meta, register }, program) => {
+export const serviceProviderController: ActionController = async ({ salt, meta, register, reset }, program) => {
   const spinner = ora('Registering of the service provider...');
 
   try {
+    if (reset) {
+      removeConfig('serviceProviderId');
+      removeConfig('salt');
+      removeConfig('metadataUri');
+      yellow('Information about the service provider is wiped out');
+      return;
+    }
+
     requiredConfig(['defaultAccountIndex']);
 
     const wallet = getWalletByAccountIndex(
