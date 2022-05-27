@@ -1,11 +1,11 @@
 import { Level } from 'level';
 import DBService from './DBService';
-import UserService from './UserService';
+import userService from './UserService';
 import { AppRole } from '../types';
 import walletService from './WalletService';
 import { defaultManagerLogin, defaultManagerPassword } from '../config';
 
-export default class BootstrapService {
+export class BootstrapService {
   protected db: Level;
 
   constructor() {
@@ -35,7 +35,6 @@ export default class BootstrapService {
   }
 
   private async configure(): Promise<void> {
-    const userService = new UserService();
 
     await userService.createUser(
       defaultManagerLogin,
@@ -48,3 +47,5 @@ export default class BootstrapService {
     await this.db.put('isConfigured', 'true');
   }
 }
+
+export default new BootstrapService();

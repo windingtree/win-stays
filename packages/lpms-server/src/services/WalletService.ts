@@ -6,6 +6,8 @@ import { Level } from 'level';
 
 export class WalletService {
   protected db: Level;
+  protected wallet: Wallet;
+  protected addresses;
 
   constructor() {
     this.db = DBService.getInstance().getDB();
@@ -20,7 +22,12 @@ export class WalletService {
 
   public async getWallet(): Promise<Wallet> {
     const encodedWallet = await this.db.get('wallet');
-    return await ethers.Wallet.fromEncryptedJson(encodedWallet, walletPassphrase);
+
+    if (!this.wallet) {
+      this.wallet = await ethers.Wallet.fromEncryptedJson(encodedWallet, walletPassphrase);
+    }
+
+    return this.wallet;
   }
 
   public async getWalletByIndex(index: number): Promise<Wallet> {
@@ -38,17 +45,21 @@ export class WalletService {
   public accountsListFromMnemonic(mnemonic: string): Array<walletAccount> {
     const hdNode = utils.HDNode.fromMnemonic(mnemonic);
 
-    return walletAccounts
-      .map((_, index) => hdNode.derivePath(
-        `m/44'/60'/0'/0/${index}`
-      ))
-      .map((n, index) => {
-        return {
-          id: index,
-          role: walletAccounts[index],
-          address: n.address
-        };
-      });
+    if (!this.addresses) {
+      this.addresses = walletAccounts
+        .map((_, index) => hdNode.derivePath(
+          `m/44'/60'/0'/0/${index}`
+        ))
+        .map((n, index) => {
+          return {
+            id: index,
+            role: walletAccounts[index],
+            address: n.address
+          };
+        });
+    }
+
+    return this.addresses;
   }
 
   public async getWalletAccounts(): Promise<walletAccount[]> {

@@ -1,11 +1,11 @@
 import { AppRole, User, UserDTO } from '../types';
 import DBService from './DBService';
 import bcrypt from 'bcrypt';
-import TokenService from './TokenService';
+import tokenService, { TokenService } from './TokenService';
 import ApiError from '../exceptions/ApiError';
 import { defaultManagerLogin } from '../config';
 
-export default class UserService {
+export class UserService {
   private db;
   private loginDB;
   private dbService: DBService;
@@ -17,7 +17,7 @@ export default class UserService {
     this.db = this.dbService.getUserDB();
     this.mainDB = this.dbService.getDB();
     this.loginDB = this.dbService.getLoginDB();
-    this.tokenService = new TokenService();
+    this.tokenService = tokenService;
   }
 
   public async getAllUsers() {
@@ -206,3 +206,5 @@ export default class UserService {
     }
   }
 }
+
+export default new UserService();

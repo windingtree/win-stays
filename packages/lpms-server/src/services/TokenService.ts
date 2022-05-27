@@ -3,7 +3,7 @@ import { accessTokenKey, accessTokenMaxAge, refreshTokenKey, refreshTokenMaxAge 
 import DBService from './DBService';
 import { Tokens } from '../types';
 
-export default class TokenService {
+export class TokenService {
   private dbService: DBService;
   private db;
 
@@ -97,3 +97,5 @@ export default class TokenService {
     }
   }
 }
+
+export default new TokenService();
