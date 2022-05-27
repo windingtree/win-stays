@@ -40,7 +40,7 @@ export const walletController: ActionController = async ({ index, keys }, progra
 
     spinner.stop();
 
-    green(`Account idex: ${walletDefaultIndex}`);
+    green(`Account index: ${walletDefaultIndex}`);
     green(`Wallet account: ${accountAddress} (${formattedBalance} xDAI)`);
 
     if (keys) {
