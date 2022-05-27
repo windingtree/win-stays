@@ -1,37 +1,24 @@
 {
   "name": "@windingtree/lpms-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "LPMS API CLI",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
   "files": [
     "dist"
   ],
   "bin": {
-    "lpms": "dist/src/index.js"
+    "lpms": "dist/index.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig-build.json",
+    "build": "rm -rf dist && npx tsc -p tsconfig-build.json && npx webpack --config webpack.config.js",
     "test": "npx mocha -r ts-node/register test/**/*.spec.ts",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
     "prepublish": "npx typechain --target ethers-v5 --out-dir ./typechain './node_modules/@windingtree/videre-contracts/artifacts/contracts/**/*.json'"
-  },
-  "dependencies": {
-    "commander": "^9.2.0",
-    "ethers": "^5.6.6",
-    "kleur": "^4.1.4",
-    "conf": "^10.1.2",
-    "axios": "^0.27.2",
-    "ora": "^5.4.1",
-    "@windingtree/videre-sdk": "^0.4.1",
-    "@windingtree/stays-models": "0.0.1",
-    "@windingtree/videre-contracts": "^0.1.6",
-    "typechain": "^8.0.0",
-    "@typechain/ethers-v5": "^10.0.0"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.1",
@@ -43,6 +30,21 @@
     "mocha": "^10.0.0",
     "chai": "^4.3.6",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^3.0.0",
+    "ts-loader": "^9.3.0",
+    "commander": "^9.2.0",
+    "ethers": "^5.6.6",
+    "kleur": "^4.1.4",
+    "conf": "^10.1.2",
+    "axios": "^0.27.2",
+    "ora": "^5.4.1",
+    "@windingtree/videre-sdk": "^0.4.1",
+    "@windingtree/stays-models": "0.0.1",
+    "@windingtree/videre-contracts": "^0.1.6",
+    "typechain": "^8.0.0",
+    "@typechain/ethers-v5": "^10.0.0"
   }
 }
