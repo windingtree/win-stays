@@ -8,6 +8,23 @@ import { green, yellow } from '../utils/print';
 import { getAddresses, Role } from './addresses';
 import { getConfig, removeConfig, requiredConfig, saveConfig } from './config';
 
+export const getServiceProviderIdLocal = (salt: string, address: string): string => {
+  const encoder = new utils.AbiCoder();
+  return utils.solidityKeccak256(
+    ['bytes'],
+    [encoder.encode(
+      [
+        'bytes32',
+        'address'
+      ],
+      [
+        salt,
+        address
+      ]
+    )]
+  );
+}
+
 export const getServiceProviderId = (
   contract: ServiceProviderRegistry,
   salt: string,
@@ -161,7 +178,7 @@ export const registerServiceProvider = async (
   return serviceProviderId;
 };
 
-export const serviceProviderController: ActionController = async ({ salt, meta, register, reset }, program) => {
+export const serviceProviderController: ActionController = async ({ salt, id, meta, register, reset }, program) => {
   const spinner = ora('Registering of the service provider...');
 
   try {
@@ -178,11 +195,20 @@ export const serviceProviderController: ActionController = async ({ salt, meta, 
     const wallet = getWalletByAccountIndex(
       getConfig('defaultAccountIndex') as number
     );
+    const owner = await wallet.getAddress();
     const contract = getRegistryContract(wallet);
 
     if (!salt) {
       requiredConfig(['salt']);
       salt = getConfig('salt') as string;
+    }
+
+    if (id) {
+      const localId = getServiceProviderIdLocal(salt, owner);
+      green(
+        `Service provider Id: ${localId}`
+      );
+      return;
     }
 
     if (!meta) {
@@ -218,7 +244,6 @@ export const serviceProviderController: ActionController = async ({ salt, meta, 
       serviceProviderId = getConfig('serviceProviderId') as string;
       salt = getConfig('salt') as string;
       meta = await contract.datastores(serviceProviderId);
-      const owner = await wallet.getAddress();
 
       spinner.stop();
 

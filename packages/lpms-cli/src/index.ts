@@ -74,6 +74,7 @@ program
 program
   .command('sp')
   .description('Service provider operations')
+  .option('--id', 'returns a service provider Id based on salt and owner address')
   .option('--salt <salt>', 'specify a salt string')
   .option('--meta <metadata_uri>', 'specify an URI of service provider\'s metadata')
   .option('--register', 'initiate registration of service provider')
