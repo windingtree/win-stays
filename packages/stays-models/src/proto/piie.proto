@@ -10,7 +10,7 @@ message PII {
   // what stub this PII is relating to
   bytes stub = 1;
   // the person this relates to
-  Person who = 2;
+  videre.type.Person who = 2;
 }
 
 message PIIESend {
