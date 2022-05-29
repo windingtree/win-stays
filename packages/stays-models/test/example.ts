@@ -27,7 +27,33 @@ async function main() {
           { uri: '/image1.jpg', description: 'Chic guesthouse' },
           { uri: '/image2.jpg', description: 'Winter Wonderland' }
         ],
-        website: 'https://wonderland.somewhere/',
+        uris: [
+          {
+            uri: 'https://someawesomesite.com',
+            typeOneof: {
+              oneofKind: "typeOther",
+              typeOther: "Main"
+            }
+          }
+        ],
+        emails: [
+          {
+            email: 'reservations@awesomechalet.com',
+            typeOneof: {
+              oneofKind: 'typeOther',
+              typeOther: 'Reservations'
+            }
+          }
+        ],
+        phones: [
+          {
+            number: '+99583837473',
+            typeOneof: {
+              oneofKind: 'typeOther',
+              typeOther: 'Reservations'
+            }
+          }
+        ],
         connectivity: {
           wifiAvailableOneof: { oneofKind: "wifiAvailable", wifiAvailable: true },
           wifiForFreeOneof: { oneofKind: "wifiForFree", wifiForFree: true }
@@ -48,7 +74,7 @@ async function main() {
             type: ItemType.SPACE,
             payload: Space.toBinary(
               {
-                website: 'https://wonderland.somewhere/fancy',
+                uris: [],
                 maxNumberOfAdultOccupantsOneof: { oneofKind: "maxNumberOfAdultOccupants", maxNumberOfAdultOccupants: 2 },
                 maxNumberOfChildOccupantsOneof: { oneofKind: "maxNumberOfChildOccupantsException", maxNumberOfChildOccupantsException: Exception.UNSPECIFIED_REASON },
                 maxNumberOfOccupantsOneof: { oneofKind: "maxNumberOfOccupants", maxNumberOfOccupants: 2 },
