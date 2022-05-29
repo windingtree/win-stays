@@ -4,6 +4,7 @@ package videre.stays;
 
 import "latlng.proto";
 import "photo.proto";
+import "contact.proto";
 
 message Connectivity {
   // Internet and WiFi options.
@@ -51,10 +52,14 @@ message Facility {
   string name = 1;
   // description
   string description = 2;
+  // email address for facility
+  repeated videre.type.Email emails = 3;
+  // contact phone numbers for facility
+  repeated videre.type.PhoneNumber phones = 4;
+  // service provider URIs
+  repeated videre.type.Uri uris = 5;
   // check-in / check-out times
   Policies policies = 14;
-  // service provider's URL
-  string website = 5;
   // location
   google.type.LatLng location = 6;
   // photos of the entire facility (not space-specific)
@@ -84,8 +89,8 @@ message Item {
 //////////////////////////
 
 message Space {
-  // space specific URL
-  string website = 4;
+  // space specific uris
+  repeated videre.type.Uri uris = 4;
 
   // Tier.
   oneof tier_oneof {
