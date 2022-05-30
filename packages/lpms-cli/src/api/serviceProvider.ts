@@ -8,6 +8,8 @@ import { green, yellow } from '../utils/print';
 import { getAddresses, Role } from './addresses';
 import { getConfig, removeConfig, requiredConfig, saveConfig } from './config';
 
+export type SpinnerCallback = (text: string) => void;
+
 export const getServiceProviderIdLocal = (salt: string, address: string): string => {
   const encoder = new utils.AbiCoder();
   return utils.solidityKeccak256(
@@ -44,7 +46,7 @@ export const registerServiceProvider = async (
   contract: ServiceProviderRegistry,
   salt: string,
   metadataUri: string,
-  spinnerCallback: (text: string) => void
+  spinnerCallback: SpinnerCallback
 ): Promise<string> => {
   const addresses = await getAddresses();
   const addressesMap = addresses.reduce(
@@ -178,7 +180,24 @@ export const registerServiceProvider = async (
   return serviceProviderId;
 };
 
-export const serviceProviderController: ActionController = async ({ salt, id, meta, register, reset }, program) => {
+export const updateServiceProvider = async (
+  contract: ServiceProviderRegistry,
+  serviceProviderId: string,
+  metadataUri: string,
+  spinnerCallback: SpinnerCallback
+): Promise<void> => {
+  spinnerCallback('Updating the dataURI of the service provider...');
+  await contract['file(bytes32,bytes32,string)'](
+    serviceProviderId,
+    utils.formatBytes32String('dataURI'),
+    metadataUri
+  );
+};
+
+export const serviceProviderController: ActionController = async (
+  { salt, id, meta, register, update, reset },
+  program
+) => {
   const spinner = ora('Registering of the service provider...');
 
   try {
@@ -237,8 +256,31 @@ export const serviceProviderController: ActionController = async ({ salt, id, me
       spinner.stop();
 
       green(
-        `Service provider with Id: ${serviceProviderId} has been successfully registered`
+        `Service provider with Id: ${serviceProviderId} has been registered successfully`
       );
+    } else if (update) {
+      requiredConfig(['serviceProviderId']);
+
+      spinner.start();
+
+      serviceProviderId = getConfig('serviceProviderId') as string;
+      await updateServiceProvider(
+        contract,
+        serviceProviderId,
+        meta,
+        text => {
+          spinner.text = text;
+        }
+      );
+
+      saveConfig('metadataUri', meta);
+
+      spinner.stop();
+
+      green(
+        `Service provider with Id: ${serviceProviderId} has been updated successfully`
+      );
+      green(`The new "dataURI" is: ${meta}`);
     } else {
       requiredConfig(['serviceProviderId']);
       serviceProviderId = getConfig('serviceProviderId') as string;
