@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -7,6 +7,8 @@ import router from '../router/index';
 import { Express } from 'express-serve-static-core';
 import errorMiddleware from '../middlewares/ErrorMiddleware';
 import { debugEnabled } from '../config';
+import responseTime from 'response-time';
+import { MetricsService } from './MetricsService';
 
 export default class ServerService {
   protected PORT: number;
@@ -54,6 +56,16 @@ export default class ServerService {
     this.app.use(helmet.permittedCrossDomainPolicies());
     this.app.use(helmet.referrerPolicy());
     this.app.use(helmet.xssFilter());
+
+    this.app.use(responseTime((request: Request, response: Response, time: number) => {
+      if (request?.route?.path) {
+        MetricsService.restResponseTimeHistogram.observe({
+          method: request.method,
+          route: request.route.path,
+          status_code: response.statusCode
+        }, time / 1000); //in seconds
+      }
+    }));
 
     if (debugEnabled) {
       this.app.use(morgan('dev'));

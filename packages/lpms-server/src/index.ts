@@ -1,7 +1,8 @@
 import ServerService from './services/ServerService';
-import { port } from './config';
+import { port, prometheusEnabled } from './config';
 import bootstrapService from './services/BootstrapService';
 import DBService from './services/DBService';
+import { MetricsService } from './services/MetricsService';
 
 process.on('unhandledRejection', async error => {
   console.log(error);
@@ -13,6 +14,10 @@ const main = async (): Promise<ServerService> => {
   const server = new ServerService(port);
 
   await bootstrapService.bootstrap();
+
+  if (prometheusEnabled) {
+    await MetricsService.startMetricsServer();
+  }
 
   return server.start();
 };

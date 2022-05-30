@@ -37,3 +37,14 @@ const testPayload: Test = {
 await wakuService.sendMessage(Test, testPayload, 'some-topic');
 ```
 
+Prometheus implementation:
+Set .env variables
+
+```dotenv
+APP_PROMETHEUS_PORT=9100
+PROMETHEUS_ENABLED=true
+```
+
+```
+http://localhost:9100/metrics - metrics api
+```

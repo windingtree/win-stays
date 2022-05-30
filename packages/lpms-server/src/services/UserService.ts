@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import tokenService, { TokenService } from './TokenService';
 import ApiError from '../exceptions/ApiError';
 import { defaultManagerLogin } from '../config';
+import { MetricsService } from './MetricsService';
 
 export class UserService {
   private db;
@@ -121,25 +122,37 @@ export class UserService {
   }
 
   public async login(login, password) {
-    const user = await this.getUserByLogin(login);
-    if (!user) {
-      throw ApiError.BadRequest('Incorrect login');
-    }
-
-    const passwordCorrect = await this.checkCredentials(user, password);
-    if (!passwordCorrect) {
-      throw ApiError.BadRequest('Incorrect password');
-    }
-
-    const userDTO = this.getUserDTO(user);
-
-    const tokens = this.tokenService.generateTokens(userDTO);
-    await this.tokenService.saveToken(tokens.refreshToken, userDTO.id);
-
-    return {
-      ...userDTO,
-      ...tokens
+    const metricsLabels = {
+      operation: 'login'
     };
+    const timer = MetricsService.databaseResponseTimeHistogram.startTimer();
+
+    try {
+      const user = await this.getUserByLogin(login);
+      if (!user) {
+        throw ApiError.BadRequest('Incorrect login');
+      }
+
+      const passwordCorrect = await this.checkCredentials(user, password);
+      if (!passwordCorrect) {
+        throw ApiError.BadRequest('Incorrect password');
+      }
+
+      const userDTO = this.getUserDTO(user);
+
+      const tokens = this.tokenService.generateTokens(userDTO);
+      await this.tokenService.saveToken(tokens.refreshToken, userDTO.id);
+
+      timer({ ...metricsLabels, success: 'true' });
+
+      return {
+        ...userDTO,
+        ...tokens
+      };
+    } catch (e) {
+      timer({ ...metricsLabels, success: 'false' });
+      throw e;
+    }
   }
 
   public async logout(token: string) {
