@@ -1,0 +1,7 @@
+{
+  "name": "LPMS server",
+  "description": "LPMS server",
+  "repository": "https://github.com/bobetbat/win-stays",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["node", "express"]
+}
