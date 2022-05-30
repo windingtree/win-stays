@@ -1,3 +1,11 @@
 {
-  "image": "bobetbatwt/lpms-wt"
+  "image": "bobetbatwt/lpms-wt",
+  "env": {
+    "PROCFILE": "packages/lpms-server"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-multi-procfile"
+    }
+  ]
 }
