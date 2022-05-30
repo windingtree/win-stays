@@ -19,11 +19,20 @@ message Ratio {
 
 // TODO:
 // How to store the stub state details?
-// 1). `facilityId` . `stubId` = stub details as stored on chain?
+// 1). `facilityId` . `stubId` = stub details as stored on chain
+// 2). For all days that the stay covers, add the `stubId` to a list of bookings for that day.
+//     ie. `facilityId` . `bookings`. `YYYYMMdd` [] .push(stubId)
+// 3). For all days that the stay covers, add the `stubId` to a list of bookings for that space
+//     for that day
+//     ie. `facilityId` . `spaceId` . `bookings` . `YYYYMMdd` [] . push(stubId)
 // How to get all bookings for a given day?
+// 1). Lookup array at `facilityId` . `bookings` . `YYYYMMdd`
 // How to get all bookings for a given space on a given day?
-// How to determine if a space is available for a given day?
-
+// 1). Lookup array at `facilityId` . `spaceId` . `bookings` . `YYYYMMdd``
+// How to find number of a space type booked for a given day?
+// 1). Sum(`facilityId` . `spaceId` . `bookings` . `YYYYMMdd`[].numSpacesReq)
+// How to determine if a booking can be made for a given day on a space?
+// 1). ask numSpacesReq <= (Availability.numSpaces - Sum(`facilityId` . `spaceId` . `bookings` . `YYYYMMdd`[].numSpacesReq))
 
 // Each 'space' represents a _room type_.
 // Store availability, in order of priority, such that:
