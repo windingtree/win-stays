@@ -19,7 +19,7 @@ export const Login = () => {
       {!isConnecting &&
         <LoginForm />
       }
-      <a href="https://heroku.com/deploy?template=https://github.com/bobetbat/win-stays">
+      <a href="https://heroku.com/deploy?template=https://github.com/bobetbat/win-stays/tree/lpms-cicd">
         <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy" />
       </a>
     </PageWrapper>
