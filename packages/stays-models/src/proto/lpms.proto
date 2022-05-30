@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package videre.stays.lpms;
+
+enum Condition {
+  LT = 0;
+  LTE = 1;
+  EQ = 2;
+  GTE = 3;
+  GT = 4;
+}
+
+// A generic ratio to be used to express a multiple when being applied
+// to a rate, where ratio is a rational 
+message Ratio {
+  uint32 p = 1;
+  uint32 q = 2;
+}
+
+// TODO:
+// How to store the stub state details?
+// 1). `facilityId` . `stubId` = stub details as stored on chain?
+// How to get all bookings for a given day?
+// How to get all bookings for a given space on a given day?
+// How to determine if a space is available for a given day?
+
+
+// Each 'space' represents a _room type_.
+// Store availability, in order of priority, such that:
+// 1) `facilityId` . `spaceId` . `availability` . `YYYYMMdd` = per day override for availability
+// 2) `facilityId` . `spaceId` . `availability` = default number of these spaces available per day
+message Availability {
+  uint32 numSpaces = 1;
+}
+
+// Specify the notice period required in order to make this booking
+// 1). `facilityId` . `spaceId` . `notice_required` = space level number of days required notice
+// 2). `facilityId` . `notice_required` = facility level notice requirements
+message NoticeRequired {
+  uint32 numDays = 1;
+}
+
+// Modify the length of stay by day of week for check-in
+// 1). `facilityId` . `spaceId` . `los` . `DOW` = specifies length of stay requirements based on DOW
+//     where 0 = Monday
+// 2). `facilityId` . `spaceId` . `los` = specifies length of stay requirements for the space
+// 3). `facilityId` . `los` . `DOW` = specifies length of stay requirements based on DOW at facility level
+// 4). `facilityId` . `los` = specifies the length of stay requirements for the facility
+message DayOfWeekLOSModifier {
+  optional uint32 min_length_of_stay = 1;
+  optional uint32 max_length_of_stay = 2;
+}
+
+// Rates are set, in order of priority, such that:
+// TODO: Allow change in rates based on adult / child pricing.
+// 1). `facilityId` . `spaceId` . `YYYYMMdd` = per day override of single occupancy rate`
+// 2). `facilityId` . `spaceId` . `rate` = default rate per day
+//
+// If wanting to implement rates over a range of dates, initally do
+// mass daily override to keep things simple.
+message Rates {
+  uint32 cost = 1;
+  uint32 includedOccupancy = 2;
+}
+
+// Modify the rate based on day of week when looking at base rate
+// if fixed, this is to be in the same base as the quote currency
+// otherwise specified as a ratio which may increase or decrease cost.
+// NOTE: fixed amount is a signed integer so may be negative, or positive.
+// 1). `facilityId` . `spaceId` . `rate_modifier` . `DOW` = specifies base rate modifier for DOW
+//     where 0 = Monday
+// 2). `facilityId` . `rate_modifer` . `DOW` = specifies the rate modifier for DOW based on facility level
+message DayOfWeekRateModifer {
+
+  oneof value_oneof {
+    Ratio ratio = 1;
+    int32 fixed = 2;
+  }
+
+}
+
+// Modify the rate based on occupancy
+// 1). `facilityId` . `spaceId` . `occupancy_rate_modifier` = specifies occupancy modifier for space
+// 2). `facilityId` . `occupancy_rate_modifier` = specifies occupancy modifier at facility level
+// if fixed, this is to be in the same base as the quote currency
+// otherwise specified as a ratio which may increase or decrease cost.
+// NOTE: fixed amount is a signed integer so may be negative, or positive.
+
+message OccupancyRateModifier {
+
+  oneof value_oneof {
+    Ratio ratio = 1;
+    int32 fixed = 2;
+  }
+
+}
+
+// Modify the rate based on the length of stay
+// 1). `facilityId` . `spaceId` . `los_rate_modifier` = specifies length of stay rate modifier for space
+// 2). `facilityId` . `los_rate_modifier` = specifies length of stay rate modifier for facility
+// if fixed, this is to be in the same base as the quote currency
+// otherwise specified as a ratio which may increase or decrease cost.
+// NOTE: fixed amount is a signed integer so may be negative, or positive.
+message LOSRateModifier {
+  // condition of logic to be applied
+  Condition condition = 1;
+  // what length of stay is an input with the condition
+  uint32 los = 2;
+
+  // value to modify the rate by 
+  oneof value_oneof {
+    Ratio ratio = 3;
+    int32 fixed = 4;
+  }
+}
