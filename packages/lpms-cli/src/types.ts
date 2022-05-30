@@ -33,6 +33,7 @@ export interface CliOptions {
   salt?: string;
   meta?: string;
   register?: boolean;
+  update?: boolean;
   index?: number;
   keys?: number;
   id?: boolean;

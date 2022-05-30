@@ -153,6 +153,10 @@ When the metadata file is created it should be uploaded to the `lpms-server` sto
 
 - Registration of the service provider can be started by `sp --register` command. Will require `--salt` and `--meta` options if these are not been created and **saved** to config before.
 
+### `dataURI` update
+
+- Registration of the service provider can be started by `sp --update` command. Will require  `--meta` options if these are not been created and **saved** to config before. Also require config option `serviceProviderId` to be initialized (usually this property should be automatically initialized as the `--register` command result).
+
 ### Reset
 
 - If you want to wipe information about the registered service provided from the CLI config you can use `sp --reset` command.

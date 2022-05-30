@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/lpms-cli",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "LPMS API CLI",
   "publishConfig": {
     "access": "public"
