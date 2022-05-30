@@ -1,7 +1,3 @@
 {
-  "name": "LPMS server",
-  "description": "LPMS server",
-  "repository": "https://github.com/bobetbat/win-stays/tree/lpms-cicd",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["node", "express"]
+  "image": "bobetbatwt/lpms-wt"
 }
