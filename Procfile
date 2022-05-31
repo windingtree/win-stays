@@ -1,1 +1,1 @@
-web: cd ./packages/lpms-server && ls && yarn dev
+web: yarn bootstrap && cd ./packages/lpms-server && ls && yarn dev
