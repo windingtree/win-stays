@@ -1,1 +1,1 @@
-web: yarn boootstrap
+web:node -v && npm i yarn && yarn && yarn boootstrap
