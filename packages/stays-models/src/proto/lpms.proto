@@ -45,19 +45,26 @@ message Availability {
 // Specify the notice period required in order to make this booking
 // 1). `facilityId` . `spaceId` . `notice_required` = space level number of days required notice
 // 2). `facilityId` . `notice_required` = facility level notice requirements
-message NoticeRequired {
+message NoticeRequiredRule {
   uint32 numDays = 1;
 }
 
-// Modify the length of stay by day of week for check-in
-// 1). `facilityId` . `spaceId` . `los` . `DOW` = specifies length of stay requirements based on DOW
-//     where 0 = Monday
-// 2). `facilityId` . `spaceId` . `los` = specifies length of stay requirements for the space
-// 3). `facilityId` . `los` . `DOW` = specifies length of stay requirements based on DOW at facility level
-// 4). `facilityId` . `los` = specifies the length of stay requirements for the facility
-message DayOfWeekLOSModifier {
+message DayOfWeekLOSRuleElement {
   optional uint32 min_length_of_stay = 1;
   optional uint32 max_length_of_stay = 2;
+}
+
+// Modify the length of stay by day of week for check-in
+// 1). `facilityId` . `spaceId` . `los` = specifies length of stay requirements for the space
+// 2). `facilityId` . `los` = specifies the length of stay requirements for the facility
+message DayOfWeekLOSRule {
+  optional DayOfWeekLOSRuleElement mon = 1;
+  optional DayOfWeekLOSRuleElement tue = 2;
+  optional DayOfWeekLOSRuleElement wed = 3;
+  optional DayOfWeekLOSRuleElement thu = 4;
+  optional DayOfWeekLOSRuleElement fri = 5;
+  optional DayOfWeekLOSRuleElement sat = 6;
+  optional DayOfWeekLOSRuleElement sun = 7;
 }
 
 // Rates are set, in order of priority, such that:
@@ -72,6 +79,13 @@ message Rates {
   uint32 includedOccupancy = 2;
 }
 
+message DayOfWeekRateModifierElement {
+  oneof value_oneof {
+    Ratio ratio = 1;
+    int32 fixed = 2;
+  }
+}
+
 // Modify the rate based on day of week when looking at base rate
 // if fixed, this is to be in the same base as the quote currency
 // otherwise specified as a ratio which may increase or decrease cost.
@@ -80,12 +94,13 @@ message Rates {
 //     where 0 = Monday
 // 2). `facilityId` . `rate_modifer` . `DOW` = specifies the rate modifier for DOW based on facility level
 message DayOfWeekRateModifer {
-
-  oneof value_oneof {
-    Ratio ratio = 1;
-    int32 fixed = 2;
-  }
-
+  optional DayOfWeekRateModifierElement mon = 1;
+  optional DayOfWeekRateModifierElement tue = 2;
+  optional DayOfWeekRateModifierElement wed = 3;
+  optional DayOfWeekRateModifierElement thu = 4;
+  optional DayOfWeekRateModifierElement fri = 5;
+  optional DayOfWeekRateModifierElement sat = 6;
+  optional DayOfWeekRateModifierElement sun = 7;
 }
 
 // Modify the rate based on occupancy
