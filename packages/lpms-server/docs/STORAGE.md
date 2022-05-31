@@ -1,6 +1,6 @@
 # Storage
 
-Provides an overview as to how the `leveldb` database is structured within `lpms-server`. 
+Provides an overview as to how the `leveldb` database is structured within `lpms-server`.
 
 ## Encoding
 
@@ -40,14 +40,14 @@ Description: The metadata at a facility level.
 Key: `stubs`
 Value: `string[]`
 Description: A list of all `stubId`s issued by this facility.
-    
+
 Key: `spaces`
 Value: `string[]`
 Description: A list of `spaceId`s that belong to this facility
-    
+
 Key: `otherItems`
 Value: `string[]`
-Description: A list of other `itemId`s that are offered by this facilty
+Description: A list of other `itemId`s that are offered by this facility
 
 #### rules
 
@@ -82,7 +82,7 @@ Value: `videre.stays.lpms.LOSRateModifier`
 Description: An object containing a length-of-stay rate modifier
 
 #### stubs
-    
+
 Parent level: `facilityId` (dynamic)
 Level: `stubs`
 Description: Contains all the bookings (`stubs`) issued by this facility.
@@ -211,11 +211,11 @@ Description: Contains generic data for the item (name, photos, etc)
 5. Determine if a space can be booked on a given day:
 
     With daily availability override:
-    
+
     `Ask.numSpacesReq <= (facilityId.spaceId.availability.YYYY-MM-DD - facilityId.spaceId.YYYY-MM-DD-num_booked)`
 
     With no daily availability override:
-    
+
     `Ask.numSpacesReq <= (facilityId.spaceId.availability.default - facilityId.spaceId.YYYY-MM-DD-num_booked)`
 
     This meets the requirement of (5)
@@ -227,7 +227,7 @@ Description: Contains generic data for the item (name, photos, etc)
             if (!isAvailable)
                 return false
         return true
-    ``` 
+    ```
     This meets the requirement of (6)
 
 ### Update
@@ -253,7 +253,7 @@ for (const space of object) {
     const generic = db.get(`${facilityId}.${space}.metadata_generic`) as Item
     const specific = db.get(`${facilityId}.${space}.metadata`) as Space
     generic.payload = Space.toBinary(specific)
-    
+
     items.push({
         item: utils.arrayify(utils.formatBytes32String(space)),
         payload: Item.toBinary(generic)
