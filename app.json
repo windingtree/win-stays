@@ -1,8 +1,4 @@
 {
-  "stack": "container",
-  "formation": {
-    "web": {
-      "quantity": 1
-    }
-  }
+  "image": "bobetbatwt/lpms-wt",
+  
 }
