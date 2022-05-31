@@ -1,7 +1,9 @@
 {
-  "image": "bobetbatwt/lpms-wt",
-  "env": {
+  "image": "bobetbatwt/lpms-wt", "env": {
     "APP_BASE": "packages/lpms-server"
+  },
+  "env": {
+    "APP_BASE": "/"
   },
   "buildpacks": [
     {

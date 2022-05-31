@@ -7,9 +7,12 @@
     "node",
     "express"
   ],
+  "env": {
+    "APP_BASE": "packages/lpms-server"
+  },
   "buildpacks": [
     {
-      "url": "https://github.com/heroku/heroku-buildpack-multi-procfile"
+      "url": "https://github.com/lstoll/heroku-buildpack-monorepo"
     }
   ]
 }
