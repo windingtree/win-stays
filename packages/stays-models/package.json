@@ -28,7 +28,7 @@
     "dist/"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "dependencies": {
     "@protobuf-ts/runtime": "^2.6.0",
