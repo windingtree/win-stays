@@ -1,11 +1,4 @@
 {
   "image": "bobetbatwt/lpms-wt",
-  "env": {
-    "APP_BASE": ""
-  },
-  "buildpacks": [
-    {
-      "url": "https://github.com/lstoll/heroku-buildpack-monorepo"
-    }
-  ]
+ 
 }
