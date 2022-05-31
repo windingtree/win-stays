@@ -23,6 +23,8 @@ message Connectivity {
 }
 
 message Policies {
+  // ISO4217 currency code for all
+  string currency_code = 1;
   // Check in time.
   oneof check_in_time_oneof {
     // 24hr clock, e.g. "1500" or "1600", in hotel local time.
@@ -58,12 +60,12 @@ message Facility {
   repeated videre.type.PhoneNumber phones = 4;
   // service provider URIs
   repeated videre.type.Uri uris = 5;
-  // check-in / check-out times
-  Policies policies = 14;
   // location
   google.type.LatLng location = 6;
   // photos of the entire facility (not space-specific)
   repeated videre.type.Photo photos = 7;
+  // check-in / check-out times
+  Policies policies = 14;
   // connectivity
   optional Connectivity connectivity = 21;
 }
