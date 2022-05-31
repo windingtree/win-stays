@@ -6,6 +6,7 @@ export default class DBService {
   protected userDB;
   protected loginDB;
   protected tokenDB;
+  protected facilitiesDB;
   private static _instance: DBService = new DBService();
 
   constructor() {
@@ -21,6 +22,7 @@ export default class DBService {
     this.userDB = this.db.sublevel<string, User>('User', { valueEncoding: 'json' });
     this.loginDB = this.db.sublevel<string, string>('Login', { valueEncoding: 'json' });
     this.tokenDB = this.db.sublevel<string, Token>('Token', { valueEncoding: 'json' });
+    this.facilitiesDB = this.db.sublevel<string, string>('facilities', { valueEncoding: 'json' });
   }
 
   public static getInstance(): DBService {
@@ -44,6 +46,10 @@ export default class DBService {
   }
 
   public getTokenDB() {
+    return this.tokenDB;
+  }
+
+  public getFacilitiesDB() {
     return this.tokenDB;
   }
 
