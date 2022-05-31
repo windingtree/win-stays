@@ -2,6 +2,10 @@
   "name": "win.so",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "16.15.0",
+    "yarn": "1.22.18"
+  },
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
     "build": "yarn lerna bootstrap && cd packages/lpms-server && yarn dev",
