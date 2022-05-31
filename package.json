@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
+    "build": "yarn lerna bootstrap && cd packages/lpms-server && yarn dev",
     "commit": "git-cz",
     "changelog": "conventional-changelog -p angular -r 2 -i CHANGELOG.md -s"
   },
