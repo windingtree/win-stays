@@ -35,7 +35,7 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: docker tag windingtree/lpms-server:${{secrets.LPMS_SERVER_TAG}} registry.heroku.com/lpms-test-server/web
-      - name: Push Docker image to Heroku 
+      - name: Push Docker image to Heroku
         working-directory: ./packages/lpms-server
         run: docker push registry.heroku.com/lpms-test-server/web
       - name: Release image to Heroku
