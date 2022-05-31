@@ -7,6 +7,7 @@ import {
   ItemType, Space, SpaceTier
 } from '@windingtree/stays-models/dist/cjs/proto/facility';
 import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/storage';
+import { ContactType } from '@windingtree/stays-models/dist/cjs/proto/contact';
 
 const profileFileName = path.resolve(process.cwd(), 'facility.bin');
 const compressProfile = true; // true - is recommended
@@ -23,6 +24,7 @@ const main = async () => {
           longitude: 42.6895
         },
         policies: {
+          currencyCode: 'xDAI',
           checkInTimeOneof: { oneofKind: 'checkInTime', checkInTime: '1500' },
           checkOutTimeOneof: { oneofKind: 'checkOutTime', checkOutTime: '1000' }
         },
@@ -30,7 +32,24 @@ const main = async () => {
           { uri: '/image1.jpg', description: 'Chic guesthouse' },
           { uri: '/image2.jpg', description: 'Winter Wonderland' }
         ],
-        website: 'https://wonderland.somewhere/',
+        uris: [
+          {
+            uri: 'https://wonderland.somewhere/',
+            typeOneof: { oneofKind: 'type', type: ContactType.WORK }
+          }
+        ],
+        emails: [
+          {
+            email: 'example@example.com',
+            typeOneof: { oneofKind: 'type', type: ContactType.WORK }
+          }
+        ],
+        phones: [
+          {
+            number: '0123456789',
+            typeOneof: { oneofKind: 'type', type: ContactType.WORK }
+          }
+        ],
         connectivity: {
           wifiAvailableOneof: { oneofKind: 'wifiAvailable', wifiAvailable: true },
           wifiForFreeOneof: { oneofKind: 'wifiForFree', wifiForFree: true }
@@ -39,7 +58,7 @@ const main = async () => {
     ),
     items: [
       {
-        item: utils.arrayify(utils.formatBytes32String('UNIQUE-CODE-FOR-SPACE')),
+        item: utils.arrayify('0x01e5404aa35dfe2b33fe4a714bfd301e0b5723dbbaf48454ee44b741b484900b'),
         payload: Item.toBinary(
           {
             name: 'Fancy suite',
@@ -51,7 +70,12 @@ const main = async () => {
             type: ItemType.SPACE,
             payload: Space.toBinary(
               {
-                website: 'https://wonderland.somewhere/fancy',
+                uris: [
+                  {
+                    uri: 'https://wonderland.somewhere/',
+                    typeOneof: { oneofKind: 'type', type: ContactType.WORK }
+                  }
+                ],
                 maxNumberOfAdultOccupantsOneof: { oneofKind: 'maxNumberOfAdultOccupants', maxNumberOfAdultOccupants: 2 },
                 maxNumberOfChildOccupantsOneof: { oneofKind: 'maxNumberOfChildOccupantsException', maxNumberOfChildOccupantsException: Exception.UNSPECIFIED_REASON },
                 maxNumberOfOccupantsOneof: { oneofKind: 'maxNumberOfOccupants', maxNumberOfOccupants: 2 },
@@ -95,7 +119,7 @@ const main = async () => {
         )
       },
       {
-        item: utils.arrayify(utils.formatBytes32String('UNIQUE-CODE-FOR-BREAKFAST')),
+        item: utils.arrayify('0xc18597c11ae775cf21053832450e342b95b744db9abc45e17ced354a9f6517ff'),
         payload: Item.toBinary({
           name: 'Amazing breakfast',
           description: 'no paleo here!',
