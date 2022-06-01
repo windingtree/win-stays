@@ -1,7 +1,7 @@
 import { AbstractSublevel } from 'abstract-level';
 import { Level } from 'level';
 import { Token, User } from '../types';
-import { Facility, Item, Space } from '@windingtree/stays-models/src/proto/facility';
+import { Facility, Item, Space } from '../proto/facility';
 import {
   Availability,
   DayOfWeekLOSRule,
@@ -10,13 +10,19 @@ import {
   NoticeRequiredRule,
   OccupancyRateModifier,
   Rates
-} from '@windingtree/stays-models/src/proto/lpms';
+} from '../proto/lpms';
 import { Bytes } from 'ethers';
 import { Person } from '@windingtree/stays-models/dist/cjs/proto/person';
 
-type LevelDefaultTyping = string | Buffer | Uint8Array
-type DBLevel = Level<string, string | string[]>
-type StringAbstractDB = AbstractSublevel<DBLevel, LevelDefaultTyping, string, string>;
+export type LevelDefaultTyping = string | Buffer | Uint8Array
+export type DBLevel = Level<string, string | string[]>
+export type StringAbstractDB = AbstractSublevel<DBLevel, LevelDefaultTyping, string, string>;
+export type FacilityRules = NoticeRequiredRule | DayOfWeekLOSRule;
+export type FacilityModifiers = DayOfWeekRateModifer | OccupancyRateModifier | LOSRateModifier;
+export type FacilityLevelValues = Facility | string[];
+export type FacilitySpaceLevelValues = Item | Space;
+export type FacilityItemType = 'spaces' | 'otherItems';
+export type FacilityItemValues = Item | FacilitySpaceLevelValues;
 
 export default class DBService {
   protected db: DBLevel;
@@ -71,87 +77,16 @@ export default class DBService {
 
   public getFacilitySublevelDB(facilityId: string) {
     const prefix = 'f_';
-    return this.db.sublevel<string, Facility | string[]>(
+    return this.db.sublevel<string, FacilityLevelValues>(
       prefix + facilityId,
       { valueEncoding: 'json' }
     );
   }
 
-  public getFacilityRulesDB(facilityId: string) {
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, NoticeRequiredRule | DayOfWeekLOSRule>(
-      'rules',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getFacilityModifiersDB(facilityId: string) {
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, DayOfWeekRateModifer | OccupancyRateModifier | LOSRateModifier>(
-      'modifiers',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getFacilityStubsDB(facilityId: string) {
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, string[] | Bytes>( // todo get from protobuf when mfw will describe
-      'stubs',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getFacilityPiiDB(facilityId: string) {
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, Person>(
-      'pii',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getFacilityOtherItemsDB(facilityId: string) {
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, Item>(
-      'otherItems',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getFacilitySpaceDB(facilityId: string, spaceId: string) {
-    const prefix = 's_';
-    return this.getFacilitySublevelDB(facilityId).sublevel<string, Item | Space>(
-      prefix + spaceId,
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getSpaceRatesDB(facilityId: string, spaceId: string) {
-    return this.getFacilitySpaceDB(facilityId, spaceId).sublevel<string, Rates>(
-      'rates',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getSpaceAvailabilityDB(facilityId: string, spaceId: string) {
-    return this.getFacilitySpaceDB(facilityId, spaceId).sublevel<string, Availability>(
-      'availability',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getSpaceRulesDB(facilityId: string, spaceId: string) {
-    return this.getFacilitySpaceDB(facilityId, spaceId).sublevel<string, NoticeRequiredRule | DayOfWeekLOSRule>(
-      'rules',
-      { valueEncoding: 'json' }
-    );
-  }
-
-  public getSpaceModifiersDB(facilityId: string, spaceId: string) {
-    return this.getFacilitySpaceDB(facilityId, spaceId)
-      .sublevel<string, DayOfWeekRateModifer | OccupancyRateModifier | LOSRateModifier>(
-        'modifiers',
-        { valueEncoding: 'json' }
-      );
-  }
-
-  public getSpaceStubsDB(facilityId: string, spaceId: string) {
-    return this.getFacilitySpaceDB(facilityId, spaceId).sublevel<string, string[] | number>(
-      'stubs',
+  public getFacilityItemDB(facilityId: string, itemType: FacilityItemType, itemId: string) {
+    const key = `${itemType}_${itemId}`;
+    return this.getFacilitySublevelDB(facilityId).sublevel<string, FacilityItemValues>(
+      key,
       { valueEncoding: 'json' }
     );
   }

@@ -1,17 +1,6 @@
-import { Facility, Item, Space } from '@windingtree/stays-models/src/proto/facility';
 import { Level } from 'level';
-import DBService from './DBService';
-
-export interface FacilityStorage {
-  metadata: Facility;
-  spaces: string[];
-  otherItems: string[];
-}
-
-export interface SpaceStorage {
-  'metadata_generic': Item;
-  'metadata': Space;
-}
+import { Item } from '../proto/facility';
+import DBService, { FacilityItemType, FacilityLevelValues, FacilitySpaceLevelValues } from './DBService';
 
 export class FacilitiesService {
   private dbService: DBService;
@@ -22,125 +11,130 @@ export class FacilitiesService {
     this.db = this.dbService.getDB();
   }
 
-  public async getFacilitiesSublevels() {
-    let ids;
-
+  public async getFacilityIds(): Promise<string[]> {
     try {
-      ids = await this.db.get('facilities');
+      return await this.db.get<string, string[]>(
+        'facilities',
+        { valueEncoding: 'json' }
+      );
     } catch (e) {
       if (e.status !== 404) {
         throw e;
       }
-    }
-    // I don't understand what it is for
-    if (Array.isArray(ids)) {
-      const idsSet = new Set<string>(ids);
-      return Array
-        .from(idsSet)
-        .reduce<Record<string, any>>(
-          (a, id) => ({
-            ...a,
-            [id]: this.dbService.getFacilitySublevelDB(id)
-          }),
-          {}
-        );
     }
     return [];
   }
 
-  public async getFacility(sublevels: Record<string, any>, id: string) {
-
-    //If I understood everything correctly, you can change to this
-    // try {
-    //   await this.dbService.getFacilitySublevelDB(id).values().all()
-    //     } catch (e) {
-    //   if (e.status === 404) {
-    //     throw new Error(`Unknown facility: ${id} `);
-    //   }
-    //   throw e;
-    // }
-
-    if (!sublevels[id]) {
-      throw new Error(`Unknown facility: ${id} `);
-    }
-    return sublevels[id].values().all();
-  }
-
-  public async setFacilityMetadata(
-    sublevels: Record<string, any>,
-    id: string,
-    metadata: Facility
-  ) {
-    let ids;
-
+  public async getItemIds(
+    facilityId: string,
+    itemType: FacilityItemType
+  ): Promise<string[]> {
     try {
-      ids = await this.db.get('facilities');
+      const facilitySublevel = this.dbService.getFacilitySublevelDB(facilityId);
+      return await facilitySublevel.get<string, string[]>(
+        itemType,
+        { valueEncoding: 'json' }
+      );
     } catch (e) {
       if (e.status !== 404) {
         throw e;
       }
     }
-
-    if (Array.isArray(ids)) {
-      const idsSet = new Set<string>(ids);
-      idsSet.add(id);
-      await this.db.put('facilities', Array.from(idsSet));
-    } else {
-      await this.db.put('facilities', [id]);
-    }
-
-    await this.dbService.getFacilitySublevelDB(id).put(
-      'metadata',
-      metadata
-    );
-    return sublevels;
+    return [];
   }
 
-  public async setFacilitySpace(
-    sublevels: Record<string, any>,
+  public async getFacilityDbKey(
+    facilityId: string,
+    key: string
+  ): Promise<FacilityLevelValues> {
+    try {
+      return await this.dbService
+        .getFacilitySublevelDB(facilityId)
+        .get(key);
+    } catch (e) {
+      if (e.status === 404) {
+        throw new Error(`Unable to get "${key}" of facility "${facilityId}"`);
+      }
+      throw e;
+    }
+  }
+
+  public async getSpaceDbKey(
     facilityId: string,
     spaceId: string,
-    item: Item,
-    space: Space
-  ) {
-
-    const facilitySublevel = this.dbService.getFacilitySublevelDB(facilityId);
-    let spaceIds;
-
+    key: string
+  ): Promise<FacilitySpaceLevelValues> {
     try {
-      spaceIds = await facilitySublevel.get('spaces');
+      return await this.dbService
+        .getFacilityItemDB(facilityId, 'spaces', spaceId)
+        .get(key);
     } catch (e) {
-      if (e.status !== 404) {
-        throw e;
+      if (e.status === 404) {
+        throw new Error(
+          `Unable to get "${key}" of space "${spaceId}" of facility "${facilityId}"`
+        );
       }
+      throw e;
+    }
+  }
+
+  public async setFacilityDbKeys(
+    facilityId: string,
+    entries: [string, FacilityLevelValues][]
+  ): Promise<void> {
+    const ids = await this.getFacilityIds();
+
+    if (ids.length > 0) {
+      const idsSet = new Set<string>(ids);
+      idsSet.add(facilityId);
+      await this.db.put('facilities', Array.from(idsSet));
+    } else {
+      await this.db.put('facilities', [facilityId]);
     }
 
-    if (Array.isArray(spaceIds)) {
-      const spaceSet = new Set<string>(spaceIds);
-      spaceSet.add(spaceId);
+    const facilitySublevel = this.dbService.getFacilitySublevelDB(facilityId);
+
+    await Promise.all(
+      entries.map(
+        ([key, value]) => facilitySublevel.put(key, value)
+      )
+    );
+  }
+
+  public async setItemDbKeys(
+    facilityId: string,
+    itemType: FacilityItemType,
+    itemId: string,
+    entries: [string, Item | FacilitySpaceLevelValues][]
+  ): Promise<void> {
+    const itemIds = await this.getItemIds(facilityId, itemType);
+    const facilitySublevel = this.dbService.getFacilitySublevelDB(facilityId);
+
+    if (itemIds.length > 0) {
+      const spaceSet = new Set<string>(itemIds);
+      spaceSet.add(itemId);
       await facilitySublevel.put(
-        'spaces',
+        itemType,
         Array.from(spaceSet)
       );
     } else {
       await facilitySublevel.put(
-        'spaces',
-        [spaceId]
+        itemType,
+        [itemId]
       );
     }
 
-    const spaceSublevel = this.dbService.getFacilitySpaceDB(facilityId, spaceId);
-
-    await spaceSublevel.put(
-      'metadata_generic',
-      item
+    const sublevel = this.dbService.getFacilityItemDB(
+      facilityId,
+      itemType,
+      itemId
     );
 
-    await spaceSublevel.put(
-      'metadata',
-      space
+    await Promise.all(
+      entries.map(
+        ([key, value]) => sublevel.put(key, value)
+      )
     );
-    return sublevels;
   }
 }
 
