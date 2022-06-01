@@ -88,24 +88,14 @@ Level: `stubs`
 Description: Contains all the bookings (`stubs`) issued by this facility.
 
 Key: `stubId` (dynamic)
-Value: protobuf to wrap videre.Stub, stays-models.Ask, stays-models.Person
+Value: videre.stays.lpms.StubStorage
 Description: Contains all the data for the `stub` (booking). The EIP-712 hash of this `stub` should be equal to the `EIP-712` hash of the `stub` at `stubId` when looked up on chain.
-Notes: This meets the requirement (1)
+Notes: This meets the requirement (1) and (7)
 
 Key: `YYYY-MM-DD` (dynamic)
 Value: `string[]`
 Description: Contains a list of all stubs (bookings) that are on the specified date.
 Notes: This meets the requirement (2)
-
-#### pii
-
-Parent level: `facilityId` (dynamic)
-Level: `pii`
-
-Key: `stubId` (dynamic)
-Value: `videre.stays.lpms.person.Person`
-Description: Personal identifiable information, stored by `stubId`.
-Notes: Meets requirements (7)
 
 #### spaces
 
