@@ -1,4 +1,5 @@
 import { Facility, Item, Space } from '@windingtree/stays-models/src/proto/facility';
+import { Level } from 'level';
 import DBService from './DBService';
 
 export interface FacilityStorage {
@@ -14,20 +15,13 @@ export interface SpaceStorage {
 
 export class FacilitiesService {
   private dbService: DBService;
-  private db;
+  private db: Level<string, string | string[]>;
   private facilitiesDB;
 
   constructor() {
     this.dbService = DBService.getInstance();
     this.db = this.dbService.getDB();
     this.facilitiesDB = this.dbService.getFacilitiesDB();
-  }
-
-  private _createFacilitySublevel(id: string) {
-    return this.db.sublevel<string, FacilityStorage>(
-      id,
-      { valueEncoding: 'json' }
-    );
   }
 
   public async getFacilitiesSublevels() {
@@ -38,7 +32,7 @@ export class FacilitiesService {
       .reduce<Record<string, any>>(
         (a, id) => ({
           ...a,
-          [id]: this._createFacilitySublevel(id)
+          [id]: this.dbService.getFacilitySublevelDB(id)
         }),
         {}
       );
@@ -56,10 +50,7 @@ export class FacilitiesService {
     id: string,
     metadata: Facility
   ) {
-    if (!sublevels[id]) {
-      sublevels[id] = this._createFacilitySublevel(id);
-    }
-    await sublevels[id].put(
+    await this.dbService.getFacilitySublevelDB(id).put(
       'metadata',
       metadata
     );
@@ -73,24 +64,40 @@ export class FacilitiesService {
     item: Item,
     space: Space
   ) {
-    if (!sublevels[facilityId]) {
-      sublevels[facilityId] = this._createFacilitySublevel(facilityId);
+
+    const facilitySublevel = this.dbService.getFacilitySublevelDB(facilityId);
+    let spaceIds;
+
+    try {
+      spaceIds = await facilitySublevel.get('spaces');
+    } catch (e) {
+      if (e.status !== 404) {
+        throw e;
+      }
+      spaceIds = null;
     }
-    const spaces = new Set<string>(
-      await sublevels[facilityId].get('spaces')
-    );
-    await sublevels[facilityId].put(
-      'spaces',
-      Array.from(spaces)
-    );
-    const spaceSublevel = sublevels[facilityId].sublevel<string, SpaceStorage>(
-      spaceId,
-      { valueEncoding: 'json' }
-    );
+
+    if (Array.isArray(spaceIds)) {
+      const spaceSet = new Set<string>(spaceIds);
+      spaceSet.add(spaceId);
+      await facilitySublevel.put(
+        'spaces',
+        Array.from(spaceSet)
+      );
+    } else {
+      await facilitySublevel.put(
+        'spaces',
+        [spaceId]
+      );
+    }
+
+    const spaceSublevel = this.dbService.getFacilitySpaceDB(facilityId, spaceId);
+
     await spaceSublevel.put(
       'metadata_generic',
       item
     );
+
     await spaceSublevel.put(
       'metadata',
       space
