@@ -242,7 +242,7 @@ Description: Contains generic data for the item (name, photos, etc)
 
 In order to generate the final `metadata` binary glob that is uploaded to `IPFS`:
 
-```typescript=
+```typescript
 
 let items: ServiceItemData[]
 

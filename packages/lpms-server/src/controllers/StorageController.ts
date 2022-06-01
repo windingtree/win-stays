@@ -11,6 +11,8 @@ import walletService from '../services/WalletService';
 import { web3StorageKey, typedDataDomain } from '../config';
 import { walletAccountsIndexes } from '../types';
 import { Facility, Item, ItemType, Space } from '../proto/facility';
+import facilitiesService from '../services/FacilitiesService';
+import { FacilitySpaceLevelValues } from 'src/services/DBService';
 const { readFile } = promises;
 
 export class StorageController {
@@ -62,35 +64,81 @@ export class StorageController {
       }
 
       const serviceProviderData = ServiceProviderData.fromBinary(fileBuffer);
-
-      // Extract facility from metadata
-      const facilities = {};
       const serviceProviderId = utils.hexlify(serviceProviderData.serviceProvider);
-      facilities[serviceProviderId] = Facility.fromBinary(serviceProviderData.payload);
 
-      // Add/update facility to DB
+      // Extract ans save/update facility from metadata
+      await facilitiesService.setFacilityDbKeys(
+        serviceProviderId,
+        [
+          [
+            'metadata',
+            Facility.fromBinary(serviceProviderData.payload) as Facility
+          ]
+        ]
+      );
+
+      const ids = await facilitiesService.getFacilityIds();
+      console.log('@@@', ids);
+      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'metadata'));
+      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'spaces'));
+      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'otherItems'));
 
       // Extract spaces from metadata
-      const spaces = {};
-      const otherItems = {};
+      const spaces: Record<string, [string, FacilitySpaceLevelValues][]> = {};
+      const otherItems: Record<string, [string, Item][]> = {};
 
       for (const item of serviceProviderData.items) {
         const itemId = utils.hexlify(item.item);
         const { type, payload, ...generic } = Item.fromBinary(item.payload);
 
         if (type === ItemType.SPACE) {
-          spaces[itemId] = {
-            'metadata_generic': generic,
-            'metadata': (payload ? Space.fromBinary(payload) : {})
-          };
+          spaces[itemId] = [
+            [
+              'metadata_generic',
+              generic as Item
+            ],
+            [
+              'metadata',
+              (payload ? Space.fromBinary(payload) : {}) as Space
+            ]
+          ];
         } else {
-          otherItems[itemId] = generic;
+          otherItems[itemId] = [
+            [
+              'metadata_generic',
+              generic as Item
+            ]
+          ];
         }
       }
 
-      console.log('@@@ spaces', spaces);
-
       // Add/update spaces to DB
+      await Promise.all(
+        Object
+          .entries(spaces)
+          .map(
+            ([itemId, entries]) => facilitiesService.setItemDbKeys(
+              serviceProviderId,
+              'spaces',
+              itemId,
+              entries
+            )
+          )
+      );
+
+      // Add/update other items to DB
+      await Promise.all(
+        Object
+          .entries(otherItems)
+          .map(
+            ([itemId, entries]) => facilitiesService.setItemDbKeys(
+              serviceProviderId,
+              'otherItems',
+              itemId,
+              entries
+            )
+          )
+      );
 
       const signer = await walletService.getWalletByIndex(
         walletAccountsIndexes.API
