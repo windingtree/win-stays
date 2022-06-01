@@ -570,10 +570,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@windingtree/videre-sdk@^0.4.7":
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.4.7.tgz#30588ed9ad0d6af93c8d471f6746cec3e2bf6a01"
-  integrity sha512-+TTea4Ac7gj1yG/Mi2E4GMtAWuLkaDflLk9LytNaea7rFmTJ4mgBbO6/Nf4aRw9OQxftWCD6iYGXIzL5yBlvWg==
+"@windingtree/videre-sdk@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.5.0.tgz#29967c206b5f96fec74572388c660fe98330ff6c"
+  integrity sha512-+rHZFcWEN7z7+F4rzBJc9EEPZuWs86dzaWAXRosbibMH92tlQZYv5KAB6VAoPz3K+gasx786Wzr2/PGqkUsIsg==
   dependencies:
     "@protobuf-ts/runtime" "^2.5.0"
     ethers "^5.6.5"
