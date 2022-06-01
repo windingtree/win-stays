@@ -20,6 +20,7 @@ async function main() {
           longitude: 42.6895
         },
         policies: {
+          currencyCode: 'xDai',
           checkInTimeOneof: { oneofKind: "checkInTime", checkInTime: "1500" },
           checkOutTimeOneof: { oneofKind: "checkOutTime", checkOutTime: "1000" }
         },
