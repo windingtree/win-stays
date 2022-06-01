@@ -16,12 +16,12 @@
   "module": "./dist/esm/src/index.js",
   "types": "./dist/cjs/src/index.d.ts",
   "scripts": {
-    "protoc:dist": "rm -rf ./dist/proto && mkdir -p ./dist/proto && cp -R ./src/proto/*.proto ./dist/proto/",
+    "protoc:libs": "cp -pR ./node_modules/@windingtree/videre-sdk/dist/proto/*.proto ./src/proto/",
     "protoc:local": "protoc --ts_out ./src/proto --proto_path ./src/proto ./src/proto/*.proto",
-    "protoc:libs": "protoc --ts_out ./src/proto --proto_path ./node_modules/@windingtree/videre-sdk/dist/proto ./node_modules/@windingtree/videre-sdk/dist/proto/*.proto",
+    "protoc:dist": "rm -rf ./dist/proto && mkdir -p ./dist/proto && cp -R ./src/proto/*.proto ./dist/proto/",
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "test": "mocha --loader=ts-node/esm --extension ts",
-    "prepublish": "yarn protoc:local && yarn protoc:libs && yarn protoc:dist && yarn tsc"
+    "prepublish": "yarn protoc:libs && yarn protoc:local && yarn protoc:dist && yarn tsc"
   },
   "files": [
     "dist/"
@@ -40,7 +40,7 @@
     "@types/node": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
-    "@windingtree/videre-sdk": "^0.4.7",
+    "@windingtree/videre-sdk": "^0.5.0",
     "chai": "^4.3.6",
     "chai-ethers": "^0.0.1",
     "eslint": "^8.15.0",
