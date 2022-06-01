@@ -77,12 +77,6 @@ export class StorageController {
         ]
       );
 
-      const ids = await facilitiesService.getFacilityIds();
-      console.log('@@@', ids);
-      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'metadata'));
-      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'spaces'));
-      console.log('@@@', await facilitiesService.getFacilityDbKey(ids[0], 'otherItems'));
-
       // Extract spaces from metadata
       const spaces: Record<string, [string, FacilitySpaceLevelValues][]> = {};
       const otherItems: Record<string, [string, Item][]> = {};
