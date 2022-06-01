@@ -63,6 +63,12 @@ export const LoginForm = () => {
           // plain
           onClick={() => load(email, password)}
         />
+        <Button
+          style={{ textAlign: 'center' }}
+          label='Register the organization'
+          // plain
+          href='https://heroku.com/deploy?template=https://github.com/windingtree/lpms-server'
+        />
         <MessageLoadingBox type='info' show={loading}>
           loading...
         </MessageLoadingBox>
