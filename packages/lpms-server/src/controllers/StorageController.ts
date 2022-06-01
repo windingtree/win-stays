@@ -10,7 +10,7 @@ import IpfsApiService from '../services/IpfsApiService';
 import walletService from '../services/WalletService';
 import { web3StorageKey, typedDataDomain } from '../config';
 import { walletAccountsIndexes } from '../types';
-import { Facility, Item, ItemType, Space } from '@windingtree/stays-models/src/proto/facility';
+import { Facility, Item, ItemType, Space } from '../proto/facility';
 const { readFile } = promises;
 
 export class StorageController {
