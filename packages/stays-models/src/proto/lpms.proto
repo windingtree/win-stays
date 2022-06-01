@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package videre.stays.lpms;
 
+import "ask.proto";
+
 enum Condition {
   LT = 0;
   LTE = 1;
@@ -17,27 +19,13 @@ message Ratio {
   uint32 q = 2;
 }
 
-// TODO:
-// How to store the stub state details?
-// 1). `facilityId` . `stubId` = stub details as stored on chain
-// 2). For all days that the stay covers, add the `stubId` to a list of bookings for that day.
-//     ie. `facilityId` . `bookings`. `YYYYMMdd` [] .push(stubId)
-// 3). For all days that the stay covers, add the `stubId` to a list of bookings for that space
-//     for that day
-//     ie. `facilityId` . `spaceId` . `bookings` . `YYYYMMdd` [] . push(stubId)
-// How to get all bookings for a given day?
-// 1). Lookup array at `facilityId` . `bookings` . `YYYYMMdd`
-// How to get all bookings for a given space on a given day?
-// 1). Lookup array at `facilityId` . `spaceId` . `bookings` . `YYYYMMdd``
-// How to find number of a space type booked for a given day?
-// 1). Sum(`facilityId` . `spaceId` . `bookings` . `YYYYMMdd`[].numSpacesReq)
-// How to determine if a booking can be made for a given day on a space?
-// 1). ask numSpacesReq <= (Availability.numSpaces - Sum(`facilityId` . `spaceId` . `bookings` . `YYYYMMdd`[].numSpacesReq))
+// Store all parameters associated with a stub
+message StubStorage {
+  videre.stays.Ask params = 2;
+}
 
 // Each 'space' represents a _room type_.
 // Store availability, in order of priority, such that:
-// 1) `facilityId` . `spaceId` . `availability` . `YYYYMMdd` = per day override for availability
-// 2) `facilityId` . `spaceId` . `availability` = default number of these spaces available per day
 message Availability {
   uint32 numSpaces = 1;
 }
@@ -69,11 +57,6 @@ message DayOfWeekLOSRule {
 
 // Rates are set, in order of priority, such that:
 // TODO: Allow change in rates based on adult / child pricing.
-// 1). `facilityId` . `spaceId` . `YYYYMMdd` = per day override of single occupancy rate`
-// 2). `facilityId` . `spaceId` . `rate` = default rate per day
-//
-// If wanting to implement rates over a range of dates, initally do
-// mass daily override to keep things simple.
 message Rates {
   uint32 cost = 1;
   uint32 includedOccupancy = 2;
@@ -90,9 +73,6 @@ message DayOfWeekRateModifierElement {
 // if fixed, this is to be in the same base as the quote currency
 // otherwise specified as a ratio which may increase or decrease cost.
 // NOTE: fixed amount is a signed integer so may be negative, or positive.
-// 1). `facilityId` . `spaceId` . `rate_modifier` . `DOW` = specifies base rate modifier for DOW
-//     where 0 = Monday
-// 2). `facilityId` . `rate_modifer` . `DOW` = specifies the rate modifier for DOW based on facility level
 message DayOfWeekRateModifer {
   optional DayOfWeekRateModifierElement mon = 1;
   optional DayOfWeekRateModifierElement tue = 2;
@@ -104,12 +84,9 @@ message DayOfWeekRateModifer {
 }
 
 // Modify the rate based on occupancy
-// 1). `facilityId` . `spaceId` . `occupancy_rate_modifier` = specifies occupancy modifier for space
-// 2). `facilityId` . `occupancy_rate_modifier` = specifies occupancy modifier at facility level
 // if fixed, this is to be in the same base as the quote currency
 // otherwise specified as a ratio which may increase or decrease cost.
 // NOTE: fixed amount is a signed integer so may be negative, or positive.
-
 message OccupancyRateModifier {
 
   oneof value_oneof {
@@ -120,8 +97,6 @@ message OccupancyRateModifier {
 }
 
 // Modify the rate based on the length of stay
-// 1). `facilityId` . `spaceId` . `los_rate_modifier` = specifies length of stay rate modifier for space
-// 2). `facilityId` . `los_rate_modifier` = specifies length of stay rate modifier for facility
 // if fixed, this is to be in the same base as the quote currency
 // otherwise specified as a ratio which may increase or decrease cost.
 // NOTE: fixed amount is a signed integer so may be negative, or positive.
