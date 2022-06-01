@@ -1,10 +1,11 @@
-import { Ask } from '@windingtree/stays-models/src/proto/ask';
-import { ServiceProviderData } from '@windingtree/stays-models/dist/esm/proto/storage';
 import { utils } from 'ethers';
-import { Exception, Facility, Item, ItemType, SpaceTier } from '@windingtree/stays-models/dist/esm/proto/facility';
-import { Space } from '@windingtree/stays-models/src/proto/facility';
 import { keccak256 } from 'ethers/lib/utils';
 import { DateTime } from 'luxon';
+import { Ask } from 'src/proto/ask';
+import { Exception, Facility, Item, ItemType, Space, SpaceTier } from 'src/proto/facility';
+import { ContactType } from 'src/proto/contact';
+// TODO: move this to local proto once new `stays-models` is published
+import { ServiceProviderData } from '@windingtree/stays-models/dist/cjs/proto/storage';
 
 //for test ↓
 //import findSpaceService from './services/ExampleFindSpaceService';
@@ -27,6 +28,7 @@ export class ExampleFindSpaceService {
   }
 
   public checker(ask: Ask) {
+
     const serviceProviderData: ServiceProviderData = {
       serviceProvider: utils.arrayify(utils.formatBytes32String('provider')),
       payload: Facility.toBinary(
@@ -37,7 +39,11 @@ export class ExampleFindSpaceService {
             latitude: 43.0335,
             longitude: 42.6895
           },
+          emails: [],
+          phones: [],
+          uris: [],
           policies: {
+            currencyCode: "xDAI",
             checkInTimeOneof: { oneofKind: "checkInTime", checkInTime: "1500" },
             checkOutTimeOneof: { oneofKind: "checkOutTime", checkOutTime: "1000" }
           },
@@ -45,7 +51,6 @@ export class ExampleFindSpaceService {
             { uri: '/image1.jpg', description: 'Chic guesthouse' },
             { uri: '/image2.jpg', description: 'Winter Wonderland' }
           ],
-          website: 'https://wonderland.somewhere/',
           connectivity: {
             wifiAvailableOneof: { oneofKind: "wifiAvailable", wifiAvailable: true },
             wifiForFreeOneof: { oneofKind: "wifiForFree", wifiForFree: true }
@@ -66,7 +71,15 @@ export class ExampleFindSpaceService {
               type: ItemType.SPACE,
               payload: Space.toBinary(
                 {
-                  website: 'https://wonderland.somewhere/fancy',
+                  uris: [
+                    {
+                      uri: 'https://someplace/space',
+                      typeOneof: {
+                        oneofKind: 'type',
+                        type: ContactType.WORK
+                      }
+                    }
+                  ],
                   maxNumberOfAdultOccupantsOneof: {
                     oneofKind: "maxNumberOfAdultOccupants",
                     maxNumberOfAdultOccupants: 2
@@ -155,7 +168,15 @@ export class ExampleFindSpaceService {
               type: ItemType.SPACE,
               payload: Space.toBinary(
                 {
-                  website: 'https://wonderland.somewhere/fancy',
+                  uris: [
+                    {
+                      uri: 'https://someplace/space',
+                      typeOneof: {
+                        oneofKind: 'type',
+                        type: ContactType.WORK
+                      }
+                    }
+                  ],
                   maxNumberOfAdultOccupantsOneof: {
                     oneofKind: "maxNumberOfAdultOccupants",
                     maxNumberOfAdultOccupants: 2
