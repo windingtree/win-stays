@@ -16,29 +16,50 @@ export interface SpaceStorage {
 export class FacilitiesService {
   private dbService: DBService;
   private db: Level<string, string | string[]>;
-  private facilitiesDB;
 
   constructor() {
     this.dbService = DBService.getInstance();
     this.db = this.dbService.getDB();
-    this.facilitiesDB = this.dbService.getFacilitiesDB();
   }
 
   public async getFacilitiesSublevels() {
-    const idsDb: string[] = await this.facilitiesDB.values().all();
-    const ids = new Set<string>(idsDb);
-    return Array
-      .from(ids)
-      .reduce<Record<string, any>>(
-        (a, id) => ({
-          ...a,
-          [id]: this.dbService.getFacilitySublevelDB(id)
-        }),
-        {}
-      );
+    let ids;
+
+    try {
+      ids = await this.db.get('facilities');
+    } catch (e) {
+      if (e.status !== 404) {
+        throw e;
+      }
+    }
+    // I don't understand what it is for
+    if (Array.isArray(ids)) {
+      const idsSet = new Set<string>(ids);
+      return Array
+        .from(idsSet)
+        .reduce<Record<string, any>>(
+          (a, id) => ({
+            ...a,
+            [id]: this.dbService.getFacilitySublevelDB(id)
+          }),
+          {}
+        );
+    }
+    return [];
   }
 
   public async getFacility(sublevels: Record<string, any>, id: string) {
+
+    //If I understood everything correctly, you can change to this
+    // try {
+    //   await this.dbService.getFacilitySublevelDB(id).values().all()
+    //     } catch (e) {
+    //   if (e.status === 404) {
+    //     throw new Error(`Unknown facility: ${id} `);
+    //   }
+    //   throw e;
+    // }
+
     if (!sublevels[id]) {
       throw new Error(`Unknown facility: ${id} `);
     }
@@ -50,6 +71,24 @@ export class FacilitiesService {
     id: string,
     metadata: Facility
   ) {
+    let ids;
+
+    try {
+      ids = await this.db.get('facilities');
+    } catch (e) {
+      if (e.status !== 404) {
+        throw e;
+      }
+    }
+
+    if (Array.isArray(ids)) {
+      const idsSet = new Set<string>(ids);
+      idsSet.add(id);
+      await this.db.put('facilities', Array.from(idsSet));
+    } else {
+      await this.db.put('facilities', [id]);
+    }
+
     await this.dbService.getFacilitySublevelDB(id).put(
       'metadata',
       metadata
@@ -74,7 +113,6 @@ export class FacilitiesService {
       if (e.status !== 404) {
         throw e;
       }
-      spaceIds = null;
     }
 
     if (Array.isArray(spaceIds)) {
