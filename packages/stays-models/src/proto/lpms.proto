@@ -3,6 +3,8 @@ syntax = "proto3";
 package videre.stays.lpms;
 
 import "ask.proto";
+import "stub.proto";
+import "person.proto";
 
 enum Condition {
   LT = 0;
@@ -20,8 +22,17 @@ message Ratio {
 }
 
 // Store all parameters associated with a stub
+// This stores essentially two structs:
+// 1. The `Stub` struct which are the components that are fed to the smart contract
+//    as the parameters for a booking. Notably though, Stub.params is a hash, ie.
+//    it has no type, this is because it's industry agnostic. Therefore we now have:
+// 2. The `Ask` struct which constitute the parameters that the user asked for.
+//    this struct's contents are hashed and that becomes Stub.params.
 message StubStorage {
+  videre.type.Stub stub = 1;
   videre.stays.Ask params = 2;
+  // personal identifiable information kept with the booking (if any)
+  videre.type.Person pii = 3;
 }
 
 // Each 'space' represents a _room type_.
