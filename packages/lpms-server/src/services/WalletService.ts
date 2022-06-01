@@ -5,7 +5,7 @@ import DBService from './DBService';
 import { Level } from 'level';
 
 export class WalletService {
-  protected db: Level;
+  protected db: Level<string, string | string[]>;
   protected wallet: Wallet;
   protected addresses;
 
@@ -23,7 +23,7 @@ export class WalletService {
   public async getWallet(): Promise<Wallet> {
     const encodedWallet = await this.db.get('wallet');
 
-    if (!this.wallet) {
+    if (!this.wallet && typeof encodedWallet === 'string') {
       this.wallet = await ethers.Wallet.fromEncryptedJson(encodedWallet, walletPassphrase);
     }
 

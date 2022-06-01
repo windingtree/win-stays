@@ -6,7 +6,7 @@ import walletService from './WalletService';
 import { defaultManagerLogin, defaultManagerPassword } from '../config';
 
 export class BootstrapService {
-  protected db: Level;
+  protected db: Level<string, string | string[]>;
 
   constructor() {
     this.db = DBService.getInstance().getDB();

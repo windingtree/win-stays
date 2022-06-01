@@ -33,6 +33,7 @@ export class ExampleFindSpaceService {
       serviceProvider: utils.arrayify(utils.formatBytes32String('provider')),
       payload: Facility.toBinary(
         {
+          emails: [], phones: [], uris: [],
           name: 'Awesome ski chalet',
           description: 'Some chalet in the best place of all! 🏔️',
           location: {
