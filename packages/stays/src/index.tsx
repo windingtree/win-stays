@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
+import 'leaflet/dist/leaflet.css';
 import './reset.css';
 import App from './App';
 
