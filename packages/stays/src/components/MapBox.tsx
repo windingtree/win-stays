@@ -1,19 +1,18 @@
 import type { Map, LatLngExpression } from "leaflet";
+import { Box } from "grommet";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import Logger from "../utils/logger";
 
-const logger = Logger('Map');
-const center: LatLngExpression = [51.505, -0.09]
-const zoom = 13
+const logger = Logger('MapBox');
+const defaultZoom = 13
 
-const DisplayPosition = ({ map }: { map: Map }) => {
+const MapSettings: React.FC<{
+  center: LatLngExpression;
+  map: Map;
+}> = ({ map, center }) => {
   const [position, setPosition] = useState(() => map.getCenter())
   const [zoom, setZoom] = useState(() => map.getZoom())
-
-  // const onClick = useCallback(() => {
-  //   map.setView(center, zoom)
-  // }, [map])
 
   const onMove = useCallback(() => {
     setPosition(map.getCenter())
@@ -38,6 +37,16 @@ const DisplayPosition = ({ map }: { map: Map }) => {
   }, [map, onZoom])
 
   useEffect(() => {
+    logger.debug('onMove', center);
+    map.setView(center, defaultZoom);
+  }, [map, center])
+
+  useEffect(() => {
+    logger.debug('onZoom', zoom);
+    map.setZoom(zoom);
+  }, [zoom, map])
+
+  useEffect(() => {
     logger.debug(`latitude: ${position.lat.toFixed(4)}, longitude: ${position.lng.toFixed(4)}`);
   }, [position])
 
@@ -48,20 +57,21 @@ const DisplayPosition = ({ map }: { map: Map }) => {
   return null
 }
 
-export const MapBox = () => {
+export const MapBox: React.FC<{
+  center: LatLngExpression
+}> = ({ center }) => {
   const [map, setMap] = useState<Map | null>(null)
 
   const displayMap = useMemo(
     () => (
       <MapContainer
         center={center}
-        zoom={zoom}
+        zoom={defaultZoom}
         style={{
           height: "70vh",
           // width: "100vw"
         }}
         scrollWheelZoom={false}
-        // @ts-ignore
         ref={setMap}
       >
         <TileLayer
@@ -70,13 +80,13 @@ export const MapBox = () => {
         />
       </MapContainer>
     ),
-    [],
+    [center],
   )
 
   return (
-    <div>
-      {map ? <DisplayPosition map={map} /> : null}
+    <Box>
+      {map ? <MapSettings center={center} map={map} /> : null}
       {displayMap}
-    </div>
+    </Box>
   )
 };
