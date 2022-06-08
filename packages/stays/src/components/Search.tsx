@@ -1,4 +1,4 @@
-import type { LatLngExpression } from "leaflet";
+import type { LatLngTuple } from "leaflet";
 import { Box, Button, Form, FormField, TextInput } from 'grommet';
 import Logger from "../utils/logger";
 import axios from 'axios';
@@ -8,7 +8,7 @@ import { MessageBox, MessageLoadingBox } from "./MessageBox";
 const logger = Logger('Search');
 
 export const Search: React.FC<{
-  onSubmit: React.Dispatch<React.SetStateAction<LatLngExpression>>
+  onSubmit: React.Dispatch<React.SetStateAction<LatLngTuple>>
 }> = ({ onSubmit }) => {
   const [searchValue, setSearchValue] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false);
