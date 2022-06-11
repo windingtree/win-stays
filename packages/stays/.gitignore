@@ -15,3 +15,5 @@ yarn-error.log*
 src/proto/*.proto
 src/proto/*.ts
 !src/proto/test.proto
+
+src/typechain*
