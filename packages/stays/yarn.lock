@@ -1854,6 +1854,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@openzeppelin/contracts@^4.5.0":
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.6.0.tgz#c91cf64bc27f573836dba4122758b4743418c1b3"
+  integrity sha512-8vi4d50NNya/bQqCmaVzvHNmwHvS0OBKb7HNtuNwEE3scXWrP31fKQoGxNMT+KbzmrNZzatE3QK5p2gFONI/hg==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.6"
   resolved "https://registry.npmjs.org/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.6.tgz"
@@ -2311,7 +2316,7 @@
   resolved "https://registry.npmjs.org/@trysound/sax/-/sax-0.2.0.tgz"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
-"@typechain/ethers-v5@^10.0.0":
+"@typechain/ethers-v5@^10.1.0":
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-10.1.0.tgz#068d7dc7014502354696dab59590a7841091e951"
   integrity sha512-3LIb+eUpV3mNCrjUKT5oqp8PBsZYSnVrkfk6pY/ZM0boRs2mKxjFZ7bktx42vfDye8PPz3NxtW4DL5NsNsFqlg==
@@ -3120,6 +3125,13 @@
   dependencies:
     "@protobuf-ts/runtime" "^2.6.0"
     zlib "^1.0.5"
+
+"@windingtree/videre-contracts@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-contracts/-/videre-contracts-1.0.2.tgz#a78b813dfae7d393e8f297213a6479f7e67213fb"
+  integrity sha512-Owrl1uP4xEqODi0ID0I8BsDG4MGBTBZDKUtlTbBlKsZn67DyNc7FU0V0HB8IDTmtLvQ3le7l1oD317i4TmFG7Q==
+  dependencies:
+    "@openzeppelin/contracts" "^4.5.0"
 
 "@windingtree/videre-sdk@0.6.0":
   version "0.6.0"
@@ -12084,7 +12096,7 @@ type-is@~1.6.18:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
-typechain@^8.0.0:
+typechain@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/typechain/-/typechain-8.1.0.tgz#fc4902ce596519cb2ccfd012e4ddf92a9945b569"
   integrity sha512-5jToLgKTjHdI1VKqs/K8BLYy42Sr3o8bV5ojh4MnR9ExHO83cyyUdw+7+vMJCpKXUiVUvARM4qmHTFuyaCMAZQ==

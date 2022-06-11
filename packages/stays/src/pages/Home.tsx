@@ -68,8 +68,6 @@ export const Home = () => {
           <MapBox center={center} />
         </Box>
       }
-      <Search onSubmit={setCenter} />
-      <MapBox center={center} />
     </PageWrapper>
   );
 };
