@@ -68,7 +68,7 @@ export const Home = () => {
           <MapBox center={center} />
         </Box>
       }
-      <Search onSubmit={setCenter} />
+      <Search center={center} onSubmit={setCenter} />
       <MapBox center={center} />
     </PageWrapper>
   );
