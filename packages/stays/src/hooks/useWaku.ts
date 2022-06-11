@@ -2,6 +2,7 @@ import type { CreateOptions } from 'js-waku/build/main/lib/waku';
 import { useState, useEffect } from 'react';
 import { Waku } from 'js-waku';
 import Logger from '../utils/logger';
+import { wakuConfig } from 'src/config';
 
 const logger = Logger('useWaku');
 
@@ -16,14 +17,12 @@ export const useWaku = (options?: CreateOptions): undefined | Waku => {
       logger.debug('Waku start');
 
       Waku.create({
-        bootstrap: {
-          default: true
-        },
+        bootstrap: wakuConfig,
         ...options ?? {}
       })
         .then(w => {
           wakuInstance = w;
-          return w.waitForRemotePeer();
+          return w.waitForRemotePeer(undefined, 10000);
         })
         .catch(logger.error)
         .finally(() => {

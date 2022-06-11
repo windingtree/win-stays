@@ -1,14 +1,17 @@
-import type { Map, LatLngExpression } from "leaflet";
+import type { Map, LatLngTuple, LatLngExpression } from "leaflet";
 import { Box } from "grommet";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import Logger from "../utils/logger";
+import L from "leaflet";
+import { geoToH3, h3ToGeoBoundary, kRing } from 'h3-js';
+import { DefaultH3Resolution, DefaultRingSize } from "@windingtree/videre-sdk/dist/cjs/utils/constants";
 
 const logger = Logger('MapBox');
 const defaultZoom = 13
 
 const MapSettings: React.FC<{
-  center: LatLngExpression;
+  center: LatLngTuple;
   map: Map;
 }> = ({ map, center }) => {
   const [position, setPosition] = useState(() => map.getCenter())
@@ -54,13 +57,23 @@ const MapSettings: React.FC<{
     logger.debug(`zoom: ${zoom}`);
   }, [zoom])
 
+  useEffect(() => {
+    const h3 = geoToH3(center[0], center[1], DefaultH3Resolution);
+    const h3Indexes = kRing(h3, DefaultRingSize)
+
+    h3Indexes.forEach((h) => {
+      L.polygon(h3ToGeoBoundary(h) as unknown as LatLngExpression[][], { color: 'red' }).addTo(map)
+    })
+  }, [center, map])
+
   return null
 }
 
 export const MapBox: React.FC<{
-  center: LatLngExpression
+  center: LatLngTuple
 }> = ({ center }) => {
   const [map, setMap] = useState<Map | null>(null)
+
 
   const displayMap = useMemo(
     () => (
@@ -68,13 +81,16 @@ export const MapBox: React.FC<{
         center={center}
         zoom={defaultZoom}
         style={{
-          height: "70vh",
+          height: "84vh",
           // width: "100vw"
+          position: 'relative',
+          zIndex: 0
         }}
         scrollWheelZoom={false}
         ref={setMap}
       >
         <TileLayer
+          zIndex={10}
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
