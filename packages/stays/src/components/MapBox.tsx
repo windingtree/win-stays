@@ -5,11 +5,10 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import Logger from "../utils/logger";
 import L from "leaflet";
 import { geoToH3, h3ToGeoBoundary, kRing } from 'h3-js';
+import { DefaultH3Resolution, DefaultRingSize } from "@windingtree/videre-sdk/dist/cjs/utils/constants";
 
 const logger = Logger('MapBox');
 const defaultZoom = 13
-const defaultH3Resolution = 6
-const defaultRingSize = 1
 
 const MapSettings: React.FC<{
   center: LatLngTuple;
@@ -59,8 +58,8 @@ const MapSettings: React.FC<{
   }, [zoom])
 
   useEffect(() => {
-    const h3 = geoToH3(center[0], center[1], defaultH3Resolution);
-    const h3Indexes = kRing(h3, defaultRingSize)
+    const h3 = geoToH3(center[0], center[1], DefaultH3Resolution);
+    const h3Indexes = kRing(h3, DefaultRingSize)
 
     h3Indexes.forEach((h) => {
       L.polygon(h3ToGeoBoundary(h) as unknown as LatLngExpression[][], { color: 'red' }).addTo(map)
@@ -75,19 +74,23 @@ export const MapBox: React.FC<{
 }> = ({ center }) => {
   const [map, setMap] = useState<Map | null>(null)
 
+
   const displayMap = useMemo(
     () => (
       <MapContainer
         center={center}
         zoom={defaultZoom}
         style={{
-          height: "70vh",
+          height: "84vh",
           // width: "100vw"
+          position: 'relative',
+          zIndex: 0
         }}
         scrollWheelZoom={false}
         ref={setMap}
       >
         <TileLayer
+          zIndex={10}
           attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />

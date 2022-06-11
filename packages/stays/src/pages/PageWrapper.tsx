@@ -7,25 +7,23 @@ import { useAppState } from '../store';
 import { name } from '../config';
 
 export interface PageWrapperProps {
-  children?: React.ReactNode,
+  children?: React.ReactNode;
   breadcrumbs?: Breadcrumb[];
+  kind?: string;
 }
 
-export const PageWrapper = ({ children, breadcrumbs }: PageWrapperProps) => {
+export const PageWrapper = ({ children, breadcrumbs, kind }: PageWrapperProps) => {
   const size = useContext(ResponsiveContext);
   const { isConnecting, isRightNetwork } = useAppState();
 
   return (
-    <Page kind='narrow'>
-      <PageContent>
+    <Page kind={kind ?? 'narrow'}>
+      <PageContent pad='none'>
         <Breadcrumbs
           breadcrumbs={breadcrumbs}
           size={size}
         />
-        <Box
-          pad={{ top: 'small' }}
-          fill='horizontal'
-        >
+        <Box fill='horizontal'>
           <MessageLoadingBox type='info' show={isConnecting}>
             The Dapp is connecting
           </MessageLoadingBox>
