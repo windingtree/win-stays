@@ -60,7 +60,6 @@ export const Home = () => {
     h3Indexes.map((h) => generateTopic({ ...videreConfig, topic: 'pong' }, h))
   );
 
-
   return (
     <PageWrapper kind='full'>
       {!isConnecting &&
@@ -69,6 +68,8 @@ export const Home = () => {
           <MapBox center={center} />
         </Box>
       }
+      <Search onSubmit={setCenter} />
+      <MapBox center={center} />
     </PageWrapper>
   );
 };
