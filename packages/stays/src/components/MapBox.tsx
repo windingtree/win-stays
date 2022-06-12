@@ -5,7 +5,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import Logger from "../utils/logger";
 import L from "leaflet";
 import { geoToH3, h3ToGeoBoundary, kRing } from 'h3-js';
-import { DefaultH3Resolution, DefaultRingSize } from "@windingtree/videre-sdk/dist/cjs/utils/constants";
+import { utils } from "@windingtree/videre-sdk";
 
 const logger = Logger('MapBox');
 const defaultZoom = 13
@@ -58,8 +58,8 @@ const MapSettings: React.FC<{
   }, [zoom])
 
   useEffect(() => {
-    const h3 = geoToH3(center[0], center[1], DefaultH3Resolution);
-    const h3Indexes = kRing(h3, DefaultRingSize)
+    const h3 = geoToH3(center[0], center[1], utils.constants.DefaultH3Resolution);
+    const h3Indexes = kRing(h3, utils.constants.DefaultRingSize)
 
     h3Indexes.forEach((h) => {
       L.polygon(h3ToGeoBoundary(h) as unknown as LatLngExpression[][], { color: 'red' }).addTo(map)

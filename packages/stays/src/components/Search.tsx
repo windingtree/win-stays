@@ -12,9 +12,8 @@ import { useAppState } from "../store";
 import { geoToH3, kRing } from 'h3-js';
 import { Ask } from '../proto/ask';
 import { Ping } from "../proto/pingpong";
-import { generateTopic } from "@windingtree/videre-sdk/dist/cjs/utils/topics";
+import { utils } from "@windingtree/videre-sdk";
 import { videreConfig } from "../config";
-import { DefaultH3Resolution, DefaultRingSize } from "@windingtree/videre-sdk/dist/cjs/utils/constants";
 
 const logger = Logger('Search');
 const today = DateTime.local().toMillis();
@@ -131,15 +130,15 @@ export const Search: React.FC<{
       navigate(`?${query}`, { replace: true });
       await handleMapSearch()
 
-      const h3 = geoToH3(center[0], center[1], DefaultH3Resolution);
-      const h3Indexes = kRing(h3, DefaultRingSize)
+      const h3 = geoToH3(center[0], center[1], utils.constants.DefaultH3Resolution);
+      const h3Indexes = kRing(h3, utils.constants.DefaultRingSize)
       const ping: Ping = {
         // timestamp: DateTime.local().toMillis()
       }
 
       await Promise.all([
-        ...h3Indexes.map((h) => sendMessage(waku, Ask, ask, generateTopic({ ...videreConfig, topic: 'ask' }, h))),
-        ...h3Indexes.map((h) => sendMessage(waku, Ping, ping, generateTopic({ ...videreConfig, topic: 'ping' }, h)))
+        ...h3Indexes.map((h) => sendMessage(waku, Ask, ask, utils.generateTopic({ ...videreConfig, topic: 'ask' }, h))),
+        ...h3Indexes.map((h) => sendMessage(waku, Ping, ping, utils.generateTopic({ ...videreConfig, topic: 'ping' }, h)))
       ])
     },
     [waku, center, searchValue, checkInCheckOut, numSpacesReq, numAdults, numChildren, navigate, handleMapSearch]
