@@ -44,6 +44,11 @@ export const mainReducer = (state: State, action: Action): State => {
           ...state,
           account: action.payload
         };
+      case 'SET_SERVICE_PROVIDER':
+        return {
+          ...state,
+          serviceProviderDataDomain: action.payload
+        };
       default:
         return state;
     }

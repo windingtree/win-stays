@@ -1,3 +1,4 @@
+import type { TypedDataDomain } from "@ethersproject/abstract-signer";
 import type { Waku } from '../hooks/useWaku';
 import type { StaticProvider } from '../hooks/useRpcProvider';
 import type {
@@ -21,6 +22,7 @@ export interface State {
   networkId?: number;
   isRightNetwork: boolean;
   account?: string;
+  serviceProviderDataDomain?:TypedDataDomain;
   [key: string]: unknown | GenericStateRecord[];
 }
 
@@ -92,6 +94,11 @@ export interface ResetRecordAction {
   }
 }
 
+export interface SetServiceProvider {
+  type: 'SET_SERVICE_PROVIDER';
+  payload: TypedDataDomain | undefined;
+}
+
 export type Action =
   | SetConnectingAction
   | SetWakuAction
@@ -104,4 +111,5 @@ export type Action =
   | SetAccountAction
   | SetRecordAction
   | RemoveRecordAction
-  | ResetRecordAction;
+  | ResetRecordAction
+  | SetServiceProvider;
