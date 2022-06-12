@@ -67,24 +67,15 @@ export const Search: React.FC<{
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<undefined | string>();
 
-  useEffect(() => {
-    logger.info('params changed')
-    const params = new URLSearchParams(search);
-    setSearchValue(String(params.get('searchValue') ?? ''))
-    setCheckInCheckOut([Number(params.get('checkIn') ?? today), Number(params.get('checkOut') ?? tomorrow)])
-    setNumSpacesReq(Number(params.get('numSpacesReq') ?? 1))
-    setNumAdults(Number(params.get('numAdults') ?? 1))
-    setNumChildren(Number(params.get('numChildren') ?? 0))
-  }, [search]);
-
   const handleMapSearch: () => Promise<LatLngTuple | undefined> = useCallback(
     async () => {
+      const params = new URLSearchParams(search);
       logger.info('requst map')
       setLoading(true);
       setError(undefined);
       try {
         const res = await axios.request({
-          url: `https://nominatim.openstreetmap.org/search?format=json&q=${searchValue}`,
+          url: `https://nominatim.openstreetmap.org/search?format=json&q=${params.get('searchValue') ?? ''}`,
           method: 'GET'
         })
 
@@ -105,7 +96,7 @@ export const Search: React.FC<{
         setError(message);
         setLoading(false);
       }
-    }, [searchValue, onSubmit])
+    }, [search, onSubmit])
 
   const handleSubmit = useCallback(
     async () => {
@@ -118,31 +109,21 @@ export const Search: React.FC<{
         ['numChildren', String(numChildren)],
       ]);
 
-      const checkIn = DateTime.fromMillis(checkInCheckOut[0])
-      const checkOut = DateTime.fromMillis(checkInCheckOut[1])
-      const ask: Ask = {
-        checkIn: { year: checkIn.year, month: checkIn.month, day: checkIn.day },
-        checkOut: { year: checkOut.year, month: checkOut.month, day: checkOut.day },
-        numPaxAdult: numAdults,
-        numPaxChild: numChildren,
-        numSpacesReq: numSpacesReq,
-      };
       navigate(`?${query}`, { replace: true });
-      await handleMapSearch()
-
-      const h3 = geoToH3(center[0], center[1], utils.constants.DefaultH3Resolution);
-      const h3Indexes = kRing(h3, utils.constants.DefaultRingSize)
-      const ping: Ping = {
-        // timestamp: DateTime.local().toMillis()
-      }
-
-      await Promise.all([
-        ...h3Indexes.map((h) => sendMessage(waku, Ask, ask, utils.generateTopic({ ...videreConfig, topic: 'ask' }, h))),
-        ...h3Indexes.map((h) => sendMessage(waku, Ping, ping, utils.generateTopic({ ...videreConfig, topic: 'ping' }, h)))
-      ])
     },
-    [waku, center, searchValue, checkInCheckOut, numSpacesReq, numAdults, numChildren, navigate, handleMapSearch]
+    [searchValue, checkInCheckOut, numSpacesReq, numAdults, numChildren, navigate]
   );
+
+  const handleSendMessage = useCallback(async () => {
+    const h3 = geoToH3(center[0], center[1], utils.constants.DefaultH3Resolution);
+    const h3Indexes = kRing(h3, utils.constants.DefaultRingSize)
+    const ping: Ping = {}
+
+    await Promise.all([
+      // ...h3Indexes.map((h) => sendMessage(waku, Ask, ask, utils.generateTopic({ ...videreConfig, topic: 'ask' }, h))),
+      ...h3Indexes.map((h) => sendMessage(waku, Ping, ping, utils.generateTopic({ ...videreConfig, topic: 'ping' }, h)))
+    ])
+  }, [center, waku])
 
   const handleDateChange = ({ value }: { value: string[] }) => {
     const checkInisInPast = today > DateTime.fromISO(value[0]).toMillis()
@@ -152,6 +133,24 @@ export const Search: React.FC<{
       checkOutisInPast ? tomorrow : DateTime.fromISO(value[1]).toMillis()
     ])
   }
+
+  useEffect(() => {
+    logger.info('params changed')
+    const params = new URLSearchParams(search);
+    setSearchValue(String(params.get('searchValue') ?? ''))
+    setCheckInCheckOut([Number(params.get('checkIn') ?? today), Number(params.get('checkOut') ?? tomorrow)])
+    setNumSpacesReq(Number(params.get('numSpacesReq') ?? 1))
+    setNumAdults(Number(params.get('numAdults') ?? 1))
+    setNumChildren(Number(params.get('numChildren') ?? 0))
+  }, [search]);
+
+  useEffect(() => {
+    handleMapSearch()
+  }, [search, handleMapSearch]);
+
+  useEffect(() => {
+    handleSendMessage()
+  }, [center, handleSendMessage]);
 
   return (
     <Form

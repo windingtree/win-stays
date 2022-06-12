@@ -3133,10 +3133,10 @@
   dependencies:
     "@openzeppelin/contracts" "^4.5.0"
 
-"@windingtree/videre-sdk@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.6.0.tgz#cb4120252ea1ba783b7f2a8aa98571f73bbfa696"
-  integrity sha512-yTk0FQlBb3Vhy+ICNkPZ5ZEppYBuh1s0gO+rft8BH8wIdRY+tPX44DauBS3q2zBmc0oyxM8bCw48NBFyxG5AOg==
+"@windingtree/videre-sdk@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@windingtree/videre-sdk/-/videre-sdk-0.7.0.tgz#eecf791c3f9f82a81f1643abc85e16d5e21ebaaf"
+  integrity sha512-VA8gsVXHAFuKR59j2IOiiGtMdmw9UooSFjGLsxCBkU7mvyvs+8zDWbWQTgaLwe5f+GSlThvUTcBGHM/QGkSAKQ==
   dependencies:
     "@protobuf-ts/runtime" "^2.5.0"
     ethers "^5.6.5"
