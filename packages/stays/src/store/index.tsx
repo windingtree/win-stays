@@ -9,6 +9,7 @@ import { chainId, rpc } from '../config';
 import { useRpcProvider } from '../hooks/useRpcProvider';
 import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
+import { useDataDomain } from "../hooks/useDataDomain";
 
 export type AppReducerType = ReturnType<typeof useAppReducer>;
 export type State = AppReducerType[0];
@@ -68,6 +69,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     isRightNetwork
   ] = useNetworkId(provider, chainId);
   const [account, isAccountLoading] = useAccount(provider);
+  const [, serviceProviderDataDomain, isDataDomainLoading] = useDataDomain(provider, networkId);
 
   useEffect(
     () => {
@@ -77,11 +79,11 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
           !!!waku ||
           isWeb3ModalConnecting ||
           isNetworkIdLoading ||
-          isAccountLoading
+          isAccountLoading ||
+          isDataDomainLoading
       });
     },
-    [dispatch, waku, isWeb3ModalConnecting,
-      isNetworkIdLoading, isAccountLoading]
+    [dispatch, waku, isWeb3ModalConnecting, isNetworkIdLoading, isAccountLoading, isDataDomainLoading]
   );
 
   useEffect(
@@ -154,6 +156,13 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       payload: account
     })
   }, [dispatch, account]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_SERVICE_PROVIDER',
+      payload: serviceProviderDataDomain
+    })
+  }, [dispatch, serviceProviderDataDomain]);
 
   return (
     <StateContext.Provider value={state}>

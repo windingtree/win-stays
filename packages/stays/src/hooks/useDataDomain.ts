@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { providers } from 'ethers';
 import Logger from '../utils/logger';
 import { address, videreConfig } from '../config';
-import { useAppState } from '../store';
 import { TypedDataDomain } from "@ethersproject/abstract-signer";
 import { LineRegistry__factory } from '../typechain-videre';
+import { Web3ModalProvider } from './useWeb3Modal';
 
 const logger = Logger('useLineRegistryDataDomain');
 
@@ -17,8 +17,10 @@ export type UseDataDomain = [
   error: string | undefined
 ];
 
-export const useDataDomain = (): UseDataDomain => {
-  const { provider, networkId } = useAppState();
+export const useDataDomain = (
+  provider: Web3ModalProvider | undefined,
+  networkId: number | undefined
+): UseDataDomain => {
 
   const [serviceProviderDataDomain, setServiceProviderDataDomain] = useState<TypedDataDomain>();
   const [lineRegistryDataDomain, setLineRegistryDataDomain] = useState<TypedDataDomain>();
@@ -26,9 +28,12 @@ export const useDataDomain = (): UseDataDomain => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    logger.error('init data domain...',provider,networkId);
+
     if (!provider || !networkId) {
       return
     }
+
     const getServiceProviderRegistry = async () => {
       try {
         logger.error('init data domain...');
