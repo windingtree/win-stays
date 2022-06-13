@@ -19,7 +19,6 @@ export const sendMessage = <T extends object>(
     .fromBytes(protoMessageInstance.toBinary(message), topic)
     .then((value) => {
       waku.lightPush.push(value)
-      logger.info('sending...', topic)
     })
     .catch((error) => logger.error('failed to send', topic))
     .finally(() => logger.info('sent successfully', topic))

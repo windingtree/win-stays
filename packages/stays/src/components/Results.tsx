@@ -9,16 +9,10 @@ import { Bids } from "../proto/bidask";
 import { Pong } from "../proto/pingpong";
 import { videreConfig } from "../config";
 import Logger from "../utils/logger";
-import { utils } from "@windingtree/videre-sdk"
+import { utils as vUtils, eip712 } from "@windingtree/videre-sdk"
 import { ServiceProviderRegistry, ServiceProviderRegistry__factory } from '../typechain-videre';
-
-export const EIP712PongTypes = {
-  Pong: [
-    { name: "facilityHash", type: "bytes32" },
-    { name: "geohash", type: "string" },
-    { name: "timestamp", type: "uint64" }
-  ]
-}
+import { LatLng } from "../proto/latlng";
+import { utils } from "ethers";
 
 const logger = Logger('Results');
 
@@ -46,23 +40,41 @@ export const Results: React.FC<{
         incomingMessage
       );
       logger.info('Pong message arrived', decodedMessage)
+      if (decodedMessage) {
+        try {
 
-      if (!serviceProviderDataDomain || !decodedMessage || !provider || !serviceProviderDataDomain.verifyingContract) {
-        logger.error('not ready to handle Pong', !serviceProviderDataDomain, !decodedMessage, !provider, !serviceProviderDataDomain?.verifyingContract)
+          const loc = LatLng.fromBinary(decodedMessage.loc)
+        } catch {
+
+          logger.error('Invalid loc')
+        }
+        if (!videreConfig.line || !serviceProviderDataDomain || !provider || !serviceProviderDataDomain.verifyingContract) {
+          logger.error('not ready to handle Pong', !serviceProviderDataDomain, !decodedMessage, !provider, !serviceProviderDataDomain?.verifyingContract)
+          return false
+        }
+
+        const registry: ServiceProviderRegistry = ServiceProviderRegistry__factory.connect(serviceProviderDataDomain.verifyingContract, provider)
+
+        const res = await vUtils.verifyMessage(
+          decodedMessage.serviceProvider,
+          {
+            name: 'stays',
+            version: '1',
+            verifyingContract: '0xE7de8c7F3F9B24F9b8b519035eC53887BE3f5443',
+            chainId: 77
+          },
+          eip712.pingpong.Pong,
+          decodedMessage,
+          async (which: Uint8Array, who: string) => {
+
+            return vUtils.auth.isBidder(registry, utils.hexlify(which), who)
+          }
+        )
+        logger.info('signature verification', res)
+        return res
+      } else {
         return false
       }
-
-      const registry: ServiceProviderRegistry = ServiceProviderRegistry__factory.connect(serviceProviderDataDomain.verifyingContract, provider)
-
-      return await utils.verifyMessage(
-        videreConfig.line,
-        serviceProviderDataDomain,
-        EIP712PongTypes,
-        decodedMessage,
-        async (signer: string) => {
-          return await registry.can(decodedMessage.serviceProvider, utils.constants.AccessRoles.BIDDER_ROLE, signer)
-        }
-      )
 
     } catch (error) {
       console.error(error);
@@ -70,17 +82,17 @@ export const Results: React.FC<{
     }
   };
 
-  const h3 = geoToH3(center[0], center[1], utils.constants.DefaultH3Resolution);
-  const h3Indexes = kRing(h3, utils.constants.DefaultRingSize)
+  const h3 = geoToH3(center[0], center[1], vUtils.constants.DefaultH3Resolution);
+  const h3Indexes = kRing(h3, vUtils.constants.DefaultRingSize)
   useWakuObserver(
     waku,
     bidMessageHandler,
-    h3Indexes.map((h) => utils.generateTopic({ ...videreConfig, topic: 'bid' }, h))
+    h3Indexes.map((h) => vUtils.generateTopic({ ...videreConfig, topic: 'bid' }, h))
   );
   useWakuObserver(
     waku,
     pongMessageHandler,
-    h3Indexes.map((h) => utils.generateTopic({ ...videreConfig, topic: 'pong' }, h))
+    h3Indexes.map((h) => vUtils.generateTopic({ ...videreConfig, topic: 'pong' }, h))
   );
   return <Box>HERE</Box>;
 };
