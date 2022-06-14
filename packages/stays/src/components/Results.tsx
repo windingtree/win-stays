@@ -33,52 +33,51 @@ export const Results: React.FC<{
     }
   };
 
-  const pongMessageHandler = async (incomingMessage: WakuMessage): Promise<boolean> => {
+  const pongMessageHandler = async (incomingMessage: WakuMessage): Promise<void> => {
     try {
       const decodedMessage = processMessage<Pong>(
         Pong,
         incomingMessage
       );
       logger.info('Pong message arrived', decodedMessage)
-      if (decodedMessage) {
-        try {
 
-          const loc = LatLng.fromBinary(decodedMessage.loc)
-        } catch {
-
-          logger.error('Invalid loc')
-        }
-        if (!videreConfig.line || !serviceProviderDataDomain || !provider || !serviceProviderDataDomain.verifyingContract) {
-          logger.error('not ready to handle Pong', !serviceProviderDataDomain, !decodedMessage, !provider, !serviceProviderDataDomain?.verifyingContract)
-          return false
-        }
-
-        const registry: ServiceProviderRegistry = ServiceProviderRegistry__factory.connect(serviceProviderDataDomain.verifyingContract, provider)
-
-        const res = await vUtils.verifyMessage(
-          decodedMessage.serviceProvider,
-          {
-            name: 'stays',
-            version: '1',
-            verifyingContract: '0xE7de8c7F3F9B24F9b8b519035eC53887BE3f5443',
-            chainId: 77
-          },
-          eip712.pingpong.Pong,
-          decodedMessage,
-          async (which: Uint8Array, who: string) => {
-
-            return vUtils.auth.isBidder(registry, utils.hexlify(which), who)
-          }
-        )
-        logger.info('signature verification', res)
-        return res
-      } else {
-        return false
+      if (!decodedMessage) {
+        throw new Error('decodedMessage if undefined');
       }
 
+      if (!videreConfig.line || !serviceProviderDataDomain || !provider || !serviceProviderDataDomain.verifyingContract) {
+        throw new Error('not ready to handle Pong');
+      }
+
+      const registry: ServiceProviderRegistry = ServiceProviderRegistry__factory.connect(serviceProviderDataDomain.verifyingContract, provider)
+      const res = await vUtils.verifyMessage(
+        decodedMessage.serviceProvider,
+        {
+          name: 'stays',
+          version: '1',
+          verifyingContract: '0xE7de8c7F3F9B24F9b8b519035eC53887BE3f5443',
+          chainId: 77
+        },
+        eip712.pingpong.Pong,
+        decodedMessage,
+        async (which: Uint8Array, who: string) => {
+          return vUtils.auth.isBidder(registry, utils.hexlify(which), who)
+        }
+      )
+      logger.info('signature verification', res)
+      if (!!res) {
+        const loc = LatLng.fromBinary(decodedMessage.loc)
+        // dispatch({
+
+        // })
+
+      } else {
+
+      }
+
+      console.log('LOC HERE', loc)
     } catch (error) {
       console.error(error);
-      return false
     }
   };
 
