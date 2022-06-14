@@ -67,6 +67,7 @@ export const Results: React.FC<{
       logger.info('signature verification', res)
       if (!!res) {
         const loc = LatLng.fromBinary(decodedMessage.loc)
+        console.log('LOC HERE', loc)
         // dispatch({
 
         // })
@@ -75,7 +76,6 @@ export const Results: React.FC<{
 
       }
 
-      console.log('LOC HERE', loc)
     } catch (error) {
       console.error(error);
     }
