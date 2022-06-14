@@ -10,6 +10,7 @@ import { useRpcProvider } from '../hooks/useRpcProvider';
 import { useNetworkId } from '../hooks/useNetworkId';
 import { useAccount } from '../hooks/useAccount';
 import { useDataDomain } from "../hooks/useDataDomain";
+import { useWeb3StorageApi } from '../hooks/useWeb3StorgaeApi';
 
 export type AppReducerType = ReturnType<typeof useAppReducer>;
 export type State = AppReducerType[0];
@@ -56,6 +57,7 @@ const web3ModalConfig: Web3ModalConfig = {
 export const AppStateProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useAppReducer();
   const waku = useWaku();
+  const ipfsNode = useWeb3StorageApi();
   const [staticProvider] = useRpcProvider(rpc);
   const [
     provider,

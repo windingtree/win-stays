@@ -31,6 +31,7 @@ export const name = process.env.REACT_APP_NETWORK_NAME as string;
 export const blockExplorer = process.env.REACT_APP_BLOCK_EXPLORER as string;
 export const address = process.env.REACT_APP_VERIFYING_CONTRACT as string;
 export const rpc = process.env.REACT_APP_NETWORK_PROVIDER as string;
+export const web3StorageKey = process.env.REACT_APP_WEB3STORAGE_KEY as string;
 
 export const videreConfig: VidereConfig = {
   line: String(process.env.REACT_APP_LINE),
