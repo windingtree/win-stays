@@ -1,5 +1,5 @@
 import type { LatLngTuple } from "leaflet";
-import { useAppState } from '../store';
+import { useAppDispatch, useAppState } from '../store';
 import { Box } from 'grommet';
 import { WakuMessage } from "js-waku";
 import { useWakuObserver } from "src/hooks/useWakuObserver";
@@ -20,6 +20,7 @@ export const Results: React.FC<{
   center: LatLngTuple
 }> = ({ center }) => {
   const { waku, provider, serviceProviderDataDomain } = useAppState();
+  const dispatch = useAppDispatch();
 
   const bidMessageHandler = (incomingMessage: WakuMessage): void => {
     try {
@@ -66,16 +67,24 @@ export const Results: React.FC<{
       )
       logger.info('signature verification', res)
       if (!!res) {
-        const loc = LatLng.fromBinary(decodedMessage.loc)
-        console.log('LOC HERE', loc)
-        // dispatch({
-
-        // })
-
+        try {
+          const loc = LatLng.fromBinary(decodedMessage.loc)
+          dispatch({
+            type: 'SET_RECORD',
+            payload: {
+              name: 'facilities',
+              record: {
+                id: utils.hexlify(decodedMessage.serviceProvider),
+              }
+            }
+          })
+          console.log('LOC HERE', loc)
+        } catch (error) {
+          logger.error('invalid loc', error)
+        }
       } else {
-
+        logger.error('invalid signature')
       }
-
     } catch (error) {
       console.error(error);
     }
