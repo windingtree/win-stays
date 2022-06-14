@@ -13,6 +13,10 @@ import { utils as vUtils, eip712 } from "@windingtree/videre-sdk"
 import { ServiceProviderRegistry, ServiceProviderRegistry__factory } from '../typechain-videre';
 import { LatLng } from "../proto/latlng";
 import { utils } from "ethers";
+import { useWeb3StorageApi } from "../hooks/useWeb3StorgaeApi";
+import { Facility as FacilityMetadata } from "../proto/facility";
+
+import decompress from "brotli/decompress"
 
 const logger = Logger('Results');
 
@@ -21,6 +25,7 @@ export const Results: React.FC<{
 }> = ({ center }) => {
   const { waku, provider, serviceProviderDataDomain } = useAppState();
   const dispatch = useAppDispatch();
+  const ipfsNode = useWeb3StorageApi();
 
   const bidMessageHandler = (incomingMessage: WakuMessage): void => {
     try {
@@ -68,19 +73,38 @@ export const Results: React.FC<{
       logger.info('signature verification', res)
       if (!!res) {
         try {
-          const loc = LatLng.fromBinary(decodedMessage.loc)
-          dispatch({
-            type: 'SET_RECORD',
-            payload: {
-              name: 'facilities',
-              record: {
-                id: utils.hexlify(decodedMessage.serviceProvider),
-              }
-            }
-          })
-          console.log('LOC HERE', loc)
+          // const loc = LatLng.fromBinary(decodedMessage.loc)
+          // dispatch({
+          //   type: 'SET_RECORD',
+          //   payload: {
+          //     name: 'facilities',
+          //     record: {
+          //       id: utils.hexlify(decodedMessage.serviceProvider),
+          //     }
+          //   }
+          // })
+          // console.log('LOC HERE', loc)
+          const contract = ServiceProviderRegistry__factory.connect(
+            '0xC1A95DD6184C6A37A9Dd7b4b5E7DfBd5065C8Dd5',
+            provider
+          )
+          const dataUri = await contract.datastores(decodedMessage.serviceProvider)
+          logger.info('dataUri', dataUri)
+
+          const data = await ipfsNode.get(dataUri)
+          logger.info('data', data)
+
+          const buffer = Buffer.from(data)
+          logger.info('buffer', buffer)
+
+          const decompressed = decompress(buffer)
+          logger.info('decompressed', decompressed)
+
+          const clean = FacilityMetadata.fromBinary(decompressed)
+          logger.info('clean', clean)
+
         } catch (error) {
-          logger.error('invalid loc', error)
+          logger.error(error)
         }
       } else {
         logger.error('invalid signature')
