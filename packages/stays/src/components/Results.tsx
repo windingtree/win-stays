@@ -14,9 +14,12 @@ import { ServiceProviderRegistry, ServiceProviderRegistry__factory } from '../ty
 import { LatLng } from "../proto/latlng";
 import { utils } from "ethers";
 import { useWeb3StorageApi } from "../hooks/useWeb3StorgaeApi";
-import { Facility as FacilityMetadata } from "../proto/facility";
+import { Facility as FacilityMetadata, Item, ItemType, Space } from "../proto/facility";
 
 import decompress from "brotli/decompress"
+import axios from "axios";
+import { ServiceProviderData } from "../proto/storage";
+import { SignedMessage } from "@windingtree/videre-sdk/dist/cjs/utils";
 
 const logger = Logger('Results');
 
@@ -91,18 +94,62 @@ export const Results: React.FC<{
           const dataUri = await contract.datastores(decodedMessage.serviceProvider)
           logger.info('dataUri', dataUri)
 
-          const data = await ipfsNode.get(dataUri)
-          logger.info('data', data)
+          axios.get(`https://dweb.link/ipfs/${dataUri}`,
+          {
+              responseType: 'arraybuffer',
+              headers: {
+                  'Content-Type': 'application/octet-stream',
+                  'Accept': 'application/octet-stream'
+              }
+          })
+          .then(async (response) => {
+            const blob = new Blob([response.data])
+            const decompressed = decompress(Buffer.from(await blob.arrayBuffer()))
+            logger.info('decompressed', decompressed)
 
-          const buffer = Buffer.from(data)
-          logger.info('buffer', buffer)
+            const serviceProviderData = ServiceProviderData.fromBinary(decompressed)
 
-          const decompressed = decompress(buffer)
-          logger.info('decompressed', decompressed)
+            logger.info('service provider data', serviceProviderData)
 
-          const clean = FacilityMetadata.fromBinary(decompressed)
-          logger.info('clean', clean)
+            // verify that this is signed correctly
+            const isValid = await vUtils.verifyMessage(
+              serviceProviderData.serviceProvider,
+              {
+                name: 'stays',
+                version: '1',
+                verifyingContract: '0xE7de8c7F3F9B24F9b8b519035eC53887BE3f5443',
+                chainId: 77
+              },
+              eip712.storage.ServiceProviderData,
+              serviceProviderData as SignedMessage,
+              async (which: Uint8Array, who: string) => {
+                return vUtils.auth.isApi(registry, utils.hexlify(which), who)
+              }
+            )
 
+            if (isValid) {
+              logger.info('Verified metadata');
+              const facility = FacilityMetadata.fromBinary(serviceProviderData.payload);
+
+              logger.info('facility', facility)
+
+              for (const item of serviceProviderData.items) {
+                const itemDecoded = Item.fromBinary(item.payload);
+
+                // output generic item info
+                logger.info('item', item.item, ':', itemDecoded)
+
+                if (itemDecoded.type === ItemType.SPACE && itemDecoded.payload) {
+                  // process a space
+                  const space = Space.fromBinary(itemDecoded.payload);
+                  logger.info('spaceItem payload decoded', space);
+                }
+              }
+            } else {
+              logger.info('Failed to verify metadata');
+            }
+          })
+          .catch((error) => console.log(error));
         } catch (error) {
           logger.error(error)
         }
