@@ -57,7 +57,7 @@
   },
   "scripts": {
     "start": "cra-webpack-rewired start",
-    "start:oviride": "react-app-rewired start",
+    "start:override": "react-app-rewired start",
     "build": "cra-webpack-rewired build",
     "test": "cra-webpack-rewired test",
     "protoc:libs": "cp -pR ./node_modules/@windingtree/stays-models/dist/proto/*.proto ./src/proto/",
