@@ -60,6 +60,7 @@ export const mainReducer = (state: State, action: Action): State => {
 const initialState: State = {
   isConnecting: true,
   isRightNetwork: true,
+  facilities:[]
 };
 
 export const combineReducers = (

@@ -22,7 +22,8 @@ export interface State {
   networkId?: number;
   isRightNetwork: boolean;
   account?: string;
-  serviceProviderDataDomain?:TypedDataDomain;
+  serviceProviderDataDomain?: TypedDataDomain;
+  facilities: [];
   [key: string]: unknown | GenericStateRecord[];
 }
 
