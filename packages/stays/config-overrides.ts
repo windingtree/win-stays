@@ -1,5 +1,6 @@
-const webpack = require('webpack');
-module.exports = function override(config, env) {
+import { ProvidePlugin } from 'webpack';
+
+export default function override(config, env) {
     config.resolve.fallback = {
         url: require.resolve('url'),
         fs: require.resolve('fs'),
@@ -12,10 +13,10 @@ module.exports = function override(config, env) {
         stream: require.resolve('stream-browserify'),
     };
     config.plugins.push(
-        new webpack.ProvidePlugin({
+        new ProvidePlugin({
             process: 'process/browser',
             Buffer: ['buffer', 'Buffer'],
-        }),
+        })
     );
 
     return config;
