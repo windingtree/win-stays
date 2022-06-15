@@ -45,6 +45,7 @@ const initialState: State = {
     timestamp: 0
 
   },
+  facilities:[]
 };
 
 export const combineReducers = (
