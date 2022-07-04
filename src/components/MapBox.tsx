@@ -18,7 +18,6 @@ const pinIcon = new L.Icon({
   className: 'leaflet-div-icon',
 });
 
-
 const MapSettings: React.FC<{
   center: LatLngTuple;
   map: Map;
