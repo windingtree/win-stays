@@ -10,4 +10,10 @@ coverage.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.idea
+
+# upstream protos and generated ts
+src/proto/*.proto
+src/proto/*.ts
+!src/proto/test.proto
+
+src/typechain*
