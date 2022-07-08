@@ -16,7 +16,7 @@ import decompress from "brotli/decompress"
 import axios from "axios";
 import { ServiceProviderData } from "../proto/storage";
 import { SignedMessage } from "@windingtree/videre-sdk/dist/cjs/utils";
-import { Box, Card, CardHeader } from "grommet";
+import { Button, Box, Card, CardHeader, CardBody, CardFooter } from "grommet";
 
 const logger = Logger('Results');
 
@@ -181,10 +181,16 @@ export const Results: React.FC<{
       backgroundColor: 'rgba(0, 0, 0, 0)'
     }}
   >
-    {facilities.map((facility) => <Card pad='small' background={'white'} margin='5px'>
+    {facilities.map((facility) => <Card key={facility.id} pad='small' background={'white'} margin='5px'>
       <CardHeader>
         {facility.name}
       </CardHeader>
+      <CardBody pad={'small'}>
+        {facility.description}
+      </CardBody>
+      <CardFooter justify="end">
+        <Button label='book' onClick={() => logger.info('Redirect to Facility page')} />
+      </CardFooter>
     </Card>
     )}
   </Box>;

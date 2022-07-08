@@ -111,7 +111,7 @@ const fakeFacilities: Facility[] = [
 const initialState: State = {
   isConnecting: true,
   isRightNetwork: true,
-  facilities:[...fakeFacilities]
+  facilities:[]
 };
 
 export const combineReducers = (

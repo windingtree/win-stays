@@ -10,10 +10,11 @@ import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { sendMessage } from "../utils/waku";
 import { useAppState } from "../store";
 import { geoToH3, kRing } from 'h3-js';
-import { Ask } from '../proto/ask';
+// import { Ask } from '../proto/ask';
 import { Ping } from "../proto/pingpong";
 import { utils } from "@windingtree/videre-sdk";
 import { videreConfig } from "../config";
+// import { Close } from "grommet-icons";
 
 const logger = Logger('Search');
 const today = DateTime.local().toMillis();
@@ -51,8 +52,10 @@ export const ResponsiveBottomGrid = (winWidth: number) => {
 };
 export const Search: React.FC<{
   onSubmit: React.Dispatch<React.SetStateAction<LatLngTuple>>
-  center: LatLngTuple
-}> = ({ onSubmit, center }) => {
+  center: LatLngTuple,
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  open: boolean
+}> = ({ onSubmit, center,setOpen,open }) => {
   const navigate = useNavigate();
   const { waku } = useAppState();
   const { winWidth } = useWindowsDimension();
@@ -156,13 +159,18 @@ export const Search: React.FC<{
     <Form
       style={{
         position: 'absolute',
-        zIndex: '1',
+        zIndex: `${open ? '1' : '-1'}`,
+        alignSelf: 'center',
         background: 'white',
         width: '70%',
-        margin: '1.25rem 15%'
+        margin: '1rem',
+        padding: '0.75rem',
+        borderRadius: '0.5rem',
+        boxShadow: 'rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px'
       }}
       onSubmit={() => handleSubmit()}
     >
+      {/* <Button onClick={() => setOpen(false)} alignSelf="end" icon={<Close size="medium" />} /> */}
       <Grid
         columns={ResponsiveTopGrid(winWidth)}
         responsive={true}

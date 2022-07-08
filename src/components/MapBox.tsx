@@ -12,8 +12,8 @@ const logger = Logger('MapBox');
 const defaultZoom = 13
 
 const pinIcon = new L.Icon({
-  iconUrl: require('../images/pinIcon.png'),
-  iconRetinaUrl: require('../images/pinIcon.png'),
+  iconUrl: require('../images/pin.svg'),
+  iconRetinaUrl: require('../images/pin.svg'),
   iconSize: new L.Point(20, 20),
   className: 'leaflet-div-icon',
 });
@@ -89,7 +89,7 @@ export const MapBox: React.FC<{
         center={center}
         zoom={defaultZoom}
         style={{
-          height: "84vh",
+          height: "100vh",
           // width: "100vw"
           position: 'relative',
           zIndex: 0
