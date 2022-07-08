@@ -6,10 +6,16 @@ import type {
   Web3ModalSignInFunction,
   Web3ModalSignOutFunction
 } from '../hooks/useWeb3Modal';
+import { Facility as FacilityMetadata, Space } from "../proto/facility";
 
 export interface GenericStateRecord {
   id: string;
   [key: string]: unknown;
+}
+
+export interface Facility extends FacilityMetadata {
+  id: string;
+  spaces: Space[];
 }
 
 export interface State {
@@ -23,7 +29,7 @@ export interface State {
   isRightNetwork: boolean;
   account?: string;
   serviceProviderDataDomain?: TypedDataDomain;
-  facilities: [];
+  facilities: Facility[];
   [key: string]: unknown | GenericStateRecord[];
 }
 
