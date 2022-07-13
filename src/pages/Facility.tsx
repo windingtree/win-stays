@@ -1,10 +1,9 @@
-import type { LatLngTuple } from "leaflet";
 import { useAppState } from '../store';
 import { PageWrapper } from './PageWrapper';
 import { Box, Text } from 'grommet';
 import { useMemo } from 'react';
 
-export const Facility = ({ }) => {
+export const Facility = () => {
   const { isConnecting, facilities } = useAppState();
   const facility = useMemo(() => facilities.find(f => '/facility/' + f.id === window.location.pathname), [facilities])
 

@@ -7,6 +7,11 @@ import { useAppState } from './store';
 import { Home } from './pages/Home';
 import { Facility } from './pages/Facility';
 import { Bookings } from './pages/Bookings';
+import { Faq } from './pages/Faq';
+import { About } from './pages/About';
+import { Contacts } from './pages/Contacts';
+import { Legal } from './pages/Legal';
+import { Security } from './pages/Security';
 
 export interface ProtectedProps {
   component: ReactNode;
@@ -59,6 +64,36 @@ export const pagesRoutesConfig: Routes = [
     element: <Bookings />,
     title: "Bookings",
     label: "Bookings",
+  },
+  {
+    path: "/faq",
+    element: <Faq />,
+    title: "FAQ",
+    label: "FAQ",
+  },
+  {
+    path: "/about",
+    element: <About />,
+    title: "About",
+    label: "About",
+  },
+  {
+    path: "/security",
+    element: <Security />,
+    title: "Security info",
+    label: "Security info",
+  },
+  {
+    path: "/legal",
+    element: <Legal />,
+    title: "Legal info",
+    label: "Legal info",
+  },
+  {
+    path: "/contacts",
+    element: <Contacts />,
+    title: "Contacts",
+    label: "Contacts",
   },
 ];
 

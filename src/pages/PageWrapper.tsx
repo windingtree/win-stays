@@ -17,7 +17,7 @@ export const PageWrapper = ({ children, breadcrumbs, kind }: PageWrapperProps) =
   const { isConnecting, isRightNetwork } = useAppState();
 
   return (
-    <Page kind={kind ?? 'narrow'}>
+    <Page height={{ min: '75vh' }} kind={kind ?? 'narrow'}>
       <PageContent pad='none'>
         <Breadcrumbs
           breadcrumbs={breadcrumbs}
