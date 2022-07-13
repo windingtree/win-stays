@@ -173,17 +173,18 @@ export const Results: React.FC<{
     h3Indexes.map((h) => vUtils.generateTopic({ ...videreConfig, topic: 'pong' }, h))
   );
   return <Box
+    gap='0.5rem'
     style={{
       position: 'absolute',
       zIndex: '1',
       background: 'white',
       width: '25rem',
-      margin: '1.25rem',
+      margin: '1rem',
       right: 0,
       backgroundColor: 'rgba(0, 0, 0, 0)'
     }}
   >
-    {facilities.map((facility) => <Card key={facility.id} pad='small' background={'white'} margin='5px'>
+    {facilities.map((facility) => <Card key={facility.id} pad='small' background={'white'}>
       <CardHeader>
         {facility.name}
       </CardHeader>

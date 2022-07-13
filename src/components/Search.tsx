@@ -162,7 +162,7 @@ export const Search: React.FC<{
         zIndex: `${open ? '1' : '-1'}`,
         alignSelf: 'center',
         background: 'white',
-        width: '70%',
+        width: '35rem',
         margin: '1rem',
         padding: '0.75rem',
         borderRadius: '0.5rem',

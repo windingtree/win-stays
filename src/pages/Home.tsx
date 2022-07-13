@@ -18,7 +18,7 @@ export const Home = () => {
   return (
     <PageWrapper kind='full'>
       {!isConnecting &&
-        <Box>
+        <Box style={{ position: 'relative' }}>
           <Button
             style={{
               position: 'absolute',
