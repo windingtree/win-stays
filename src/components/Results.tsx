@@ -17,6 +17,7 @@ import axios from "axios";
 import { ServiceProviderData } from "../proto/storage";
 import { SignedMessage } from "@windingtree/videre-sdk/dist/cjs/utils";
 import { Button, Box, Card, CardHeader, CardBody, CardFooter } from "grommet";
+import { useNavigate } from "react-router-dom";
 
 const logger = Logger('Results');
 
@@ -25,6 +26,7 @@ export const Results: React.FC<{
 }> = ({ center }) => {
   const { waku, provider, serviceProviderDataDomain, facilities } = useAppState();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const bidMessageHandler = (incomingMessage: WakuMessage): void => {
     try {
@@ -189,7 +191,7 @@ export const Results: React.FC<{
         {facility.description}
       </CardBody>
       <CardFooter justify="end">
-        <Button label='book' onClick={() => logger.info('Redirect to Facility page')} />
+        <Button label='book' onClick={() => navigate(`/facility/${facility.id}`)} />
       </CardFooter>
     </Card>
     )}
