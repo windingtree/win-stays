@@ -6,7 +6,7 @@ import { MessageBox } from "src/components/MessageBox";
 
 const tokens = []
 
-export const Bookings = ({ }) => {
+export const Bookings = () => {
   const { isConnecting } = useAppState();
 
   const isLoading = useMemo(
