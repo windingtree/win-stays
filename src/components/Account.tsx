@@ -1,3 +1,4 @@
+import type { Web3ModalProvider } from '../hooks/useWeb3Modal';
 import { useCallback, useMemo, useState } from 'react';
 import { utils } from 'ethers';
 import Blockies from 'react-blockies';
@@ -5,7 +6,11 @@ import styled from 'styled-components';
 import { Box, Text, Notification } from 'grommet';
 import { centerEllipsis, copyToClipboard } from '../utils/strings';
 import { usePoller } from '../hooks/usePoller';
-import { useAppState } from "../store";
+
+export interface AccountProps {
+  account?: string;
+  provider?: Web3ModalProvider;
+}
 
 const AccountIcon = styled(Blockies)`
   border-radius: 50%;
@@ -16,11 +21,11 @@ const AccountHash = styled(Text)`
   cursor: pointer;
 `;
 
-export const Account = () => {
-  const {
-    provider,
-    account
-  } = useAppState();
+export const Account: React.FC<AccountProps> = ({ account, provider }) => {
+  // const {
+  //   provider,
+  //   account
+  // } = useAppState();
   const [balance, setBalance] = useState<string>('');
   const [notification, setNotification] = useState<boolean>(false);
 
@@ -50,7 +55,7 @@ export const Account = () => {
     'Account balance'
   );
 
-  if (!provider || !account || balance === '') {
+  if (!provider || !account) {
     return null;
   }
 

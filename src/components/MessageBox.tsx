@@ -13,6 +13,7 @@ export type MessageBoxTypes = typeof allowedMessageBoxTypes[number];
 export interface MessageBoxProps {
   type: MessageBoxTypes;
   show: boolean;
+  loading?: boolean;
   children?: React.ReactNode;
   onClose?: () => void
 }
@@ -20,6 +21,7 @@ export interface MessageBoxProps {
 export const MessageBox = ({
   type = 'info',
   show = false,
+  loading = false,
   children,
   onClose
 }: MessageBoxProps) => {
@@ -60,19 +62,9 @@ export const MessageBox = ({
           </Box>
         }
       </Box>
+      {loading === true && <Box>
+        <Spinner />
+      </Box>}
     </Box>
   );
 };
-
-export const MessageLoadingBox = ({ children, ...props }: MessageBoxProps) => (
-  <MessageBox {...props}>
-    <Box direction='row' align='center'>
-      <Box>
-        {children}
-      </Box>
-      <Box pad={{ left: 'small' }}>
-        <Spinner />
-      </Box>
-    </Box>
-  </MessageBox>
-);
