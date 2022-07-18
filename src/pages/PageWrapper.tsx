@@ -2,7 +2,7 @@ import type { Breadcrumb } from '../components/Breadcrumbs';
 import { useContext } from 'react';
 import { Page, PageContent, Box, ResponsiveContext } from 'grommet';
 import { Breadcrumbs } from '../components/Breadcrumbs';
-import { MessageLoadingBox, MessageBox } from '../components/MessageBox';
+import { MessageBox } from '../components/MessageBox';
 import { useAppState } from '../store';
 import { name } from '../config';
 
@@ -24,9 +24,9 @@ export const PageWrapper = ({ children, breadcrumbs, kind }: PageWrapperProps) =
           size={size}
         />
         <Box fill='horizontal'>
-          <MessageLoadingBox type='info' show={isConnecting}>
+          <MessageBox loading type='info' show={isConnecting}>
             The Dapp is connecting
-          </MessageLoadingBox>
+          </MessageBox>
           <MessageBox type='warn' show={!isRightNetwork}>
             You are connected to a wrong network. Please switch to: {name}
           </MessageBox>

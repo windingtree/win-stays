@@ -9,7 +9,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 
 export const AppHeader = () => {
   const { state } = useLocation();
-  const { account } = useAppState();
+  const { account, provider } = useAppState();
   const pageTitle = usePageTitle();
 
   const returnLocation = useMemo(
@@ -33,7 +33,7 @@ export const AppHeader = () => {
         align='right'
         gap='small'
       >
-        <Account />
+        <Account account={account} provider={provider} />
         {account
           ? <SignOutButton />
           : <SignInButton />

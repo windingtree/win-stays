@@ -5,7 +5,7 @@ import { Box, Button, DateInput, Form, FormField, Grid, TextInput } from 'gromme
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Logger from "../utils/logger";
-import { MessageBox, MessageLoadingBox } from "./MessageBox";
+import { MessageBox } from "./MessageBox";
 import { useWindowsDimension } from "../hooks/useWindowsDimension";
 import { sendMessage } from "../utils/waku";
 import { useAppState } from "../store";
@@ -238,9 +238,9 @@ export const Search: React.FC<{
           <Button type='submit' label='Search...' />
         </Box>
       </Grid>
-      <MessageLoadingBox type='info' show={loading}>
+      <MessageBox loading type='info' show={loading}>
         loading...
-      </MessageLoadingBox>
+      </MessageBox>
       <MessageBox type='error' show={!!error}>
         {error}
       </MessageBox>
