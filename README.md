@@ -17,7 +17,17 @@ Create  `.env` file in the root of repository with content like in the file `.en
 ```bash
 yarn start
 ```
+## Storybook
 
+Runs a storybook UI at http://localhost:6006/
+```bash
+yarn storybook
+```
+
+Create  `.env` file in the root of repository with content like in the file `.env.example`. To start project locally please rum this command.
+```bash
+yarn start
+```
 ## Production build
 
 ```bash
