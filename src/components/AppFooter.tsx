@@ -44,6 +44,12 @@ export const AppFooter = () => {
           href='/faq'
           label='FAQ'
         />
+        <Anchor
+          weight='400'
+          color={color}
+          href='/developers'
+          label='Developers'
+        />
       </Box>
       <Box color={color} align='center' direction='row'>
         <Anchor

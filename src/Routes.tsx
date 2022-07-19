@@ -12,6 +12,7 @@ import { About } from './pages/About';
 import { Contacts } from './pages/Contacts';
 import { Legal } from './pages/Legal';
 import { Security } from './pages/Security';
+import { Developers } from './pages/Developers';
 
 export interface ProtectedProps {
   component: ReactNode;
@@ -32,18 +33,18 @@ export const Protected = ({
   component,
   path = '/'
 }: ProtectedProps) => {
-const location = useLocation();
-const { account } = useAppState();
+  const location = useLocation();
+  const { account } = useAppState();
 
-return (
-  <>
-    {
-      account !== undefined
-        ? component
-        : <Navigate to={path} state={{ location }} />
-    }
-  </>
-);
+  return (
+    <>
+      {
+        account !== undefined
+          ? component
+          : <Navigate to={path} state={{ location }} />
+      }
+    </>
+  );
 };
 
 export const pagesRoutesConfig: Routes = [
@@ -95,6 +96,13 @@ export const pagesRoutesConfig: Routes = [
     title: "Contacts",
     label: "Contacts",
   },
+  {
+    path: "/developers",
+    element: <Developers />,
+    title: "Developers",
+    // label: "Developers",
+  }
+
 ];
 
 export const processPagesConfig = (config: Routes): Routes =>
